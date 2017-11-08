@@ -1,0 +1,95 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is a sample server Petstore server.  You can find out more about    
+    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+    #swagger](http://swagger.io/irc/).      For this sample, you can use the api
+    key `special-key` to test the authorization     filters.
+  version: 1.0.0
+  title: Lozzikit Status Service
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: MIT
+    url: 'https://mit-license.org/'
+basePath: /v2
+tags:
+  - name: Service
+    description: Manage your services
+schemes:
+  - http
+paths:
+  /services:
+    post:
+      tags:
+        - Service
+      summary: Add a service to monitor
+      description: ''
+      operationId: addService
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: service
+          description: Service object that needs to be added to the status page
+          required: true
+          schema:
+            $ref: '#/definitions/Service'
+      responses:
+        '201':
+          description: Creation successful
+        '405':
+          description: Invalid input
+    put:
+      tags:
+        - Service
+      summary: Update an existing services
+      description: ''
+      operationId: updateService
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: service
+          description: Service object that needs to be modified
+          required: true
+          schema:
+            $ref: '#/definitions/Service'
+      responses:
+        '201':
+          description: Update successful
+        '404':
+          description: Service not found
+        '405':
+          description: Validation exception
+definitions:
+  Service:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+        description: A short description of what the service does
+      url:
+        type: string
+      port:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 65535
+      interval:
+        type: integer
+        format: int32
+        minimum: 5
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string
