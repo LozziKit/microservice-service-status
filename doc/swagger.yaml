@@ -19,6 +19,8 @@ tags:
     description: Manage your services
   - name: Maintenance
     description: Define when a service will be unavailable
+  - name: Incident
+    description: When something goes bad with a service
 schemes:
   - http
 paths:
@@ -139,13 +141,13 @@ paths:
       parameters:
         - name: service
           in: body
-          description: Service object that needs to be added to the status page
+          description: Maintenance object that needs to be added to the status page
           required: true
           schema:
             $ref: '#/definitions/NewMaintenance'
         - name: id
           in: path
-          description: ID of service to delete
+          description: ID of service
           required: true
           type: string
           format: uuid
@@ -168,7 +170,61 @@ paths:
           type: string
           enum:
             - upcoming
-            - finished
+            - past
+      responses:
+        '200':
+          description: Return the list of maintenances for the given service
+          schema:
+            $ref: '#/definitions/Maintenance'
+  '/services/{id}/maintenances/{id}':
+    get:
+      tags:
+        - Service
+      summary: Get details of a service
+      parameters:
+        - name: id
+          in: path
+          description: ID of service to update
+          required: true
+          type: string
+          format: uuid
+        - name: expand
+          in: query
+          description: Define if nested object of the service are included in the response
+          type: string
+          enum:
+            - status
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Service'
+  '/services/{id}/incidents':
+    post:
+      tags:
+        - Incident
+      summary: Add a incident to a service
+      operationId: newIncident
+      consumes:
+        - application/json
+      parameters:
+        - name: incident
+          in: body
+          description: Incidence object that needs to be added to the status page
+          required: true
+          schema: null
+        - name: id
+          in: path
+          description: ID of service
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '201':
+          description: Creation successful
+        '405':
+          description: Invalid input
+    get: null
 definitions:
   NewService:
     type: object
@@ -251,7 +307,7 @@ definitions:
   Maintenance:
     type: object
     allOf:
-      - $ref: '#/defintions/NewMaintenance'
+      - $ref: '#/definitions/NewMaintenance'
       - properties:
           id:
             type: string
