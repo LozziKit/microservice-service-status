@@ -27,33 +27,64 @@ public class ServicesApiController implements ServicesApi {
 
     @Override
     public ResponseEntity<Void> addService(@ApiParam(required = true) @Valid @RequestBody NewService newService) {
-        ServiceEntity service = serviceService.createService(newService);
+        ServiceEntity service = serviceService.createService(toServiceEntity(newService));
         return ResponseEntity.created(URI.create(serviceService.getLocationUrl(service.getId()))).build();
     }
 
+    @Override
     public ResponseEntity<Void> deleteService(@ApiParam(required = true) @PathVariable("id") UUID id) {
         serviceService.deleteServiceById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     public ResponseEntity<Service> getService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
         ServiceEntity serviceEntity = serviceService.getService(id, expand);
-        return ResponseEntity.ok(serviceService.toDto(serviceEntity));
+        return ResponseEntity.ok(toDto(serviceEntity));
     }
 
+    @Override
     public ResponseEntity<List<Service>> getServices(@ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
         List<ServiceEntity> serviceEntities = serviceService.getAllServices(expand);
         List<Service> services = new ArrayList<>();
 
-        serviceEntities.forEach(serviceEntity -> services.add(serviceService.toDto(serviceEntity)));
+        serviceEntities.forEach(serviceEntity -> services.add(toDto(serviceEntity)));
         return ResponseEntity.ok(services);
     }
 
+    @Override
     public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(required = true) @RequestBody NewService service) {
-        serviceService.updateService(id, service);
+        serviceService.updateService(id, toServiceEntity(service));
         return ResponseEntity.noContent().build();
+    }
+
+    private ServiceEntity toServiceEntity(NewService service) {
+        ServiceEntity serviceEntity = new ServiceEntity();
+        serviceEntity.setName(service.getName());
+        serviceEntity.setDescription(service.getDescription());
+        serviceEntity.setUrl(service.getUrl());
+        serviceEntity.setPort(service.getPort());
+        serviceEntity.setInterval(service.getInterval());
+
+        return serviceEntity;
+    }
+
+    private Service toDto(ServiceEntity serviceEntity) {
+        Service service = new Service();
+
+        service.setName(serviceEntity.getName());
+        service.setDescription(serviceEntity.getDescription());
+        service.setUrl(serviceEntity.getUrl());
+        service.setPort(serviceEntity.getPort());
+        service.setInterval(serviceEntity.getInterval());
+        service.setLocation(serviceService.getLocationUrl(serviceEntity.getId()));
+        // TODO: add status support
+        service.setStatuses(null);
+        service.setLastStatus(null);
+
+        return service;
     }
 
 }
