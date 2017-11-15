@@ -61,9 +61,10 @@ paths:
       responses:
         '200':
           description: Return the list of services
-          type: array
-          items:
-            $ref: '#/definitions/Service'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Service'
   '/services/{id}':
     get:
       tags:
@@ -239,7 +240,7 @@ definitions:
             type: string
           lastStatus:
             $ref: '#/definitions/Status'
-          status:
+          statuses:
             type: array
             items:
               $ref: '#/definitions/Status'
