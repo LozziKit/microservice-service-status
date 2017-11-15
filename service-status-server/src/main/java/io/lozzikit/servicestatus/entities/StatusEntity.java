@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
+@Entity
+@Table(name = "status")
 public class StatusEntity {
     // checkAt, code, status
     @Id
@@ -21,4 +23,7 @@ public class StatusEntity {
     private int httpStatus;
 
     private Status.StatusEnum status;
+
+    @ManyToOne
+    private ServiceEntity service;
 }

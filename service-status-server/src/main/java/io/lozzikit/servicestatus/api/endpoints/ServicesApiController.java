@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,28 +28,32 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addService(@ApiParam(required = true) @Valid @RequestBody NewService newService) {
         ServiceEntity service = serviceService.createService(newService);
-        return null;
+        return ResponseEntity.created(URI.create(serviceService.getLocationUrl(service.getId()))).build();
     }
 
-
     public ResponseEntity<Void> deleteService(@ApiParam(required = true) @PathVariable("id") UUID id) {
-        return null;
+        serviceService.deleteServiceById(id);
+        return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<Service> getService(@ApiParam(required = true) @PathVariable("id") UUID id,
-                                              @ApiParam(allowableValues = "STATUS") @Valid @RequestParam(value = "expand", required = false) String expand) {
-        return null;
+                                              @ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
+        ServiceEntity serviceEntity = serviceService.getService(id, expand);
+        return ResponseEntity.ok(serviceService.toDto(serviceEntity));
     }
 
+    public ResponseEntity<List<Service>> getServices(@ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
+        List<ServiceEntity> serviceEntities = serviceService.getAllServices(expand);
+        List<Service> services = new ArrayList<>();
 
-    public ResponseEntity<Void> getServices(@ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false) String expand) {
-        return null;
+        serviceEntities.forEach(serviceEntity -> services.add(serviceService.toDto(serviceEntity)));
+        return ResponseEntity.ok(services);
     }
-
 
     public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(required = true) @RequestBody NewService service) {
-        return null;
+        serviceService.updateService(id, service);
+        return ResponseEntity.noContent().build();
     }
 
 }
