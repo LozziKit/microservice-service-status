@@ -48,6 +48,17 @@ public class ServiceService {
         serviceRepository.delete(uuid);
     }
 
+    public void updateService(UUID id, NewService service) {
+        ServiceEntity serviceEntity = serviceRepository.findOne(id);
+        serviceEntity.setName(service.getName());
+        serviceEntity.setDescription(service.getDescription());
+        serviceEntity.setUrl(service.getUrl());
+        serviceEntity.setPort(service.getPort());
+        serviceEntity.setInterval(service.getInterval());
+
+        serviceRepository.save(serviceEntity);
+    }
+
     public ServiceEntity toServiceEntity(NewService service) {
         ServiceEntity serviceEntity = new ServiceEntity();
         serviceEntity.setName(service.getName());
@@ -79,14 +90,4 @@ public class ServiceService {
         return "/services/" + uuid.toString();
     }
 
-    public void updateService(UUID id, NewService service) {
-        ServiceEntity serviceEntity = serviceRepository.findOne(id);
-        serviceEntity.setName(service.getName());
-        serviceEntity.setDescription(service.getDescription());
-        serviceEntity.setUrl(service.getUrl());
-        serviceEntity.setPort(service.getPort());
-        serviceEntity.setInterval(service.getInterval());
-
-        serviceRepository.save(serviceEntity);
-    }
 }

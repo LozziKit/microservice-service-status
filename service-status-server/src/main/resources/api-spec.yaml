@@ -1,8 +1,18 @@
 swagger: '2.0'
 info:
-  description: Microservice to monitor service status
+  description: >-
+    This is a sample server Petstore server.  You can find out more about
+    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+    #swagger](http://swagger.io/irc/).      For this sample, you can use the api
+    key `special-key` to test the authorization     filters.
   version: 1.0.0
   title: Lozzikit Status Service
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: MIT
+    url: 'https://mit-license.org/'
 basePath: /v2
 tags:
   - name: Service
@@ -45,21 +55,15 @@ paths:
         - name: expand
           in: query
           description: Define if nested object of the service are included in the response
-          schema:
-            type: array
-            style: form
-            explode: false
-            items:
-              type: string
-              enum:
-                - history
+          type: string
+          enum:
+            - status
       responses:
         '200':
           description: Return the list of services
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Service'
+          type: array
+          items:
+            $ref: '#/definitions/Service'
   '/services/{id}':
     get:
       tags:
@@ -69,20 +73,16 @@ paths:
       parameters:
         - name: id
           in: path
+          description: ID of service to update
           required: true
           type: string
           format: uuid
         - name: expand
           in: query
           description: Define if nested object of the service are included in the response
-          schema:
-            type: array
-            style: form
-            explode: false
-            items:
-              type: string
-              enum:
-                - history
+          type: string
+          enum:
+            - status
       responses:
         '200':
           description: Successful response
@@ -113,7 +113,7 @@ paths:
         '201':
           description: Update successful
         '404':
-          description: Unknown found
+          description: Service not found
         '405':
           description: Validation exception
     delete:
@@ -239,7 +239,7 @@ definitions:
             type: string
           lastStatus:
             $ref: '#/definitions/Status'
-          statuses:
+          status:
             type: array
             items:
               $ref: '#/definitions/Status'
