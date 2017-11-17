@@ -1,4 +1,4 @@
-Feature: Delete a Service
+Feature: Modify a Service
 
 	Background:
 		Given there is a Service server

@@ -1,5 +1,7 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -50,4 +52,27 @@ public class CreationSteps {
         assertEquals(201, lastStatusCode);
     }
 
+    @Given("^there is a Service server$")
+    public void thereIsAServiceServer() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Given("^I have a Service payload$")
+    public void iHaveAServicePayload() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^I POST it to the /services endpoint$")
+    public void iPOSTItToTheServicesEndpoint() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @And("^I receive the identifier of my Service$")
+    public void iReceiveTheIdentifierOfMyService() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 }
