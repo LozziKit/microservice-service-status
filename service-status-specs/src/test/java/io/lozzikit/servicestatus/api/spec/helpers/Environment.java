@@ -1,6 +1,4 @@
-package io.avalia.fruits.api.spec.helpers;
-
-import io.avalia.fruits.api.DefaultApi;
+package io.lozzikit.servicestatus.api.spec.helpers;
 
 import java.io.IOException;
 import java.util.Properties;
