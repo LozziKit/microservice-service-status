@@ -1,14 +1,13 @@
 package io.lozzikit.servicestatus.api.spec.helpers;
 
+import io.lozzkit.servicestatus.api.ServiceApi;
+
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * Created by Olivier Liechti on 24/06/17.
- */
 public class Environment {
 
-    private DefaultApi api = new DefaultApi();
+    private ServiceApi api = new ServiceApi();
 
     public Environment() throws IOException {
         Properties properties = new Properties();
@@ -18,7 +17,7 @@ public class Environment {
 
     }
 
-    public DefaultApi getApi() {
+    public ServiceApi getApi() {
         return api;
     }
 

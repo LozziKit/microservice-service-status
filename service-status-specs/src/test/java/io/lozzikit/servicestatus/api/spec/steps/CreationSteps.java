@@ -3,11 +3,10 @@ package io.lozzikit.servicestatus.api.spec.steps;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import io.avalia.fruits.ApiException;
-import io.avalia.fruits.ApiResponse;
-import io.avalia.fruits.api.DefaultApi;
-import io.avalia.fruits.api.dto.Fruit;
-import io.avalia.fruits.api.spec.helpers.Environment;
+import io.lozzikit.servicestatus.api.spec.helpers.Environment;
+import io.lozzkit.servicestatus.ApiException;
+import io.lozzkit.servicestatus.ApiResponse;
+import io.lozzkit.servicestatus.api.ServiceApi;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -18,9 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class CreationSteps {
 
     private Environment environment;
-    private DefaultApi api;
-
-    Fruit fruit;
+    private ServiceApi api;
 
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
@@ -39,22 +36,12 @@ public class CreationSteps {
 
     @Given("^I have a fruit payload$")
     public void i_have_a_fruit_payload() throws Throwable {
-        fruit = new io.avalia.fruits.api.dto.Fruit();
+        //fruit = new io.avalia.fruits.api.dto.Fruit();
     }
 
     @When("^I POST it to the /fruits endpoint$")
     public void i_POST_it_to_the_fruits_endpoint() throws Throwable {
-        try {
-            lastApiResponse = api.createFruitWithHttpInfo(fruit);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
-        } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
-        }
+        
 
     }
 
