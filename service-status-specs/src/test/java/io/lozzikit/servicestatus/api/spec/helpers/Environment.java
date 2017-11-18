@@ -1,26 +1,23 @@
-package io.avalia.fruits.api.spec.helpers;
+package io.lozzikit.servicestatus.api.spec.helpers;
 
-import io.avalia.fruits.api.DefaultApi;
+import io.lozzkit.servicestatus.api.ServiceApi;
 
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * Created by Olivier Liechti on 24/06/17.
- */
 public class Environment {
 
-    private DefaultApi api = new DefaultApi();
+    private ServiceApi api = new ServiceApi();
 
     public Environment() throws IOException {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("environment.properties"));
-        String url = properties.getProperty("io.avalia.fruits.server.url");
+        String url = properties.getProperty("io.lozzikit.servicestatus.server.url");
         api.getApiClient().setBasePath(url);
 
     }
 
-    public DefaultApi getApi() {
+    public ServiceApi getApi() {
         return api;
     }
 
