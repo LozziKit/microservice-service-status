@@ -1,8 +1,9 @@
 Feature: Modify a Service
-
+  s
 	Background:
 		Given there is a Service server
-		And the Service server contains my Service
+		And I have added my Service to the server
+		And I have my Service identifier
 	
 	Scenario: Modify my Service
 		Given I have my Service identifier

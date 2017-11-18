@@ -5,6 +5,8 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import io.lozzikit.servicestatus.api.dto.NewService;
+import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.ApiResponse;
@@ -26,25 +28,37 @@ public class CreationSteps {
     private boolean lastApiCallThrewException;
     private int lastStatusCode;
 
+    NewService service;
+    String serviceUUID;
+
     public CreationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }
 
-    @Given("^there is a Fruits server$")
-    public void there_is_a_Fruits_server() throws Throwable {
+    @Given("^there is a Service server$")
+    public void thereIsAServiceServer() throws Throwable {
         assertNotNull(api);
     }
 
-    @Given("^I have a fruit payload$")
-    public void i_have_a_fruit_payload() throws Throwable {
-        //fruit = new io.avalia.fruits.api.dto.Fruit();
+    @Given("^I have a Service payload$")
+    public void iHaveAServicePayload() throws Throwable {
+        service = new NewService();
     }
 
-    @When("^I POST it to the /fruits endpoint$")
-    public void i_POST_it_to_the_fruits_endpoint() throws Throwable {
-        
-
+    @When("^I POST it to the /services endpoint$")
+    public void iPOSTItToTheServicesEndpoint() throws Throwable {
+        try {
+            lastApiResponse = api.addServiceWithHttpInfo(service);
+            lastApiCallThrewException = false;
+            lastApiException = null;
+            lastStatusCode = lastApiResponse.getStatusCode();
+        } catch (ApiException e) {
+            lastApiCallThrewException = true;
+            lastApiResponse = null;
+            lastApiException = e;
+            lastStatusCode = lastApiException.getCode();
+        }
     }
 
     @Then("^I receive a (\\d+) status code$")
@@ -52,27 +66,9 @@ public class CreationSteps {
         assertEquals(201, lastStatusCode);
     }
 
-    @Given("^there is a Service server$")
-    public void thereIsAServiceServer() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Given("^I have a Service payload$")
-    public void iHaveAServicePayload() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @When("^I POST it to the /services endpoint$")
-    public void iPOSTItToTheServicesEndpoint() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
     @And("^I receive the identifier of my Service$")
     public void iReceiveTheIdentifierOfMyService() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        String location = (String)lastApiResponse.getHeaders().get("location");
+        location.substring(location.lastIndexOf('/'));
     }
 }
