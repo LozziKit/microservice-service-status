@@ -1,12 +1,13 @@
-Feature: Check Services
-	Background:
-		Given there is a Service server
+Feature: Check we can receive Services
+  Background:
+    Given there is a Service server for reception
+    And I have added my Service to the server for reception
 
-	Scenario: Check if the Service is up and running
-		Given I have a Service identifier
-		When I GET /service/{id}
-		Then I receive a payload containing the Service
-		
-	Scenario: Check multiple Services
-		When I GET /services
-		Then I receive a payload containing all Services
+  Scenario: Check if I can receive a Service
+    Given I have a Service identifier for reception
+    When I send a GET request to the /service/id endpoint
+    Then I receive a payload containing the Service
+
+  Scenario: Check multiple Services
+    When I send a GET request to the /services endpoint
+    Then I receive a payload containing all Services
