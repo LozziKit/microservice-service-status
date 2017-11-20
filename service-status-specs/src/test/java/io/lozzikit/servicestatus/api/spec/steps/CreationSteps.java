@@ -68,7 +68,7 @@ public class CreationSteps {
 
     @And("^I receive the identifier of my Service$")
     public void iReceiveTheIdentifierOfMyService() throws Throwable {
-        String location = (String)lastApiResponse.getHeaders().get("location");
+        String location = String.valueOf(lastApiResponse.getHeaders().get("Location"));
         location.substring(location.lastIndexOf('/'));
     }
 }

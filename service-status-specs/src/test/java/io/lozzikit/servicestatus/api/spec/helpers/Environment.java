@@ -12,7 +12,7 @@ public class Environment {
     public Environment() throws IOException {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("environment.properties"));
-        String url = properties.getProperty("io.lozzikit.servicestatus.server.url");
+        String url = properties.getProperty("io.lozzikit.service-status.server.url");
         api.getApiClient().setBasePath(url);
 
     }
