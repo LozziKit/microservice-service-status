@@ -28,7 +28,7 @@ public class DeletionSteps {
 
     NewService service;
 
-    public CreationSteps(Environment environment) {
+    public DeletionSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }
@@ -63,7 +63,7 @@ public class DeletionSteps {
     }
 
 
-    @When("^I send a DELETE to the /service/{id} endpoint$")
+    @When("^I send a DELETE to the /service/id endpoint$")
     public void iSendADELETEToTheServiceIdEndpoint() throws Throwable {
         try {
             lastApiResponse = api.deleteServiceWithHttpInfo(serviceUUID);
@@ -78,16 +78,27 @@ public class DeletionSteps {
         }
     }
 
-    @Then("^I receive a (\\d+) status code$")
+    @Then("^I receive a (\\d+) status code for deletion$")
     public void i_receive_a_status_code(int arg1) throws Throwable {
         assertEquals(204, lastStatusCode);
     }
 
 
-    @Then("^I receive a (\\d+) error code status code$")
+    @Then("^I receive a (\\d+) error code status code for deletion$")
     public void iReceiveAErrorCodeStatusCode(int arg0) throws Throwable {
         assertEquals(404, lastStatusCode);
     }
 
 
+    @Given("^I have my Service identifier for deletion$")
+    public void iHaveMyServiceIdentifierForDeletion() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @And("^when I GET /service/id$")
+    public void whenIGETServiceId() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 }

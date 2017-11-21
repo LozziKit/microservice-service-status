@@ -72,7 +72,7 @@ public class ModificationSteps {
         modifiedService.setName("Modified");
     }
 
-    @When("^I send a PUT request to the /service endpoint$")
+    @When("^I send a PUT request to the /service/id endpoint$")
     public void iSendAPUTRequestToTheServiceEndpoint() throws Throwable {
         try {
             lastApiResponse = api.updateServiceWithHttpInfo(serviceUUID, modifiedService);
@@ -92,7 +92,7 @@ public class ModificationSteps {
         assertEquals(204, lastStatusCode);
     }
 
-    @When("^I send a PUT request to the /service endpoint with an invalid ID$")
+    @When("^I send a PUT request to the /service/id endpoint with an invalid ID$")
     public void iSendAPUTRequestToTheServiceEndpointWithAnInvalidID() throws Throwable {
         try {
             lastApiResponse = api.updateServiceWithHttpInfo(UUID.randomUUID().toString(), modifiedService);
