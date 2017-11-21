@@ -1,5 +1,6 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -10,10 +11,11 @@ import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.ApiResponse;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class CreationSteps {
+public class DeletionSteps {
+
 
     private Environment environment;
     private ServiceApi api;
@@ -22,6 +24,7 @@ public class CreationSteps {
     private ApiException lastApiException;
     private boolean lastApiCallThrewException;
     private int lastStatusCode;
+    private String serviceUUID;
 
     NewService service;
 
@@ -30,20 +33,40 @@ public class CreationSteps {
         this.api = environment.getApi();
     }
 
-    @Given("^there is a Service server for creation$")
-    public void thereIsAServiceServer() throws Throwable {
+    @Given("^there is a Service server for deletion$")
+    public void thereIsAServiceServerForDeletion() throws Throwable {
         assertNotNull(api);
     }
 
-    @Given("^I have a Service payload$")
-    public void iHaveAServicePayload() throws Throwable {
+    @And("^I have added my Service to the server$")
+    public void iHaveAddedMyServiceToTheServer() throws Throwable {
         service = new NewService();
-    }
-
-    @When("^I POST it to the /services endpoint$")
-    public void iPOSTItToTheServicesEndpoint() throws Throwable {
         try {
             lastApiResponse = api.addServiceWithHttpInfo(service);
+            lastApiCallThrewException = false;
+            lastApiException = null;
+            lastStatusCode = lastApiResponse.getStatusCode();
+            String location = String.valueOf(lastApiResponse.getHeaders().get("Location"));
+            serviceUUID = location.substring(location.lastIndexOf('/')+1, location.length()-1);
+        } catch (ApiException e) {
+            lastApiCallThrewException = true;
+            lastApiResponse = null;
+            lastApiException = e;
+            lastStatusCode = lastApiException.getCode();
+        }
+    }
+
+    @And("^I have my Service identifier$")
+    public void iHaveMyServiceIdentifier() throws Throwable {
+        assertNotNull(serviceUUID);
+
+    }
+
+
+    @When("^I send a DELETE to the /service/{id} endpoint$")
+    public void iSendADELETEToTheServiceIdEndpoint() throws Throwable {
+        try {
+            lastApiResponse = api.deleteServiceWithHttpInfo(serviceUUID);
             lastApiCallThrewException = false;
             lastApiException = null;
             lastStatusCode = lastApiResponse.getStatusCode();
@@ -57,26 +80,14 @@ public class CreationSteps {
 
     @Then("^I receive a (\\d+) status code$")
     public void i_receive_a_status_code(int arg1) throws Throwable {
-        assertEquals(201, lastStatusCode);
+        assertEquals(204, lastStatusCode);
     }
 
-
-    @And("^I receive the identifier of my Service$")
-    public void iReceiveTheIdentifierOfMyService() throws Throwable {
-        String location = String.valueOf(lastApiResponse.getHeaders().get("Location"));
-        location.substring(location.lastIndexOf('/'));
-    }
-
-
-    @Given("^I have a wrong Service payload$")
-    public void iHaveAWrongServicePayload() throws Throwable {
-        service = new NewService();
-        service.setInterval(3);
-    }
 
     @Then("^I receive a (\\d+) error code status code$")
     public void iReceiveAErrorCodeStatusCode(int arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        assertEquals(405, lastStatusCode);
+        assertEquals(404, lastStatusCode);
     }
+
+
 }
