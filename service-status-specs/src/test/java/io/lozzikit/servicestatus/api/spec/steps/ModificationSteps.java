@@ -24,18 +24,19 @@ public class ModificationSteps {
 
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
-    private boolean lastApiCallThrewException;
-    private int lastStatusCode;
+    private Boolean lastApiCallThrewException;
+    private Integer lastStatusCode;
 
     private NewService service;
-    private NewService modifiedService;
     private String serviceUUID;
-    private String modifiedServiceUUID;
 
     public ModificationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
         this.lastApiResponse = environment.getLastApiResponse();
+        this.lastApiException = environment.getLastApiException();
+        this.serviceUUID = environment.getServiceUUID();
+        this.lastApiCallThrewException = environment.getLastApiCallThrewException();
     }
 
     @Given("^there is a Service server for modification$")
