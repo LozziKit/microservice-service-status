@@ -14,7 +14,7 @@ import io.lozzkit.servicestatus.api.ServiceApi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class DeletionSteps {
+public class ServiceDeletionSteps {
 
 
     private Environment environment;
@@ -28,7 +28,7 @@ public class DeletionSteps {
 
     NewService service;
 
-    public DeletionSteps(Environment environment) {
+    public ServiceDeletionSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }

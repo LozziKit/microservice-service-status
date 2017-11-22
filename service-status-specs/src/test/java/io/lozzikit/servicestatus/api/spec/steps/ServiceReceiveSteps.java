@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-public class ReceiveSteps {
+public class ServiceReceiveSteps {
 
     private Environment environment;
     private ServiceApi api;
@@ -31,7 +31,7 @@ public class ReceiveSteps {
     private NewService service;
     private String serviceUUID;
 
-    public ReceiveSteps(Environment environment) {
+    public ServiceReceiveSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }
