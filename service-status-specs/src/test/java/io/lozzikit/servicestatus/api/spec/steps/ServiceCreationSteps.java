@@ -13,7 +13,7 @@ import io.lozzkit.servicestatus.api.ServiceApi;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-public class CreationSteps {
+public class ServiceCreationSteps {
 
     private Environment environment;
     private ServiceApi api;
@@ -25,7 +25,7 @@ public class CreationSteps {
 
     NewService service;
 
-    public CreationSteps(Environment environment) {
+    public ServiceCreationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }

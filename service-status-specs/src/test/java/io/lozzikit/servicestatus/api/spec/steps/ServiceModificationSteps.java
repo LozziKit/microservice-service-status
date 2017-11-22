@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ModificationSteps {
+public class ServiceModificationSteps {
 
 
     private Environment environment;
@@ -30,7 +30,7 @@ public class ModificationSteps {
     private NewService service;
     private String serviceUUID;
 
-    public ModificationSteps(Environment environment) {
+    public ServiceModificationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
         this.lastApiResponse = environment.getLastApiResponse();
