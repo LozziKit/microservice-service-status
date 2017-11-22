@@ -37,6 +37,8 @@ public class ModificationSteps {
         this.lastApiException = environment.getLastApiException();
         this.serviceUUID = environment.getServiceUUID();
         this.lastApiCallThrewException = environment.getLastApiCallThrewException();
+        this.lastStatusCode = environment.getLastStatusCode();
+        this.service = environment.getService();
     }
 
     @Given("^there is a Service server for modification$")
