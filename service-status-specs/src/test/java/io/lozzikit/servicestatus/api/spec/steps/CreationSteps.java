@@ -1,12 +1,10 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.NewService;
-import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.ApiResponse;
@@ -15,9 +13,6 @@ import io.lozzkit.servicestatus.api.ServiceApi;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by Olivier Liechti on 27/07/17.
- */
 public class CreationSteps {
 
     private Environment environment;
@@ -29,14 +24,13 @@ public class CreationSteps {
     private int lastStatusCode;
 
     NewService service;
-    String serviceUUID;
 
     public CreationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }
 
-    @Given("^there is a Service server$")
+    @Given("^there is a Service server for creation$")
     public void thereIsAServiceServer() throws Throwable {
         assertNotNull(api);
     }
@@ -66,9 +60,23 @@ public class CreationSteps {
         assertEquals(201, lastStatusCode);
     }
 
+
     @And("^I receive the identifier of my Service$")
     public void iReceiveTheIdentifierOfMyService() throws Throwable {
         String location = String.valueOf(lastApiResponse.getHeaders().get("Location"));
         location.substring(location.lastIndexOf('/'));
+    }
+
+
+    @Given("^I have a wrong Service payload$")
+    public void iHaveAWrongServicePayload() throws Throwable {
+        service = new NewService();
+        service.setInterval(3);
+    }
+
+    @Then("^I receive a (\\d+) error code status code$")
+    public void iReceiveAErrorCodeStatusCode(int arg0) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        assertEquals(405, lastStatusCode);
     }
 }

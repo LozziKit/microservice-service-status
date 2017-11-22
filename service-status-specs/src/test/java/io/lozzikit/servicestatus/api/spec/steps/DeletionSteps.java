@@ -11,12 +11,10 @@ import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.ApiResponse;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
-import java.util.UUID;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ModificationSteps {
+public class DeletionSteps {
 
 
     private Environment environment;
@@ -26,25 +24,22 @@ public class ModificationSteps {
     private ApiException lastApiException;
     private boolean lastApiCallThrewException;
     private int lastStatusCode;
-
-    private NewService service;
-    private NewService modifiedService;
     private String serviceUUID;
-    private String modifiedServiceUUID;
 
-    public ModificationSteps(Environment environment) {
+    NewService service;
+
+    public DeletionSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
-        this.lastApiResponse = environment.getLastApiResponse();
     }
 
-    @Given("^there is a Service server for modification$")
-    public void thereIsAServiceServerForModification() throws Throwable {
+    @Given("^there is a Service server for deletion$")
+    public void thereIsAServiceServerForDeletion() throws Throwable {
         assertNotNull(api);
     }
 
-    @And("^I have added my Service to the server for modification$")
-    public void iHaveAddedMyServiceToTheServerForModification() throws Throwable {
+    @And("^I have added my Service to the server$")
+    public void iHaveAddedMyServiceToTheServer() throws Throwable {
         service = new NewService();
         try {
             lastApiResponse = api.addServiceWithHttpInfo(service);
@@ -59,24 +54,19 @@ public class ModificationSteps {
             lastApiException = e;
             lastStatusCode = lastApiException.getCode();
         }
-
     }
 
-    @And("^I have my Service identifier for modification$")
-    public void iHaveMyServiceIdentifierForModification() throws Throwable {
+    @And("^I have my Service identifier$")
+    public void iHaveMyServiceIdentifier() throws Throwable {
         assertNotNull(serviceUUID);
+
     }
 
-    @Given("^I have a Service payload for modification$")
-    public void iHaveAServicePayloadForModification() throws Throwable {
-        modifiedService = new NewService();
-        modifiedService.setName("Modified");
-    }
 
-    @When("^I send a PUT request to the /service/id endpoint$")
-    public void iSendAPUTRequestToTheServiceEndpoint() throws Throwable {
+    @When("^I send a DELETE to the /service/id endpoint$")
+    public void iSendADELETEToTheServiceIdEndpoint() throws Throwable {
         try {
-            lastApiResponse = api.updateServiceWithHttpInfo(serviceUUID, modifiedService);
+            lastApiResponse = api.deleteServiceWithHttpInfo(serviceUUID);
             lastApiCallThrewException = false;
             lastApiException = null;
             lastStatusCode = lastApiResponse.getStatusCode();
@@ -88,29 +78,27 @@ public class ModificationSteps {
         }
     }
 
-    @Then("^I receive a (\\d+) status code for my modification$")
-    public void iReceiveAStatusCodeForMyModification(int arg0) throws Throwable {
+    @Then("^I receive a (\\d+) status code for deletion$")
+    public void i_receive_a_status_code(int arg1) throws Throwable {
         assertEquals(204, lastStatusCode);
     }
 
-    @When("^I send a PUT request to the /service/id endpoint with an invalid ID$")
-    public void iSendAPUTRequestToTheServiceEndpointWithAnInvalidID() throws Throwable {
-        try {
-            lastApiResponse = api.updateServiceWithHttpInfo(UUID.randomUUID().toString(), modifiedService);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
-        } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
-        }
+
+    @Then("^I receive a (\\d+) error code status code for deletion$")
+    public void iReceiveAErrorCodeStatusCode(int arg0) throws Throwable {
+        assertEquals(404, lastStatusCode);
     }
 
-    @Then("^I receive a (\\d+) error code for my modification$")
-    public void iReceiveAErrorCodeForMyModification(int arg0) throws Throwable {
+
+    @Given("^I have my Service identifier for deletion$")
+    public void iHaveMyServiceIdentifierForDeletion() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        assertEquals(405, lastStatusCode);
+        throw new PendingException();
+    }
+
+    @And("^when I GET /service/id$")
+    public void whenIGETServiceId() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 }
