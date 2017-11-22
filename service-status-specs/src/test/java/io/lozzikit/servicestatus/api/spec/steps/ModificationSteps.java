@@ -35,6 +35,7 @@ public class ModificationSteps {
     public ModificationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        this.lastApiResponse = environment.getLastApiResponse();
     }
 
     @Given("^there is a Service server for modification$")
