@@ -41,9 +41,13 @@ paths:
             $ref: '#/definitions/NewService'
       responses:
         '201':
-          description: Creation successful
-        '405':
-          description: Invalid input
+          description: OK
+        '422':
+          description: Invalid payload
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApiValidationError'
     get:
       tags:
         - Service
@@ -57,7 +61,7 @@ paths:
           description: Define if nested object of the service are included in the response
           type: string
           enum:
-            - status
+            - history
       responses:
         '200':
           description: Return the list of services
@@ -86,7 +90,7 @@ paths:
             - status
       responses:
         '200':
-          description: Successful response
+          description: OK
           schema:
             $ref: '#/definitions/Service'
     put:
@@ -112,11 +116,15 @@ paths:
             $ref: '#/definitions/NewService'
       responses:
         '201':
-          description: Update successful
+          description: OK
         '404':
-          description: Service not found
-        '405':
-          description: Validation exception
+          description: Not found
+        '422':
+          description: Invalid payload
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Service'
     delete:
       tags:
         - Service
@@ -131,9 +139,9 @@ paths:
           format: uuid
       responses:
         '204':
-          description: Deletion successful
+          description: OK
         '404':
-          description: Unknow service
+          description: Not found
           #  '/services/{id}/maintenances':
           #    post:
           #      tags:
@@ -204,6 +212,18 @@ paths:
           #          schema:
           #            $ref: '#/definitions/Service'
 definitions:
+  ApiValidationError:
+    type: object
+    properties:
+      field:
+        type: string
+      error:
+        type: string
+      rejectedValue:
+        type: object
+    required:
+      - field
+      - error
   NewService:
     type: object
     properties:
@@ -224,13 +244,17 @@ definitions:
         format: int32
         minimum: 1
         maximum: 65535
-        default: 80
       interval:
         type: integer
         format: int32
         minimum: 5
-        default: 5
         description: The interval in minutes at which the status will be check
+    required:
+      - name
+      - description
+      - url
+      - port
+      - interval
   Service:
     type: object
     allOf:

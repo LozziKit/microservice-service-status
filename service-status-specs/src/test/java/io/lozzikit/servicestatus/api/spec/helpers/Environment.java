@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Environment {
+    private static int counter = 0;
 
     private ServiceApi api = new ServiceApi();
     private ApiResponse lastApiResponse;
@@ -25,11 +26,16 @@ public class Environment {
         String url = properties.getProperty("io.lozzikit.service-status.server.url");
         api.getApiClient().setBasePath(url);
 
-        service = new NewService();
-        service.setName("Test Service");
-        service.setDescription("A service for API testing");
-        service.setInterval(5);
-        service.setPort(80);
+        service = generateService();
+    }
+
+    public NewService generateService() {
+        NewService result = new NewService();
+        result.setName("Test Service number " + ++counter);
+        result.setDescription("A service for API testing");
+        result.setInterval(5);
+        result.setPort(80);
+        return result;
     }
 
     public ServiceApi getApi() {

@@ -29,6 +29,7 @@ public class ServiceModificationSteps {
 
     private NewService service;
     private String serviceUUID;
+    private NewService modifiedService;
 
     public ServiceModificationSteps(Environment environment) {
         this.environment = environment;
@@ -72,7 +73,7 @@ public class ServiceModificationSteps {
 
     @Given("^I have a Service payload for modification$")
     public void iHaveAServicePayloadForModification() throws Throwable {
-        modifiedService = new NewService();
+        modifiedService = environment.generateService();
         modifiedService.setName("Modified");
     }
 
@@ -91,11 +92,6 @@ public class ServiceModificationSteps {
         }
     }
 
-    @Then("^I receive a (\\d+) status code for my modification$")
-    public void iReceiveAStatusCodeForMyModification(int arg0) throws Throwable {
-        assertEquals(204, lastStatusCode);
-    }
-
     @When("^I send a PUT request to the /service/id endpoint with an invalid ID$")
     public void iSendAPUTRequestToTheServiceEndpointWithAnInvalidID() throws Throwable {
         try {
@@ -111,9 +107,4 @@ public class ServiceModificationSteps {
         }
     }
 
-    @Then("^I receive a (\\d+) error code for my modification$")
-    public void iReceiveAErrorCodeForMyModification(int arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        assertEquals(405, lastStatusCode);
-    }
 }

@@ -55,10 +55,6 @@ public class ServiceCreationSteps {
         }
     }
 
-    @Then("^I receive a (\\d+) status code$")
-    public void i_receive_a_status_code(int arg1) throws Throwable {
-        assertEquals(201, lastStatusCode);
-    }
 
 
     @And("^I receive the identifier of my Service$")
