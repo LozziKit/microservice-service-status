@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class Environment {
-    private static int counter = 0;
+    private int counter = 0;
 
     private ServiceApi api = new ServiceApi();
     private ApiResponse lastApiResponse;

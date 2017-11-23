@@ -30,12 +30,6 @@ public class ServiceCreationSteps {
         this.api = environment.getApi();
     }
 
-    @Given("^there is a Service server for creation$")
-    public void thereIsAServiceServer() throws Throwable {
-        assertNotNull(api);
-    }
-
-
     @When("^I POST it to the /services endpoint$")
     public void iPOSTItToTheServicesEndpoint() throws Throwable {
         try {

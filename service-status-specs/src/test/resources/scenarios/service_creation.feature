@@ -1,7 +1,7 @@
 Feature: Create a Service
 
   Background:
-    Given there is a Service server for creation
+    Given there is a Service server
 
   Scenario: Create a Service
     Given I have a Service payload
