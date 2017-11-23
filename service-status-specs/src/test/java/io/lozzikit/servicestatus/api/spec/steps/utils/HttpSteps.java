@@ -17,13 +17,14 @@ import static org.junit.Assert.assertTrue;
 public class HttpSteps {
 
     private Environment environment;
-    private String serviceUUID;
-    private NewService modifiedService;
+    private ServiceApi api;
+    private NewService service;
 
 
     public HttpSteps(Environment environment) {
         this.environment = environment;
-        this.serviceUUID = environment.getServiceUUID();
+        this.api = environment.getApi();
+        this.service = environment.getService();
     }
 
     @Then("^I receive a (\\d+) status code$")
@@ -33,12 +34,12 @@ public class HttpSteps {
 
     @Given("^there is a Service server$")
     public void thereIsAServiceServer() throws Throwable {
-        assertNotNull(environment.getApi());
+        assertNotNull(api);
     }
 
     @And("^I have my Service identifier$")
     public void iHaveMyServiceIdentifier() throws Throwable {
-        assertNotNull(serviceUUID);
+        assertNotNull(environment.getServiceUUID());
     }
 
 
