@@ -28,6 +28,11 @@ public class ServiceCreationSteps {
     public ServiceCreationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        this.lastApiResponse = environment.getLastApiResponse();
+        this.lastApiException = environment.getLastApiException();
+        this.lastApiCallThrewException = environment.getLastApiCallThrewException();
+        this.lastStatusCode = environment.getLastStatusCode();
+        this.service = environment.getService();
     }
 
     @When("^I POST it to the /services endpoint$")
