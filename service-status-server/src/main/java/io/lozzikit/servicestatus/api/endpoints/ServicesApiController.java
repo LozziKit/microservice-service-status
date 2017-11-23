@@ -5,13 +5,13 @@ import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.service.ServiceService;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -26,23 +26,40 @@ public class ServicesApiController implements ServicesApi {
     @Autowired
     ServiceService serviceService;
 
-    @Override
-    public ResponseEntity<Void> addService(@ApiParam(required = true) @Valid @RequestBody NewService newService) {
+    @ApiOperation(value = "Add a service to monitor", notes = "", response = Void.class, tags = {"Service",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "OK", response = Void.class),
+            @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
+    @RequestMapping(value = "/services",
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
         ServiceEntity service = serviceService.createService(toServiceEntity(newService));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(service.getId()).toUri();
-        
+
         return ResponseEntity.created(location).build();
     }
 
+    @ApiOperation(value = "Delete an existing service", notes = "", response = Void.class, tags = {"Service",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "OK", response = Void.class),
+            @ApiResponse(code = 404, message = "Not found", response = Void.class)})
+    @RequestMapping(value = "/services/{id}",
+            method = RequestMethod.DELETE)
     @Override
     public ResponseEntity<Void> deleteService(@ApiParam(required = true) @PathVariable("id") UUID id) {
         serviceService.deleteServiceById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "Get details of a service", notes = "", response = Service.class, tags = {"Service",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Service.class)})
+    @RequestMapping(value = "/services/{id}",
+            method = RequestMethod.GET)
     @Override
     public ResponseEntity<Service> getService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
@@ -50,6 +67,13 @@ public class ServicesApiController implements ServicesApi {
         return ResponseEntity.ok(toDto(serviceEntity));
     }
 
+
+    @ApiOperation(value = "Get a list of all services", notes = "", response = Service.class, responseContainer = "List", tags = {"Service",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return the list of services", response = Service.class)})
+    @RequestMapping(value = "/services",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
     @Override
     public ResponseEntity<List<Service>> getServices(@ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
         List<ServiceEntity> serviceEntities = serviceService.getAllServices(expand);
@@ -59,6 +83,14 @@ public class ServicesApiController implements ServicesApi {
         return ResponseEntity.ok(services);
     }
 
+    @ApiOperation(value = "Update an existing service", notes = "", response = Void.class, tags = {"Service",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "OK", response = Void.class),
+            @ApiResponse(code = 404, message = "Not found", response = Void.class),
+            @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
+    @RequestMapping(value = "/services/{id}",
+            consumes = {"application/json"},
+            method = RequestMethod.PUT)
     @Override
     public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(required = true) @RequestBody NewService service) {
