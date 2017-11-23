@@ -41,28 +41,6 @@ public class HttpSteps {
         assertNotNull(serviceUUID);
     }
 
-    @And("^I have added my Service to the server$")
-    public void iHaveAddedMyServiceToTheServer() throws Throwable {
-        if(environment.getService() == null){
-            throw new NullPointerException("Cannot add a service to the server if service is null");
-        }else {
-            try {
-                environment.setLastApiResponse(environment.getApi().addServiceWithHttpInfo(environment.getService()));
-                environment.setLastApiCallThrewException(false);
-                environment.setLastApiException(null);
-                environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
-                String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
-                environment.setServiceUUID(location.substring(location.lastIndexOf('/') + 1, location.length() - 1));
-            } catch (ApiException e) {
-                environment.setLastApiCallThrewException(true);
-                environment.setLastApiResponse(null);
-                environment.setLastApiException(e);
-                environment.setLastStatusCode(environment.getLastApiException().getCode());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Given("^I have a Service payload$")
     public void iHaveAServicePayload() throws Throwable {
