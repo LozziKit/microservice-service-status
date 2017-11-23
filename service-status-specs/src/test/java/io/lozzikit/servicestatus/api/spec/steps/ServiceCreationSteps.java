@@ -31,6 +31,25 @@ public class ServiceCreationSteps {
     }
 
 
+    @And("^I have added my Service to the server for modification$")
+    public void iHaveAddedMyServiceToTheServerForModification() throws Throwable {
+        environment.setService(environment.generateService());
+        try {
+            environment.setLastApiResponse(api.addServiceWithHttpInfo(environment.getService()));
+            environment.setLastApiResponse(false);
+            environment.setLastApiException(null);
+            environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
+            String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
+            environment.setServiceUUID(location.substring(location.lastIndexOf('/')+1, location.length()-1));
+        } catch (ApiException e) {
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
+        }
+
+    }
+
     @When("^I POST it to the /services endpoint$")
     public void iPOSTItToTheServicesEndpoint() throws Throwable {
         try {

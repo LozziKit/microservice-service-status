@@ -17,36 +17,23 @@ import static org.junit.Assert.assertTrue;
 public class HttpSteps {
 
     private Environment environment;
-    private ServiceApi api;
-
-    private ApiResponse lastApiResponse;
-    private ApiException lastApiException;
-    private Boolean lastApiCallThrewException;
-    private Integer lastStatusCode;
-
-    private NewService service;
     private String serviceUUID;
     private NewService modifiedService;
 
+
     public HttpSteps(Environment environment) {
         this.environment = environment;
-        this.api = environment.getApi();
-        this.lastApiResponse = environment.getLastApiResponse();
-        this.lastApiException = environment.getLastApiException();
         this.serviceUUID = environment.getServiceUUID();
-        this.lastApiCallThrewException = environment.getLastApiCallThrewException();
-        this.lastStatusCode = environment.getLastStatusCode();
-        this.service = environment.getService();
     }
 
     @Then("^I receive a (\\d+) status code$")
     public void i_receive_a_status_code(int arg1) throws Throwable {
-        assertEquals(arg1, lastStatusCode.intValue());
+        assertEquals(arg1, environment.getLastStatusCode());
     }
 
     @Given("^there is a Service server$")
     public void thereIsAServiceServer() throws Throwable {
-        assertNotNull(api);
+        assertNotNull(environment.getApi());
     }
 
     @And("^I have my Service identifier$")
@@ -56,31 +43,34 @@ public class HttpSteps {
 
     @And("^I have added my Service to the server$")
     public void iHaveAddedMyServiceToTheServer() throws Throwable {
-        service = new NewService();
-        try {
-            lastApiResponse = api.addServiceWithHttpInfo(service);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
-            String location = String.valueOf(lastApiResponse.getHeaders().get("Location"));
-            serviceUUID = location.substring(location.lastIndexOf('/')+1, location.length()-1);
-        } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
+        if(environment.getService() == null){
+            throw new NullPointerException("Cannot add a service to the server if service is null");
+        }else {
+            try {
+                environment.setLastApiResponse(environment.getApi().addServiceWithHttpInfo(environment.getService()));
+                environment.setLastApiCallThrewException(false);
+                environment.setLastApiException(null);
+                environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
+                String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
+                environment.setServiceUUID(location.substring(location.lastIndexOf('/') + 1, location.length() - 1));
+            } catch (ApiException e) {
+                environment.setLastApiCallThrewException(true);
+                environment.setLastApiResponse(null);
+                environment.setLastApiException(e);
+                environment.setLastStatusCode(environment.getLastApiException().getCode());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Given("^I have a Service payload$")
     public void iHaveAServicePayload() throws Throwable {
-        if(service == null){
-            service = environment.generateService();
-        }
+        environment.setService(environment.generateService());
     }
 
     @Then("^I receive an exception from the server$")
     public void iReceiveAnExceptionFromTheServer() throws Throwable {
-        assertTrue(lastApiCallThrewException);
+        assertTrue(environment.getLastApiCallThrewException());
     }
 }
