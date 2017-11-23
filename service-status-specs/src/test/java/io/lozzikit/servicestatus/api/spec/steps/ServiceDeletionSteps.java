@@ -38,9 +38,6 @@ public class ServiceDeletionSteps {
         assertNotNull(api);
     }
 
-
-
-
     @When("^I send a DELETE to the /service/id endpoint$")
     public void iSendADELETEToTheServiceIdEndpoint() throws Throwable {
         try {

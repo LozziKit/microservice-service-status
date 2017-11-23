@@ -18,12 +18,12 @@ public class ServiceCreationSteps {
 
     private Environment environment;
     private ServiceApi api;
-
     NewService service;
 
     public ServiceCreationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        this.service = environment.getService();
     }
 
     @And("^I receive the identifier of my Service$")
