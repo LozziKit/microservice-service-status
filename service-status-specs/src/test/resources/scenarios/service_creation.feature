@@ -5,12 +5,12 @@ Feature: Create a Service
 
   Scenario: Create a Service
     Given I have a Service payload
-    When I POST it to the /services endpoint
+    When I have added my Service to the server
     Then I receive a 201 status code
     And I receive the identifier of my Service
 
   Scenario: Create a Service with a wrong payload
     Given I have a Service payload
     And URL is null
-    When I POST it to the /services endpoint
+    When I have added my Service to the server
     Then I receive a 405 status code
