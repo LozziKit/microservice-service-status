@@ -20,8 +20,8 @@ public class ServiceCreationSteps {
 
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
-    private boolean lastApiCallThrewException;
-    private int lastStatusCode;
+    private Boolean lastApiCallThrewException;
+    private Integer lastStatusCode;
 
     NewService service;
 
@@ -65,9 +65,4 @@ public class ServiceCreationSteps {
         service.setInterval(3);
     }
 
-    @Then("^I receive a (\\d+) error code status code$")
-    public void iReceiveAErrorCodeStatusCode(int arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        assertEquals(405, lastStatusCode);
-    }
 }
