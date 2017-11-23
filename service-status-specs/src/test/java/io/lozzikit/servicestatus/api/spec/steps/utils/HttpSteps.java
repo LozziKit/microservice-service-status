@@ -12,6 +12,7 @@ import io.lozzkit.servicestatus.api.ServiceApi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class HttpSteps {
 
@@ -78,6 +79,8 @@ public class HttpSteps {
         }
     }
 
-
-
+    @Then("^I receive an exception from the server$")
+    public void iReceiveAnExceptionFromTheServer() throws Throwable {
+        assertTrue(lastApiCallThrewException);
+    }
 }

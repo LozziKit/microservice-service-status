@@ -106,4 +106,9 @@ public class ServiceModificationSteps {
         }
     }
 
+    @And("^the URL field is null$")
+    public void theURLFieldIsNull() throws Throwable {
+        modifiedService.setUrl(null);
+    }
+
 }
