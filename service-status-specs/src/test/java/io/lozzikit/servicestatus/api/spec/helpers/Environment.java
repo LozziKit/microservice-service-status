@@ -35,6 +35,7 @@ public class Environment {
         result.setDescription("A service for API testing");
         result.setInterval(5);
         result.setPort(80);
+        result.setUrl("Test URL");
         return result;
     }
 
