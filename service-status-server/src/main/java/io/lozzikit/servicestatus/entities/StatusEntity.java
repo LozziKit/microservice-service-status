@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "status")
 public class StatusEntity {
     // checkAt, code, status
     @Id
@@ -26,4 +25,44 @@ public class StatusEntity {
 
     @ManyToOne
     private ServiceEntity service;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Date getCheckAt() {
+        return checkAt;
+    }
+
+    public void setCheckAt(Date checkAt) {
+        this.checkAt = checkAt;
+    }
+
+    public int getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(int httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+    public Status.StatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status.StatusEnum status) {
+        this.status = status;
+    }
+
+    public ServiceEntity getService() {
+        return service;
+    }
+
+    public void setService(ServiceEntity service) {
+        this.service = service;
+    }
 }

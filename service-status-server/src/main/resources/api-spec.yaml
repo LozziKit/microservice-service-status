@@ -1,0 +1,322 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is a sample server Petstore server.  You can find out more about
+    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+    #swagger](http://swagger.io/irc/).      For this sample, you can use the api
+    key `special-key` to test the authorization     filters.
+  version: 1.0.0
+  title: Lozzikit Status Service
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: MIT
+    url: 'https://mit-license.org/'
+basePath: /v2
+tags:
+  - name: Service
+    description: Manage your services
+  - name: Maintenance
+    description: Define when a service will be unavailable
+  - name: Incident
+    description: When something goes bad with a service
+schemes:
+  - http
+paths:
+  /services:
+    post:
+      tags:
+        - Service
+      summary: Add a service to monitor
+      operationId: addService
+      consumes:
+        - application/json
+      parameters:
+        - name: service
+          in: body
+          description: Service object that needs to be added to the status page
+          required: true
+          schema:
+            $ref: '#/definitions/NewService'
+      responses:
+        '201':
+          description: OK
+        '422':
+          description: Invalid payload
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApiValidationError'
+    get:
+      tags:
+        - Service
+      summary: Get a list of all services
+      operationId: getServices
+      produces:
+        - application/json
+      parameters:
+        - name: expand
+          in: query
+          description: Define if nested object of the service are included in the response
+          type: string
+          enum:
+            - history
+      responses:
+        '200':
+          description: Return the list of services
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Service'
+  '/services/{id}':
+    get:
+      tags:
+        - Service
+      summary: Get details of a service
+      operationId: getService
+      parameters:
+        - name: id
+          in: path
+          description: ID of service to update
+          required: true
+          type: string
+          format: uuid
+        - name: expand
+          in: query
+          description: Define if nested object of the service are included in the response
+          type: string
+          enum:
+            - status
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Service'
+    put:
+      tags:
+        - Service
+      summary: Update an existing service
+      description: ''
+      operationId: updateService
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of service to update
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: service
+          description: Service object that needs to be modified
+          required: true
+          schema:
+            $ref: '#/definitions/NewService'
+      responses:
+        '201':
+          description: OK
+        '404':
+          description: Not found
+        '422':
+          description: Invalid payload
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Service'
+    delete:
+      tags:
+        - Service
+      summary: Delete an existing service
+      operationId: deleteService
+      parameters:
+        - name: id
+          in: path
+          description: ID of service to delete
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: OK
+        '404':
+          description: Not found
+          #  '/services/{id}/maintenances':
+          #    post:
+          #      tags:
+          #        - Maintenance
+          #      summary: Add a schedule maintenance
+          #      operationId: newMaintenance
+          #      consumes:
+          #        - application/json
+          #      parameters:
+          #        - name: service
+          #          in: body
+          #          description: Maintenance object that needs to be added to the status page
+          #          required: true
+          #          schema:
+          #            $ref: '#/definitions/NewMaintenance'
+          #        - name: id
+          #          in: path
+          #          description: ID of service
+          #          required: true
+          #          type: string
+          #          format: uuid
+          #      responses:
+          #        '201':
+          #          description: Creation successful
+          #        '405':
+          #          description: Invalid input
+          #    get:
+          #      tags:
+          #        - Maintenance
+          #      summary: Get maintenance for a given service
+          #      operationId: getMaintenance
+          #      produces:
+          #        - application/json
+          #      parameters:
+          #        - name: state
+          #          in: query
+          #          description: status of the maintenances to fetch
+          #          type: string
+          #          enum:
+          #            - upcoming
+          #            - past
+          #      responses:
+          #        '200':
+          #          description: Return the list of maintenances for the given service
+          #          schema:
+          #            $ref: '#/definitions/Maintenance'
+          #  '/services/{id}/maintenances/{id}':
+          #    get:
+          #      tags:
+          #        - Maintenance
+          #      summary: Get details of a service
+          #      parameters:
+          #        - name: id
+          #          in: path
+          #          description: ID of service to update
+          #          required: true
+          #          type: string
+          #          format: uuid
+          #        - name: expand
+          #          in: query
+          #          description: Define if nested object of the service are included in the response
+          #          type: string
+          #          enum:
+          #            - status
+          #      responses:
+          #        '200':
+          #          description: Successful response
+          #          schema:
+          #            $ref: '#/definitions/Service'
+definitions:
+  ApiValidationError:
+    type: object
+    properties:
+      field:
+        type: string
+      error:
+        type: string
+      rejectedValue:
+        type: object
+    required:
+      - field
+      - error
+  NewService:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 3
+        maxLength: 50
+      description:
+        type: string
+        description: A short description of what the service does
+        minLength: 1
+        maxLength: 250
+      url:
+        type: string
+        format: url
+      port:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 65535
+      interval:
+        type: integer
+        format: int32
+        minimum: 5
+        description: The interval in minutes at which the status will be check
+    required:
+      - name
+      - description
+      - url
+      - port
+      - interval
+  Service:
+    type: object
+    allOf:
+      - $ref: '#/definitions/NewService'
+      - properties:
+          location:
+            type: string
+          lastStatus:
+            $ref: '#/definitions/Status'
+          statuses:
+            type: array
+            items:
+              $ref: '#/definitions/Status'
+  Status:
+    type: object
+    properties:
+      updateAt:
+        type: string
+        format: date-time
+      httpStatus:
+        type: integer
+        format: int32
+      status:
+        type: string
+        enum:
+          - available
+          - unavailable
+          - down
+            #  NewMaintenance:
+            #    type: object
+            #    properties:
+            #      service:
+            #        type: string
+            #        format: uuid
+            #      title:
+            #        type: string
+            #      description:
+            #        type: string
+            #      beginAt:
+            #        type: string
+            #        format: date-time
+            #      endAt:
+            #        type: string
+            #        format: date-time
+            #  Maintenance:
+            #    type: object
+            #    allOf:
+            #      - $ref: '#/definitions/NewMaintenance'
+            #      - properties:
+            #          location:
+            #            type: string
+            #            description: uri to access the maintenance
+            #          service:
+            #            type: string
+            #            format: uuid
+            #          title:
+            #            type: string
+            #          description:
+            #            type: string
+            #          beginAt:
+            #            type: string
+            #            format: date-time
+            #          endAt:
+            #            type: string
+            #            format: date-time

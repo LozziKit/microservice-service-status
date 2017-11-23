@@ -1,13 +1,14 @@
 package io.lozzikit.servicestatus.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "service")
 public class ServiceEntity {
 
     @Id
@@ -16,17 +17,20 @@ public class ServiceEntity {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String description;
 
+    @URL
     private String url;
 
     private int port;
 
-    private int interval;
+    private int checkInterval;
 
-    @OneToMany(targetEntity = StatusEntity.class, mappedBy = "service")
+    @OneToMany(mappedBy = "service")
     private List<StatusEntity> statuses;
 
     public UUID getId() {
@@ -70,11 +74,11 @@ public class ServiceEntity {
     }
 
     public int getInterval() {
-        return interval;
+        return checkInterval;
     }
 
     public void setInterval(int interval) {
-        this.interval = interval;
+        this.checkInterval = interval;
     }
 
     public List<StatusEntity> getStatuses() {
