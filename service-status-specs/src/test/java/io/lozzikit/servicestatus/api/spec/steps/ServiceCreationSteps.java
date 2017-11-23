@@ -20,20 +20,16 @@ public class ServiceCreationSteps {
 
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
-    private Boolean lastApiCallThrewException;
-    private Integer lastStatusCode;
+    private boolean lastApiCallThrewException;
+    private int lastStatusCode;
 
     NewService service;
 
     public ServiceCreationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
-        this.lastApiResponse = environment.getLastApiResponse();
-        this.lastApiException = environment.getLastApiException();
-        this.lastApiCallThrewException = environment.getLastApiCallThrewException();
-        this.lastStatusCode = environment.getLastStatusCode();
-        this.service = environment.getService();
     }
+
 
     @When("^I POST it to the /services endpoint$")
     public void iPOSTItToTheServicesEndpoint() throws Throwable {
@@ -65,4 +61,9 @@ public class ServiceCreationSteps {
         service.setInterval(3);
     }
 
+    @Then("^I receive a (\\d+) error code status code$")
+    public void iReceiveAErrorCodeStatusCode(int arg0) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        assertEquals(405, lastStatusCode);
+    }
 }
