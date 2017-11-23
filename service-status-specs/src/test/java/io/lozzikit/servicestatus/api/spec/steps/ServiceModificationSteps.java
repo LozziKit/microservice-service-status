@@ -21,11 +21,13 @@ public class ServiceModificationSteps {
 
     private Environment environment;
     private ServiceApi api;
+    private NewService service;
     private NewService modifiedService;
 
     public ServiceModificationSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        this.service = environment.getService();
     }
 
     @Given("^there is a Service server for modification$")
@@ -37,7 +39,7 @@ public class ServiceModificationSteps {
     public void iHaveAddedMyServiceToTheServerForModification() throws Throwable {
         environment.setService(environment.generateService());
         try {
-            environment.setLastApiResponse(api.addServiceWithHttpInfo(environment.getService()));
+            environment.setLastApiResponse(api.addServiceWithHttpInfo(service));
             environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
             environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
