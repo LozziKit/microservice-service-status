@@ -21,7 +21,6 @@ public class ServiceModificationSteps {
 
     private Environment environment;
     private ServiceApi api;
-
     private NewService modifiedService;
 
     public ServiceModificationSteps(Environment environment) {
