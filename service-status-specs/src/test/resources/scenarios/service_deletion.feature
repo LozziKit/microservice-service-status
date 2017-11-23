@@ -9,10 +9,10 @@ Feature: Delete a Service
     Given I have my Service identifier
     When I send a DELETE to the /service/id endpoint
     Then I receive a 200 status code
-    And when I GET /service/id
-    Then I receive a 404 error code for deletion
+    When I send a GET request to the /service/id endpoint
+    Then I receive a 404 status code
 
   Scenario: Delete a not existing Service
-    Given I have a not existing Service identifier for deletion
+    Given I have a wrong Service identifier
     When I send a DELETE to the /service/id endpoint
-    Then I receive a 404 error code for deletion
+    Then I receive a 404 status code
