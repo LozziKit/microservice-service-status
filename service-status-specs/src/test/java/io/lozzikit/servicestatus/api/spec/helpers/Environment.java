@@ -14,8 +14,8 @@ public class Environment {
     private ServiceApi api = new ServiceApi();
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
-    private Boolean lastApiCallThrewException;
-    private Integer lastStatusCode;
+    private boolean lastApiCallThrewException;
+    private int lastStatusCode;
 
     private NewService service;
     private String serviceUUID;
@@ -62,19 +62,19 @@ public class Environment {
         this.lastApiException = lastApiException;
     }
 
-    public Boolean getLastApiCallThrewException() {
+    public boolean getLastApiCallThrewException() {
         return lastApiCallThrewException;
     }
 
-    public void setLastApiCallThrewException(Boolean lastApiCallThrewException) {
+    public void setLastApiCallThrewException(boolean lastApiCallThrewException) {
         this.lastApiCallThrewException = lastApiCallThrewException;
     }
 
-    public Integer getLastStatusCode() {
+    public int getLastStatusCode() {
         return lastStatusCode;
     }
 
-    public void setLastStatusCode(Integer lastStatusCode) {
+    public void setLastStatusCode(int lastStatusCode) {
         this.lastStatusCode = lastStatusCode;
     }
 
