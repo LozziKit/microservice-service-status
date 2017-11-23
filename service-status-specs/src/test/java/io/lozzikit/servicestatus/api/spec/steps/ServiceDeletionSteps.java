@@ -56,11 +56,6 @@ public class ServiceDeletionSteps {
         }
     }
 
-    @And("^I have my Service identifier$")
-    public void iHaveMyServiceIdentifier() throws Throwable {
-        assertNotNull(serviceUUID);
-
-    }
 
 
     @When("^I send a DELETE to the /service/id endpoint$")

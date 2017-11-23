@@ -74,7 +74,6 @@ public class ServiceModificationSteps {
     @Given("^I have a Service payload for modification$")
     public void iHaveAServicePayloadForModification() throws Throwable {
         modifiedService = environment.generateService();
-        modifiedService.setName("Modified");
     }
 
     @When("^I send a PUT request to the /service/id endpoint$")

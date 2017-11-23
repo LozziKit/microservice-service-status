@@ -1,5 +1,8 @@
 package io.lozzikit.servicestatus.api.spec.steps.utils;
 
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
@@ -8,6 +11,7 @@ import io.lozzkit.servicestatus.ApiResponse;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class HttpSteps {
 
@@ -37,6 +41,17 @@ public class HttpSteps {
     @Then("^I receive a (\\d+) status code$")
     public void i_receive_a_status_code(int arg1) throws Throwable {
         assertEquals(arg1, lastStatusCode.intValue());
+    }
+
+    @Given("^there is a Service server$")
+    public void thereIsAServiceServer() throws Throwable {
+        assertNotNull(api);
+    }
+
+    @And("^I have my Service identifier$")
+    public void iHaveMyServiceIdentifier() throws Throwable {
+        assertNotNull(serviceUUID);
+
     }
 
 }
