@@ -38,7 +38,7 @@ public class ServiceModificationSteps {
         environment.setService(environment.generateService());
         try {
             environment.setLastApiResponse(api.addServiceWithHttpInfo(environment.getService()));
-            environment.setLastApiResponse(false);
+            environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
             environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
             String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
@@ -52,10 +52,6 @@ public class ServiceModificationSteps {
 
     }
 
-    @And("^I have my Service identifier for modification$")
-    public void iHaveMyServiceIdentifierForModification() throws Throwable {
-        assertNotNull(serviceUUID);
-    }
 
     @Given("^I have a Service payload for modification$")
     public void iHaveAServicePayloadForModification() throws Throwable {
@@ -65,30 +61,30 @@ public class ServiceModificationSteps {
     @When("^I send a PUT request to the /service/id endpoint$")
     public void iSendAPUTRequestToTheServiceEndpoint() throws Throwable {
         try {
-            lastApiResponse = api.updateServiceWithHttpInfo(serviceUUID, modifiedService);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
+            environment.setLastApiResponse(api.updateServiceWithHttpInfo(environment.getServiceUUID(), modifiedService));
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
+            environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
         } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
     }
 
     @When("^I send a PUT request to the /service/id endpoint with an invalid ID$")
     public void iSendAPUTRequestToTheServiceEndpointWithAnInvalidID() throws Throwable {
         try {
-            lastApiResponse = api.updateServiceWithHttpInfo(UUID.randomUUID().toString(), modifiedService);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
+            environment.setLastApiResponse(api.updateServiceWithHttpInfo(UUID.randomUUID().toString(), modifiedService));
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
+            environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
         } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
     }
 

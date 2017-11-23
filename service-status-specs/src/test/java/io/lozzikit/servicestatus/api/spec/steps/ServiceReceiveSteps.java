@@ -21,60 +21,29 @@ public class ServiceReceiveSteps {
     private Environment environment;
     private ServiceApi api;
 
-    private ApiResponse lastApiResponse;
     private Service lastReceivedService;
     private List<Service> lastReceivedServiceList;
-    private ApiException lastApiException;
-    private boolean lastApiCallThrewException;
-    private int lastStatusCode;
-
-    private NewService service;
-    private String serviceUUID;
 
     public ServiceReceiveSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
     }
 
-    @Given("^there is a Service server for reception$")
-    public void thereIsAServiceServerForReception() throws Throwable {
-        assertNotNull(api);
-    }
-
-    @And("^I have added my Service to the server for reception$")
-    public void iHaveAddedMyServiceToTheServerForReception() throws Throwable {
-        service = new NewService();
-        try {
-            lastApiResponse = api.addServiceWithHttpInfo(service);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
-            String location = String.valueOf(lastApiResponse.getHeaders().get("Location"));
-            serviceUUID = location.substring(location.lastIndexOf('/')+1, location.length()-1);
-        } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
-        }
-    }
-
-    @Given("^I have a Service identifier for reception$")
-    public void iHaveAServiceIdentifierForReception() throws Throwable {
-        assertNotNull(serviceUUID);
-    }
 
     @When("^I send a GET request to the /service/id endpoint$")
     public void iSendAGETRequestToTheServiceIdEndpoint() throws Throwable {
         try {
-            lastReceivedService = api.getService(serviceUUID, "history");
-            lastApiCallThrewException = false;
-            lastApiException = null;
+            lastReceivedService = api.getService(environment.getServiceUUID(), "history");
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
+            environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
+            String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
+            environment.setServiceUUID(location.substring(location.lastIndexOf('/')+1, location.length()-1));
         } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
 
     }
@@ -89,13 +58,13 @@ public class ServiceReceiveSteps {
     public void iSendAGETRequestToTheServicesEndpoint() throws Throwable {
         try {
             lastReceivedServiceList = api.getServices("history");
-            lastApiCallThrewException = false;
-            lastApiException = null;
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
         } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
     }
 
