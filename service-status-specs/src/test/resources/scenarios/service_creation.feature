@@ -13,4 +13,4 @@ Feature: Create a Service
     Given I have a Service payload
     And URL is null
     When I have added my Service to the server
-    Then I receive a 405 status code
+    Then I receive a 422 status code

@@ -8,7 +8,7 @@ Feature: Delete a Service
   Scenario: Delete my Service
     Given I have my Service identifier
     When I send a DELETE to the /service/id endpoint
-    Then I receive a 200 status code
+    Then I receive a 204 status code
     When I send a GET request to the /service/id endpoint
     Then I receive a 404 status code
 
