@@ -21,12 +21,14 @@ public class ServiceReceiveSteps {
     private Environment environment;
     private ServiceApi api;
 
+    private NewService service;
     private Service lastReceivedService;
     private List<Service> lastReceivedServiceList;
 
     public ServiceReceiveSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        this.service = environment.getService();
     }
 
 

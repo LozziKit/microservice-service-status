@@ -15,10 +15,9 @@ Feature: Modify a Service
     When I send a PUT request to the /service/id endpoint with an invalid ID
     Then I receive a 400 status code
 
-    Scenario: I try to modify a Service with a null url
-      Given I have a Service payload for modification
-      And the URL field is null
-      When I send a PUT request to the /service/id endpoint
-      Then I receive an exception from the server
-      And the server returns the error
+  Scenario: I try to modify a Service with a null url
+    Given I have a Service payload for modification
+    And the URL field is null
+    When I send a PUT request to the /service/id endpoint
+    Then I receive an exception from the server
 
