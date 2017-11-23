@@ -73,7 +73,9 @@ public class HttpSteps {
 
     @Given("^I have a Service payload$")
     public void iHaveAServicePayload() throws Throwable {
-        service = new NewService();
+        if(service == null){
+            service = environment.generateService();
+        }
     }
 
 
