@@ -35,10 +35,6 @@ public class ServiceCreationSteps {
         assertNotNull(api);
     }
 
-    @Given("^I have a Service payload$")
-    public void iHaveAServicePayload() throws Throwable {
-        service = new NewService();
-    }
 
     @When("^I POST it to the /services endpoint$")
     public void iPOSTItToTheServicesEndpoint() throws Throwable {

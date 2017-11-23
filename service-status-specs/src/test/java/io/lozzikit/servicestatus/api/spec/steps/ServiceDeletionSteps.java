@@ -38,23 +38,6 @@ public class ServiceDeletionSteps {
         assertNotNull(api);
     }
 
-    @And("^I have added my Service to the server$")
-    public void iHaveAddedMyServiceToTheServer() throws Throwable {
-        service = new NewService();
-        try {
-            lastApiResponse = api.addServiceWithHttpInfo(service);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
-            String location = String.valueOf(lastApiResponse.getHeaders().get("Location"));
-            serviceUUID = location.substring(location.lastIndexOf('/')+1, location.length()-1);
-        } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
-        }
-    }
 
 
 
