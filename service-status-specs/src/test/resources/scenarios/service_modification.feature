@@ -21,9 +21,6 @@ Feature: Modify a Service
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a test error message
-
-
 
   Scenario: I try to modify a Service with a null name
     Given I have a Service payload for modification
@@ -31,7 +28,6 @@ Feature: Modify a Service
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a test error message
 
   Scenario: I try to modify a Service with a null port
     Given I have a Service payload for modification
@@ -39,8 +35,6 @@ Feature: Modify a Service
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a test error message
-
 
   Scenario: I try to modify a Service with a null interval
     Given I have a Service payload for modification
@@ -48,6 +42,5 @@ Feature: Modify a Service
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a test error message
 
 
