@@ -17,4 +17,3 @@ Feature: Check we can receive Services
   Scenario: Check multiple Services
     When I send a GET request to the /services endpoint
     Then I receive a payload containing all Services
-

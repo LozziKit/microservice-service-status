@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ServiceReceiveSteps {
 
@@ -72,6 +73,7 @@ public class ServiceReceiveSteps {
     @Then("^I receive a payload containing all Services$")
     public void iReceiveAPayloadContainingAllServices() throws Throwable {
         assertNotNull(lastReceivedServiceList);
+        assertTrue(lastReceivedServiceList.size() >= 1);
     }
 
 }
