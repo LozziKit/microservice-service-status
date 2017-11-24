@@ -1,5 +1,6 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.NewService;
@@ -43,8 +44,54 @@ public class ServiceCreationSteps {
         }
     }
 
-    @And("^URL is null$")
-    public void urlIsNull() throws Throwable {
+    @And("^the Service URL is null$")
+    public void theServiceURLIsNull() throws Throwable {
         service.setUrl(null);
     }
+
+    @And("^the Service Name is null$")
+    public void theServiceNameIsNull() throws Throwable {
+        service.setName(null);
+    }
+
+    @And("^the Service Description is null$")
+    public void theServiceDesciptionIsNull() throws Throwable {
+        service.setDescription(null);
+    }
+
+    @And("^the Service port is null$")
+    public void theServicePortIsNull() throws Throwable {
+        service.setPort(null);
+    }
+
+    @And("^the Service port is negative$")
+    public void theServicePortIsNegative() throws Throwable {
+        service.setPort(-1);
+    }
+
+
+    @And("^the Service port is zero$")
+    public void theServicePortIsZero() throws Throwable {
+        service.setPort(0);
+    }
+    @And("^the Service port is to big$")
+    public void theServicePortIsToBig() throws Throwable {
+        service.setPort(65536);
+    }
+
+    @And("^the Service interval is null$")
+    public void theServiceIntervalIsNull() throws Throwable {
+        service.setInterval(null);
+    }
+
+    @And("^the Service interval is to small$")
+    public void theServiceIntervalIsToSmall() throws Throwable {
+        service.setInterval(4);
+    }
+
+    @And("^the Service interval is negative$")
+    public void theServiceIntervalIsNegative() throws Throwable {
+        service.setInterval(-1);
+    }
+
 }
