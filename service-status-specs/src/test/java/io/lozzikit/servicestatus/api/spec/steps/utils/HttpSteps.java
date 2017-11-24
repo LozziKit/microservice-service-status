@@ -10,6 +10,8 @@ import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.ApiResponse;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -60,5 +62,9 @@ public class HttpSteps {
         assertTrue(message.equals(environment.getLastApiException().getMessage()));
     }
 
+    @Given("^I have an invalid Service identifier$")
+    public void iHaveAWrongServiceIdentifier() throws Throwable {
+        environment.setServiceUUID(UUID.randomUUID().toString());
+    }
 
 }

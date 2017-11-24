@@ -38,8 +38,4 @@ public class ServiceDeletionSteps {
         }
     }
 
-    @Given("^I have a wrong Service identifier$")
-    public void iHaveAWrongServiceIdentifier() throws Throwable {
-        environment.setServiceUUID(UUID.randomUUID().toString());
-    }
 }
