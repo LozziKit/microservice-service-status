@@ -20,14 +20,16 @@ public class ServiceEntity {
     @NotNull
     private String name;
 
-    @NotNull
     private String description;
 
+    @NotNull
     @URL
     private String url;
 
+    @NotNull
     private int port;
 
+    @NotNull
     private int checkInterval;
 
     @OneToMany(mappedBy = "service")
