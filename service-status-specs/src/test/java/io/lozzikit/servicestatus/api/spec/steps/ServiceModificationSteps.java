@@ -99,4 +99,15 @@ public class ServiceModificationSteps {
     public void theModifiedPayloadNameFieldIsNull() throws Throwable {
         modifiedService.setName(null);
     }
+
+
+    @And("^the modified payload port field is null$")
+    public void theModifiedPayloadPortFieldIsNull() throws Throwable {
+        modifiedService.setPort(null);
+    }
+
+    @And("^the modified payload interval field is null$")
+    public void theModifiedPayloadIntervalFieldIsNull() throws Throwable {
+        modifiedService.setInterval(null);
+    }
 }

@@ -20,6 +20,9 @@ Feature: Modify a Service
     And the modified payload URL field is null
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
+    And I receive a 422 status code
+    And I receive a test error message
+
 
 
   Scenario: I try to modify a Service with a null name
@@ -27,23 +30,24 @@ Feature: Modify a Service
     And the modified payload name field is null
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
-    And I receive a hello aldo error message
+    And I receive a 422 status code
+    And I receive a test error message
 
-  Scenario: I try to modify a Service with a null url
+  Scenario: I try to modify a Service with a null port
     Given I have a Service payload for modification
-    And the URL field is null
+    And the modified payload port field is null
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
+    And I receive a 422 status code
+    And I receive a test error message
 
-  Scenario: I try to modify a Service with a null url
+
+  Scenario: I try to modify a Service with a null interval
     Given I have a Service payload for modification
-    And the URL field is null
+    And the modified payload interval field is null
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
+    And I receive a 422 status code
+    And I receive a test error message
 
-  Scenario: I try to modify a Service with a null url
-    Given I have a Service payload for modification
-    And the URL field is null
-    When I send a PUT request to the /service/id endpoint
-    Then I receive an exception from the server
 
