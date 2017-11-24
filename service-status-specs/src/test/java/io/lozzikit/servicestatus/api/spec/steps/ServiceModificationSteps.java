@@ -1,17 +1,11 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class ServiceModificationSteps {
 
@@ -41,28 +35,4 @@ public class ServiceModificationSteps {
         }
     }
 
-    @And("^the modified payload URL field is null$")
-    public void theModifiedPayloadURLFieldIsNull() throws Throwable {
-        service.setUrl(null);
-    }
-
-    @And("^the modified payload name field is null$")
-    public void theModifiedPayloadNameFieldIsNull() throws Throwable {
-        service.setName(null);
-    }
-
-    @And("^the modified payload port field is null$")
-    public void theModifiedPayloadPortFieldIsNull() throws Throwable {
-        service.setPort(null);
-    }
-
-    @And("^the modified payload interval field is null$")
-    public void theModifiedPayloadIntervalFieldIsNull() throws Throwable {
-        service.setInterval(null);
-    }
-
-    @When("^I have an invalid Service ID$")
-    public void iHaveAnInvalidServiceId() throws Throwable {
-        environment.setServiceUUID(UUID.randomUUID().toString());
-    }
 }
