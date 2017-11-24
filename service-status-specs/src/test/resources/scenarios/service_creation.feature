@@ -47,7 +47,7 @@ Feature: Create a Service
 
   Scenario: Create a Service with a too big port
     Given I have a Service payload
-    And the Service port is to big
+    And the Service port is too big
     When I have added my Service to the server
     Then I receive a 422 status code
 

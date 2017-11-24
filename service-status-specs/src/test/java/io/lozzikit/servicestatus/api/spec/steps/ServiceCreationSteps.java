@@ -74,7 +74,7 @@ public class ServiceCreationSteps {
     public void theServicePortIsZero() throws Throwable {
         service.setPort(0);
     }
-    @And("^the Service port is to big$")
+    @And("^the Service port is too big$")
     public void theServicePortIsToBig() throws Throwable {
         service.setPort(65536);
     }

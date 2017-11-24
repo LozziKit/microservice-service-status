@@ -12,7 +12,7 @@ Feature: Modify a Service
     Then I receive a 204 status code
 
   Scenario: I try to modify a service that does not exist
-    Given  I have an invalid Service ID
+    Given  I have an invalid Service id
     And I send a PUT request to the /service/id endpoint
     Then I receive a 404 status code
 
