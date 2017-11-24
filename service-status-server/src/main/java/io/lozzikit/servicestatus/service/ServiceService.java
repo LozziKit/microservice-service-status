@@ -1,9 +1,11 @@
 package io.lozzikit.servicestatus.service;
 
+import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +19,10 @@ public class ServiceService {
 
     public ServiceEntity getService(UUID id, String expand) {
         ServiceEntity service = serviceRepository.findOne(id);
+
+        if (service == null) {
+            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
+        }
 
         if (expand.equals(EXPAND_HISTORY)) {
             service.setStatuses(null);
@@ -48,6 +54,11 @@ public class ServiceService {
 
     public void updateService(UUID id, ServiceEntity service) {
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
+
+        if (serviceEntity == null) {
+            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
+        }
+
         serviceEntity.setName(service.getName());
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setUrl(service.getUrl());
@@ -60,5 +71,4 @@ public class ServiceService {
     public String getLocationUrl(UUID uuid) {
         return "/services/" + uuid.toString();
     }
-
 }
