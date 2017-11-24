@@ -17,8 +17,6 @@ public class HttpSteps {
     private Environment environment;
     private ServiceApi api;
 
-
-
     public HttpSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
