@@ -52,4 +52,9 @@ public class HttpSteps {
     public void iReceiveAnExceptionFromTheServer() throws Throwable {
         assertTrue(environment.getLastApiCallThrewException());
     }
+
+    @And("^I receive a (.*) error message$")
+    public void iReceiveAnErrorMessage(String message) throws Throwable {
+        assertTrue(message.equals(environment.getLastApiException().getMessage()));
+    }
 }

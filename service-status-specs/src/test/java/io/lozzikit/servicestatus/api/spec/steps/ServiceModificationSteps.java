@@ -90,9 +90,13 @@ public class ServiceModificationSteps {
         }
     }
 
-    @And("^the URL field is null$")
-    public void theURLFieldIsNull() throws Throwable {
+    @And("^the modified payload URL field is null$")
+    public void theModifiedPayloadURLFieldIsNull() throws Throwable {
         modifiedService.setUrl(null);
     }
 
+    @And("^the modified payload name field is null$")
+    public void theModifiedPayloadNameFieldIsNull() throws Throwable {
+        modifiedService.setName(null);
+    }
 }

@@ -13,6 +13,7 @@ import io.lozzkit.servicestatus.ApiResponse;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -73,5 +74,20 @@ public class ServiceReceiveSteps {
     @Then("^I receive a payload containing all Services$")
     public void iReceiveAPayloadContainingAllServices() throws Throwable {
         assertNotNull(lastReceivedServiceList);
+    }
+
+    @When("^I send a GET request to the /service/id endpoint with an invalid ID$")
+    public void iSendAGETRequestToTheServiceIdEndpointWithAnInvalidID() throws Throwable {
+        try {
+            lastReceivedService = api.getService(UUID.randomUUID().toString(), "history");
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
+            environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
+        } catch (ApiException e) {
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
+        }
     }
 }

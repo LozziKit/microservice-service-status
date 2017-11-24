@@ -12,3 +12,7 @@ Feature: Check we can receive Services
   Scenario: Check multiple Services
     When I send a GET request to the /services endpoint
     Then I receive a payload containing all Services
+
+  Scenario: Check a non-existent service
+    When I send a GET request to the /service/id endpoint with an invalid ID
+    Then I receive a 400 status code
