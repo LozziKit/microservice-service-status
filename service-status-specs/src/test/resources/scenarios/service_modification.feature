@@ -13,7 +13,7 @@ Feature: Modify a Service
   Scenario: I try to modify a service that does not exist
     Given I have a Service payload for modification
     When I send a PUT request to the /service/id endpoint with an invalid ID
-    Then I receive a 400 status code
+    Then I receive a 404 status code
 
   Scenario: I try to modify a Service with a null url
     Given I have a Service payload for modification
