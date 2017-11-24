@@ -49,6 +49,10 @@ public class ServiceService {
     }
 
     public void deleteServiceById(UUID uuid) {
+        if (!serviceRepository.exists(uuid)) {
+            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
+        }
+
         serviceRepository.delete(uuid);
     }
 
