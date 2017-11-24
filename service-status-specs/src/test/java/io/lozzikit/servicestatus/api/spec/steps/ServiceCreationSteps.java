@@ -18,7 +18,6 @@ public class ServiceCreationSteps {
         this.service = environment.getService();
     }
 
-
     @When("^I have added my Service to the server$")
     public void iHaveAddedMyServiceToTheServer() throws Throwable {
         if(service == null){
