@@ -1,7 +1,5 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
-import cucumber.api.PendingException;
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;

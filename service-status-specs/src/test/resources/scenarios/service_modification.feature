@@ -31,7 +31,8 @@ Feature: Modify a Service
   Scenario: I try to modify a Service with a null description
     Given the Service Description is null
     When I send a PUT request to the /service/id endpoint
-    And I receive a 204 status code
+    Then I receive a 204 status code
+    And the new Service description is null
 
   Scenario: I try to modify a Service with a null port
     Given the Service port is null

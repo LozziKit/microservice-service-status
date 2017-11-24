@@ -1,10 +1,13 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.api.ServiceApi;
+
+import static org.junit.Assert.assertNull;
 
 
 public class ServiceModificationSteps {
@@ -35,4 +38,8 @@ public class ServiceModificationSteps {
         }
     }
 
+    @And("^the new Service description is null$")
+    public void theNewServiceDescriptionIsNull() throws Throwable {
+        assertNull(service.getDescription());
+    }
 }
