@@ -224,6 +224,13 @@ definitions:
     required:
       - field
       - error
+  ApiError:
+    type: object
+    properties:
+      message:
+        type: string
+    required:
+      - message
   NewService:
     type: object
     properties:
@@ -251,7 +258,6 @@ definitions:
         description: The interval in minutes at which the status will be check
     required:
       - name
-      - description
       - url
       - port
       - interval

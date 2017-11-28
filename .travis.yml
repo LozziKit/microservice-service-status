@@ -1,0 +1,10 @@
+language: java
+services: mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE microservice;'
+script:
+  - (cd service-status-server; mvn clean install)
+  - (java -jar service-status-server/target/microservice-service-status-1.0.0.jar)
+  - (cd service-status-specs; mvn clean verify)
+

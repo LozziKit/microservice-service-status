@@ -1,6 +1,5 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
@@ -18,7 +17,6 @@ public class ServiceCreationSteps {
         this.api = environment.getApi();
         this.service = environment.getService();
     }
-
 
     @When("^I have added my Service to the server$")
     public void iHaveAddedMyServiceToTheServer() throws Throwable {
@@ -43,8 +41,5 @@ public class ServiceCreationSteps {
         }
     }
 
-    @And("^URL is null$")
-    public void urlIsNull() throws Throwable {
-        service.setUrl(null);
-    }
+
 }

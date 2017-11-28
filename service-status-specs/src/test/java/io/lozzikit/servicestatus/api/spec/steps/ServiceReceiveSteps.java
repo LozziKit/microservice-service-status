@@ -1,26 +1,22 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
-import cucumber.api.PendingException;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import io.lozzkit.servicestatus.ApiException;
-import io.lozzkit.servicestatus.ApiResponse;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ServiceReceiveSteps {
 
     private Environment environment;
     private ServiceApi api;
-
     private NewService service;
     private Service lastReceivedService;
     private List<Service> lastReceivedServiceList;
@@ -73,5 +69,7 @@ public class ServiceReceiveSteps {
     @Then("^I receive a payload containing all Services$")
     public void iReceiveAPayloadContainingAllServices() throws Throwable {
         assertNotNull(lastReceivedServiceList);
+        assertTrue(lastReceivedServiceList.size() >= 1);
     }
+
 }

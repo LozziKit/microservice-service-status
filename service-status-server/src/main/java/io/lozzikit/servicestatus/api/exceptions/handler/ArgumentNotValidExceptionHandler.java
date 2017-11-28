@@ -13,14 +13,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @ControllerAdvice
 public class ArgumentNotValidExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        Logger.getLogger("Info").info("COUCOU");
         List<ApiValidationError> errors = new ArrayList<>();
 
         ex.getBindingResult().getAllErrors().forEach((e) -> {

@@ -1,12 +1,23 @@
-version: '3.1'
+version: '3.4'
 
 services:
-    db:
+    database:
         image: mysql
         container_name: microservice-db
         restart: always
-        ports:
-            - 3306:3306
+        expose:
+            - '3306'
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: "microservice"
+            MYSQL_DATABASE: 'microservice'
+    server:
+        build:
+            context: service-status-server
+        depends_on:
+            - database
+        image: amt/status-server
+        environment:
+            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice'
+        ports:
+            - '8080:8080'
+        restart: always

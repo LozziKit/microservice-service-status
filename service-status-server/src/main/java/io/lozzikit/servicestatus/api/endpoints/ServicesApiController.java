@@ -93,7 +93,7 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.PUT)
     @Override
     public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
-                                              @ApiParam(required = true) @RequestBody NewService service) {
+                                              @ApiParam(required = true) @Valid @RequestBody NewService service) {
         serviceService.updateService(id, toServiceEntity(service));
         return ResponseEntity.noContent().build();
     }

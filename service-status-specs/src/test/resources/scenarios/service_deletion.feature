@@ -13,6 +13,6 @@ Feature: Delete a Service
     Then I receive a 404 status code
 
   Scenario: Delete a not existing Service
-    Given I have a wrong Service identifier
+    Given I have an invalid Service identifier
     When I send a DELETE to the /service/id endpoint
     Then I receive a 404 status code

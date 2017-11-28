@@ -20,6 +20,8 @@ public class Environment {
     private NewService service;
     private String serviceUUID;
 
+    public String toto;
+
     public Environment() throws IOException {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("environment.properties"));
