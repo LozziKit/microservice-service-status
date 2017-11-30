@@ -15,7 +15,6 @@ import static org.junit.Assert.assertNull;
 
 public class ServiceModificationSteps {
 
-
     private Environment environment;
     private ServiceApi api;
     private NewService service;

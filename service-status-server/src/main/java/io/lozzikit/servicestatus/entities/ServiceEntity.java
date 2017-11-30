@@ -23,7 +23,6 @@ public class ServiceEntity {
     private String description;
 
     @NotNull
-    @URL
     private String url;
 
     @NotNull
