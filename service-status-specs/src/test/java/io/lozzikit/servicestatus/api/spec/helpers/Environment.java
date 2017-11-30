@@ -1,5 +1,6 @@
 package io.lozzikit.servicestatus.api.spec.helpers;
 
+import com.google.gson.Gson;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzkit.servicestatus.ApiException;
 import io.lozzkit.servicestatus.ApiResponse;
@@ -12,6 +13,8 @@ public class Environment {
     private int counter = 0;
 
     private ServiceApi api = new ServiceApi();
+    private Gson gson = new Gson();
+
     private ApiResponse lastApiResponse;
     private ApiException lastApiException;
     private boolean lastApiCallThrewException;
@@ -96,4 +99,9 @@ public class Environment {
     public void setServiceUUID(String serviceUUID) {
         this.serviceUUID = serviceUUID;
     }
+
+    public Gson getGson() {
+        return gson;
+    }
+
 }

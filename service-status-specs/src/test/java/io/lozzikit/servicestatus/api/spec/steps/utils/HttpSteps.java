@@ -22,10 +22,12 @@ public class HttpSteps {
 
     private Environment environment;
     private ServiceApi api;
+    private Gson gson;
 
     public HttpSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        this.gson = environment.getGson();
     }
 
     @Then("^I receive a (\\d+) status code$")
@@ -56,7 +58,6 @@ public class HttpSteps {
 
     @And("^I receive a (.*) validation error message$")
     public void iReceiveAValidationErrorMessage(String message) throws Throwable {
-        Gson gson = new Gson();
         List<ApiValidationError> errors = gson.fromJson(environment.getLastApiException().getResponseBody(), new TypeToken<ArrayList<ApiValidationError>>(){}.getType());
         boolean contains = false;
         for(ApiValidationError e : errors){
