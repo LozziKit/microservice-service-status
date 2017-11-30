@@ -21,6 +21,7 @@ Feature: Modify a Service
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
+    And I receive a url may not be null validation error message
 
   Scenario: I try to modify a Service with a null name
     Given the Service Name is null

@@ -39,9 +39,6 @@ public class ServiceModificationSteps {
             environment.setLastApiResponse(null);
             environment.setLastApiException(e);
             environment.setLastStatusCode(environment.getLastApiException().getCode());
-            Gson gson = new Gson();
-            ApiError error = gson.fromJson(e.getResponseBody(), ApiError.class);
-            String s = "a";
         }
     }
 
