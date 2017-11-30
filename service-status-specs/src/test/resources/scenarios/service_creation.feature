@@ -23,6 +23,7 @@ Feature: Create a Service
     When I have added my Service to the server
     Then I receive an exception from the server
     And I receive a 422 status code
+    And I receive a name may not be null validation error message
 
   Scenario: Create a Service with a null Description field
     Given I have a Service payload
