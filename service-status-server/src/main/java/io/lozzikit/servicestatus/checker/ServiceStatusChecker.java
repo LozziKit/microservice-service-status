@@ -7,69 +7,34 @@ import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.service.ServiceService;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.Trigger;
-import org.springframework.scheduling.TriggerContext;
-import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
-import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 /**
  * Class in charge of checking services' status
  */
-public class ServiceStatusChecker {
+public class ServiceStatusChecker  {
 
+    private static final String UUID = "UUID";
     private static final String DEFAULT_EXPAND= "HISTORY";
 
     @Autowired
     ServiceService serviceService;
 
     private OkHttpClient httpClient = new OkHttpClient();
-    private final ConcurrentTaskScheduler scheduler = new ConcurrentTaskScheduler();
+    private final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
-    /**
-     * Check the status of a single service among the one stored in the service service
-     * @return The status of the service
-     */
-    public StatusEntity checkStatus(UUID uuid){
-
-        ServiceEntity service = serviceService.getService(uuid,DEFAULT_EXPAND);
-
-        String url = service.getUrl();
-
-        Request request = new Request.Builder().url(url).build();
-
-        Response response;
-        int code;
-        Status.StatusEnum status;
-
-        //Contacting service to get availability
-        try{
-            response = httpClient.newCall(request).execute();
-            code = response.code();
-            status = StatusCodeMatcher.match(code);
-        }catch (IOException e){
-            code = 0;
-            status = Status.StatusEnum.DOWN;
-        }
-
-        //Creating the status from response
-        StatusEntity statusToAdd = new StatusEntity(
-                new Date(),
-                code,
-                status,
-                service);
-
-        serviceService.addStatus(uuid,statusToAdd);
-
-        return statusToAdd;
+    public ServiceStatusChecker() throws SchedulerException {
     }
 
     /**
@@ -77,17 +42,77 @@ public class ServiceStatusChecker {
      */
     public void start(){
 
-        List<ServiceEntity> services = serviceService.getAllServices(DEFAULT_EXPAND);
+        List<ServiceEntity> services = serviceService.getAllServices(DEFAULT_EXPAND);g
 
         services.forEach(s -> {
-            scheduler.schedule(
-                    ()->checkStatus(s.getId()),
-                    triggerContext -> {
 
-                    }
-            );
+            JobDetail job = newJob(CheckTask.class)
+                    .withIdentity(s.getName())
+                    .build();
+
+            job.getJobDataMap().put(UUID,s.getId());
+
+            Trigger trigger = newTrigger()
+                    .withIdentity("trigger")
+                    .startNow()
+                    .withSchedule(simpleSchedule()
+                            .withIntervalInMinutes(s.getInterval())
+                            .repeatForever())
+                    .build();
+
+            try {
+                //Tries to schedule the setup job
+                scheduler.scheduleJob(job, trigger);
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
         });
 
+    }
+
+    private class CheckTask implements Job{
+
+
+        /**
+         * Check the status of a single service among the one stored in the service service
+         * Stores the status of the service as result
+         */
+        @Override
+        public void execute(JobExecutionContext context) {
+
+            UUID uuid = (UUID) context.getJobDetail().getJobDataMap().get(UUID);
+
+            ServiceEntity service = serviceService.getService(uuid , DEFAULT_EXPAND);
+
+            String url = service.getUrl();
+
+            Request request = new Request.Builder().url(url).build();
+
+            Response response;
+            int code;
+            Status.StatusEnum status;
+
+            //Contacting service to get availability
+            try{
+                response = httpClient.newCall(request).execute();
+                code = response.code();
+                status = StatusCodeMatcher.match(code);
+            }catch (IOException e){
+                code = 0;
+                status = Status.StatusEnum.DOWN;
+            }
+
+            //Creating the status from response
+            StatusEntity statusToAdd = new StatusEntity(
+                    new Date(),
+                    code,
+                    status,
+                    service);
+
+            serviceService.addStatus(uuid,statusToAdd);
+
+            context.setResult(statusToAdd);
+        }
     }
 
 }
