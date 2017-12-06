@@ -1,11 +1,17 @@
 package io.lozzikit.servicestatus.api.spec.steps.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import io.lozzikit.servicestatus.api.dto.ApiError;
+import io.lozzikit.servicestatus.api.dto.ApiValidationError;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import io.lozzkit.servicestatus.api.ServiceApi;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -16,10 +22,12 @@ public class HttpSteps {
 
     private Environment environment;
     private ServiceApi api;
+    private Gson gson;
 
     public HttpSteps(Environment environment) {
         this.environment = environment;
         this.api = environment.getApi();
+        this.gson = environment.getGson();
     }
 
     @Then("^I receive a (\\d+) status code$")
@@ -48,11 +56,18 @@ public class HttpSteps {
         assertTrue(environment.getLastApiCallThrewException());
     }
 
-    @And("^I receive a (.*) error message$")
-    public void iReceiveAnErrorMessage(String message) throws Throwable {
-        //String temp = environment.getLastApiException().getResponseBody();
+    @And("^I receive a (.*) validation error message$")
+    public void iReceiveAValidationErrorMessage(String message) throws Throwable {
+        List<ApiValidationError> errors = gson.fromJson(environment.getLastApiException().getResponseBody(), new TypeToken<ArrayList<ApiValidationError>>(){}.getType());
+        boolean contains = false;
+        for(ApiValidationError e : errors){
+            if(message.equals(e.getField()+ " " + e.getError())){
+                contains = true;
+                break;
+            }
+        }
+        assertTrue(contains);
 
-        assertTrue(message.equals(environment.getLastApiException().getMessage()));
     }
 
     @Given("^I have an invalid Service identifier$")
