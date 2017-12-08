@@ -42,7 +42,7 @@ public class ServiceStatusChecker  {
      */
     public void start(){
 
-        List<ServiceEntity> services = serviceService.getAllServices(DEFAULT_EXPAND);g
+        List<ServiceEntity> services = serviceService.getAllServices(DEFAULT_EXPAND);
 
         services.forEach(s -> {
 
