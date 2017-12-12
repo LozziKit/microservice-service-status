@@ -9,9 +9,11 @@ import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.service.ServiceService;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -31,18 +33,25 @@ public class ServiceStatusChecker  {
     @Autowired
     ServiceService serviceService;
 
-    private OkHttpClient httpClient = new OkHttpClient();
+    private final OkHttpClient httpClient = new OkHttpClient();
     private final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
     public ServiceStatusChecker() throws SchedulerException {
     }
 
     /**
-     * Starts the main event loop of the service status checker
+     * Schedules all events stored in the service service
      */
-    public void start(){
-
+    public void scheduleAll(){
         List<ServiceEntity> services = serviceService.getAllServices(DEFAULT_EXPAND);
+        scheduleAll(services);
+    }
+
+    /**
+     * Schedules all given services for later check
+     * @param services The services whose state needs checking
+     */
+    public void scheduleAll(List<ServiceEntity> services){
 
         services.forEach(s -> {
 
@@ -53,7 +62,7 @@ public class ServiceStatusChecker  {
             job.getJobDataMap().put(UUID,s.getId());
 
             Trigger trigger = newTrigger()
-                    .withIdentity("trigger")
+                    .withIdentity("trigger-"+s.getName())
                     .startNow()
                     .withSchedule(simpleSchedule()
                             .withIntervalInMinutes(s.getInterval())
@@ -68,6 +77,21 @@ public class ServiceStatusChecker  {
             }
         });
 
+    }
+
+    public List<JobKey> getScheduledTasks() throws SchedulerException {
+
+        List<JobKey> scheduledTasks = new ArrayList<>();
+
+        for (String groupName : scheduler.getJobGroupNames())
+            scheduledTasks.addAll(scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName)));
+
+        return scheduledTasks;
+
+    }
+
+    public Scheduler getScheduler() {
+        return scheduler;
     }
 
     private class CheckTask implements Job{
