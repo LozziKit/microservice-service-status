@@ -9,10 +9,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,6 +17,8 @@ import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ServiceSchedulingStep {
 
@@ -32,14 +31,19 @@ public class ServiceSchedulingStep {
     private Map<ServiceEntity, Integer> responses = new HashMap<>();
     private Map<String, Integer> delays = new HashMap<>();
 
+    public ServiceSchedulingStep(){
+        mockServer = new WireMockServer(PORT);
+    }
+
     @Given("^there is a Service server$")
     public void thereIsAServiceServer()  {
-        mockServer = new WireMockServer(PORT);
+        assertNotNull(mockServer);
+        mockServer.start();
     }
 
     @And("^the server is up and running$")
     public void theServerIsUpAndRunning() {
-        mockServer.start();
+        assertTrue(mockServer.isRunning());
     }
 
 
@@ -129,7 +133,7 @@ public class ServiceSchedulingStep {
             long diff = nextFireTime.getTime() - System.currentTimeMillis();
             long diffMinutes = (long) (diff / (60.0 * 1000) % 60)+1;
 
-            assertEquals( delays.get(task.getName())+1, diffMinutes);
+            assertEquals( delays.get(task.getName()).intValue(), diffMinutes);
         }
     }
 
@@ -148,5 +152,10 @@ public class ServiceSchedulingStep {
     public void theSchedulerShoulnTHaveAnyTraceOfFutureCheck() throws Throwable {
         List<JobKey> tasks = serviceStatusChecker.getScheduledTasks();
         assertEquals(0, tasks.size());
+    }
+
+    @And("^the service checker is reset$")
+    public void theServiceCheckerIsReset() throws Throwable {
+        serviceStatusChecker.clear();
     }
 }

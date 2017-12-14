@@ -17,14 +17,17 @@ Feature: Check the scheduled services are being contacted correctly
     When each task shall be scheduled correctly
     Then each task shall be executed after their delay
     Then the server can be shutdown
+    And the service checker is reset
 
   Scenario: Changing a service's delay should update its next check
     When a service's delay is changed
     Then its next trigger's fire time shall be updated
     Then the server can be shutdown
+    And the service checker is reset
 
   Scenario: Removing a service should clear all further check
     When a service is deleted
     Then the scheduler shouln't have any trace of future check
     Then the server can be shutdown
+    And the service checker is reset
 

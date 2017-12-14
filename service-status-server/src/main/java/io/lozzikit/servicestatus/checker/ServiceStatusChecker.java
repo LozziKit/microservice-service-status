@@ -112,6 +112,14 @@ public class ServiceStatusChecker  {
         scheduler.deleteJob(JobKey.jobKey(name));
     }
 
+    /**
+     * Clear all scheduling data
+     * @throws SchedulerException
+     */
+    public void clear() throws SchedulerException {
+        scheduler.clear();
+    }
+
     private class CheckTask implements Job{
 
 
