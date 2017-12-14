@@ -11,6 +11,7 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 /**
  * Class in charge of checking services' status
  */
+@Component
 public class ServiceStatusChecker  {
 
     private static final String UUID = "UUID";
@@ -120,7 +122,25 @@ public class ServiceStatusChecker  {
         scheduler.clear();
     }
 
-    private class CheckTask implements Job{
+    /**
+     * Updates the schedule asociated with the given service's name
+     * @param name The service's name
+     * @param interval The new interval to schedule
+     * @throws SchedulerException if the rescheduling fails
+     */
+    public void updateSchedule(String name, int interval) throws SchedulerException {
+
+        scheduler.rescheduleJob(TriggerKey.triggerKey("trigger-"+name),
+                newTrigger()
+                        .withIdentity("trigger-"+name)
+                        .startNow()
+                        .withSchedule(simpleSchedule()
+                                .withIntervalInMinutes(interval)
+                                .repeatForever())
+                        .build());
+    }
+
+    public class CheckTask implements Job{
 
 
         /**

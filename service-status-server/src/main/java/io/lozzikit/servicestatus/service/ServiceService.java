@@ -1,9 +1,11 @@
 package io.lozzikit.servicestatus.service;
 
 import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
+import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;
@@ -17,6 +19,9 @@ public class ServiceService {
 
     @Autowired
     ServiceRepository serviceRepository;
+
+    @Autowired
+    ServiceStatusChecker serviceStatusChecker;
 
     public ServiceEntity getService(UUID id, String expand) {
         ServiceEntity service = serviceRepository.findOne(id);
@@ -69,6 +74,15 @@ public class ServiceService {
         serviceEntity.setUrl(service.getUrl());
         serviceEntity.setPort(service.getPort());
         serviceEntity.setInterval(service.getInterval());
+
+        //If the service interval is different, we notifiy the scheduler
+        if (serviceEntity.getInterval() != service.getInterval() ) {
+            try {
+                serviceStatusChecker.updateSchedule(service.getName(), service.getInterval());
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
+        }
 
         serviceRepository.save(serviceEntity);
     }
