@@ -79,6 +79,11 @@ public class ServiceStatusChecker  {
 
     }
 
+    /**
+     * Get the list of all scheduled jobs
+     * @return A JobKey list of all scheduled jobs
+     * @throws SchedulerException if an error was encounter with the scheduler
+     */
     public List<JobKey> getScheduledTasks() throws SchedulerException {
 
         List<JobKey> scheduledTasks = new ArrayList<>();
@@ -90,8 +95,21 @@ public class ServiceStatusChecker  {
 
     }
 
+    /**
+     * Get the scheduler
+     * @return The main quartz scheduler
+     */
     public Scheduler getScheduler() {
         return scheduler;
+    }
+
+    /**
+     * Unschedules a service given by its name
+     * @param name The service's name who needs removing
+     * @throws SchedulerException if no associated service was found or if the unscheduling failed
+     */
+    public void removeScheduledTask(String name) throws SchedulerException {
+        scheduler.deleteJob(JobKey.jobKey(name));
     }
 
     private class CheckTask implements Job{
