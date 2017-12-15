@@ -169,15 +169,21 @@ paths:
           description: Service not found
         '422':
           description: Invalid payload
-    delete: #todo
-  '/services/{id}/incidents/{incidentId)':
+  '/services/{id}/incidents/{incidentId}':
     post:
+      tags:
+        - IncidentUpdate
+      summary: Add an update to an incident
+      operationId: AddIncidentUpdate
+      consumes:
+        - application/json
+      parameters:
+        - name: incidentUpdate
+          in: body
+          description: Incident update to be added to the incident
+          required: true
+          schema: $ref: '#/definitions/IncidentUpdate'
     get:
-    delete:
-
-
-
-
 
           #  '/services/{id}/maintenances':
           #    post:
