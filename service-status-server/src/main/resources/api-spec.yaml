@@ -231,7 +231,7 @@ definitions:
         type: string
     required:
       - message
-  NewService: 
+  NewService:
     type: object
     properties:
       name:
@@ -261,6 +261,26 @@ definitions:
       - url
       - port
       - interval
+  NewIncident:
+    type: object
+    properties:
+      titre:
+        type: string
+      IncidentUpdate:
+        type: object
+        properties:
+          IncidentType:
+            type: enum
+            length: 13
+            values: ['resolved', 'issue','retroactive','investigating','maintenance','scheduled','monitoring','update']
+          message:
+            type: string
+        required:
+          - IncidentType
+          - message
+    required:
+      - titre
+      - IncidentUpdate
   Service:
     type: object
     allOf:
@@ -289,6 +309,7 @@ definitions:
           - available
           - unavailable
           - down
+
             #  NewMaintenance:
             #    type: object
             #    properties:
