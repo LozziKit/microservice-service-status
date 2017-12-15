@@ -142,31 +142,41 @@ paths:
           description: OK
         '404':
           description: Not found
-          '/services/{id}/incidents':
-          post:
-            tags:
-              - Incident
-            summary: Create a new incident for this service
-            operationId: addIncident
-            consumes:
-              - application/json
-            parameters:
-              - name: incident
-                in: body
-                description: Incident object to be added to the status page
-                required: true
-                schema: $ref: '#/definitions/NewIncident'
-              - name: id
-                in: path
-                description: ID of the service
-                required: true
-                type: string
-                format: uuid
-            responses:
-              '201':
-                description: Creation successful
-              '404':
-                description:
+  '/services/{id}/incidents':
+    post:
+      tags:
+        - Incident
+      summary: Create a new incident for this service
+      operationId: addIncident
+      consumes:
+        - application/json
+      parameters:
+        - name: incident
+          in: body
+          description: Incident object to be added to the status page
+          required: true
+          schema: $ref: '#/definitions/NewIncident'
+        - name: id
+          in: path
+          description: ID of the service
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '201':
+          description: Creation successful
+        '404':
+          description: Service not found
+        '422':
+          description: Invalid payload
+    delete: #todo
+  '/services/{id}/incidents/{incidentId)':
+    post:
+    get:
+    delete:
+
+
+
 
 
           #  '/services/{id}/maintenances':
