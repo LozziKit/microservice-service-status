@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
     database:
-        image: mysql
+        build: ./images/mysql
         container_name: microservice-db
         restart: always
         expose:

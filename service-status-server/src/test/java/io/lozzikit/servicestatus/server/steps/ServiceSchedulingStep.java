@@ -29,7 +29,7 @@ import static org.quartz.JobBuilder.newJob;
 
 public class ServiceSchedulingStep {
 
-    private final int PORT = 8080;
+    private final int PORT = 8081;
 
     private WireMockServer mockServer;
     private ServiceStatusChecker serviceStatusChecker;
