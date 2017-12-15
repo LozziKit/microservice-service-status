@@ -29,16 +29,25 @@ import static org.quartz.TriggerBuilder.newTrigger;
 @Component
 public class ServiceStatusChecker  {
 
+    //Constants fields used for object id
     private static final String UUID = "UUID";
     private static final String DEFAULT_EXPAND= "HISTORY";
 
+    //Service manager used to interface with Service DAO
     @Autowired
     ServiceService serviceService;
 
-    private final OkHttpClient httpClient = new OkHttpClient();
-    private final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
+    private final OkHttpClient httpClient; //HTTP client used for requests
+    private final Scheduler scheduler;     //Quartz scheduler used for recurrent event triggering
+
+    /**
+     * Default constructor
+     * @throws SchedulerException If quartz fails to retrieve the default scheduler
+     */
     public ServiceStatusChecker() throws SchedulerException {
+        httpClient = new OkHttpClient();
+        scheduler = StdSchedulerFactory.getDefaultScheduler();
     }
 
     /**
@@ -139,7 +148,7 @@ public class ServiceStatusChecker  {
                         .build());
     }
 
-    public class CheckTask implements Job{
+    private class CheckTask implements Job{
 
         /**
          * Check the status of a single service among the one stored in the service service
