@@ -37,6 +37,11 @@ public class ServiceService {
         return service;
     }
 
+    /**
+     * Get all services from the service repository
+     * @param expand Expand the service statuses' history
+     * @return A list of services contained in the service repository
+     */
     public List<ServiceEntity> getAllServices(String expand) {
         List<ServiceEntity> serviceEntities = serviceRepository.findAll();
 
@@ -50,10 +55,19 @@ public class ServiceService {
         return serviceEntities;
     }
 
+    /**
+     * Creates a service and saves it in the service repository
+     * @param service The service to save
+     * @return The newly created service
+     */
     public ServiceEntity createService(ServiceEntity service) {
         return serviceRepository.save(service);
     }
 
+    /**
+     * Deletes a service given by its UUID
+     * @param uuid The UUID whose service needs to be removed
+     */
     public void deleteServiceById(UUID uuid) {
         if (!serviceRepository.exists(uuid)) {
             throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
@@ -62,6 +76,13 @@ public class ServiceService {
         serviceRepository.delete(uuid);
     }
 
+    /**
+     * Updates a service given by its UUID. All fields are
+     * erased and written over. If the new service's interval is different from the previous one,
+     * we reschedule the event.
+     * @param id The UUID whose service needs to be updated
+     * @param service The new service to update data with
+     */
     public void updateService(UUID id, ServiceEntity service) {
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
 
@@ -101,6 +122,11 @@ public class ServiceService {
         serviceEntity.setStatuses(tempStatuses);
     }
 
+    /**
+     * Get the resource location URL
+     * @param uuid The UUID of the service that we need to fetch from
+     * @return
+     */
     public String getLocationUrl(UUID uuid) {
         return "/services/" + uuid.toString();
     }

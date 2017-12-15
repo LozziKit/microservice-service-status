@@ -94,7 +94,6 @@ public class ServiceStatusChecker  {
             scheduledTasks.addAll(scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName)));
 
         return scheduledTasks;
-
     }
 
     /**
@@ -141,7 +140,6 @@ public class ServiceStatusChecker  {
     }
 
     public class CheckTask implements Job{
-
 
         /**
          * Check the status of a single service among the one stored in the service service
