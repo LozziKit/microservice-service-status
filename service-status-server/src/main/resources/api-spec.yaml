@@ -310,20 +310,22 @@ definitions:
       titre:
         type: string
       IncidentUpdate:
-        type: object
-        properties:
-          IncidentType:
-            type: enum
-            length: 13
-            values: ['resolved', 'issue','retroactive','investigating','maintenance','scheduled','monitoring','update']
-          message:
-            type: string
-        required:
-          - IncidentType
-          - message
+        $ref: '#/definitions/IncidentUpdate'
     required:
       - titre
       - IncidentUpdate
+  IncidentUpdate:
+    type: object
+    properties:
+      IncidentType:
+        type: enum
+        length: 13
+        values: ['resolved', 'issue','retroactive','investigating','maintenance','scheduled','monitoring','update']
+      message:
+        type: string
+    required:
+      - IncidentType
+      - message
   Service:
     type: object
     allOf:
