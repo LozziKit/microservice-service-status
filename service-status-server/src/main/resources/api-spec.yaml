@@ -231,7 +231,7 @@ definitions:
         type: string
     required:
       - message
-  NewService:
+  NewService: 
     type: object
     properties:
       name:
