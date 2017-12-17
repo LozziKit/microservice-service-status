@@ -45,7 +45,7 @@
                 <modelPackage>io.lozzikit.servicestatus.api.dto</modelPackage>
                 <apiPackage>io.lozzikit.servicestatus.api</apiPackage>
               </configOptions>
-              <output>target/generated-sources/swagger</output>
+              <output>${basedir}/target/generated-sources/swagger</output>
             </configuration>
           </execution>
         </executions>
