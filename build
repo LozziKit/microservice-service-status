@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Build server jar but skip unit test
+(cd service-status-server; mvn -Dmaven.test.skip=true install)
+
+cp service-status-server/target/microservice-service-status-server-1.0.0.jar topology/images/server/server.jar
+
+(cd topology; docker build --rm images/server -t lozzikit/status-server)
