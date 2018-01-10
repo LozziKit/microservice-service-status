@@ -12,8 +12,12 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Micro service manager. This class is in of providing an interface with
+ * the services's repository.
+ */
 @org.springframework.stereotype.Service
-public class ServiceService {
+public class ServiceManager {
 
     private static final String EXPAND_HISTORY = "HISTORY";
 
@@ -61,7 +65,9 @@ public class ServiceService {
      * @return The newly created service
      */
     public ServiceEntity createService(ServiceEntity service) {
-        return serviceRepository.save(service);
+        ServiceEntity serviceEntity = serviceRepository.save(service);
+        serviceStatusChecker.schedule(service);
+        return serviceEntity;
     }
 
     /**
@@ -71,6 +77,13 @@ public class ServiceService {
     public void deleteServiceById(UUID uuid) {
         if (!serviceRepository.exists(uuid)) {
             throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
+        }
+
+        //Removing scheduled task associated with removed service
+        try {
+            serviceStatusChecker.removeScheduledTask(serviceRepository.findOne(uuid));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
         }
 
         serviceRepository.delete(uuid);
@@ -99,7 +112,7 @@ public class ServiceService {
         //If the service interval is different, we notifiy the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
             try {
-                serviceStatusChecker.updateSchedule(service.getName(), service.getInterval());
+                serviceStatusChecker.updateSchedule(service, service.getInterval());
             } catch (SchedulerException e) {
                 e.printStackTrace();
             }
