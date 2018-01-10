@@ -3,10 +3,11 @@ package io.lozzikit.servicestatus.checker;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.entities.StatusEntity;
-import io.lozzikit.servicestatus.service.ServiceService;
+import io.lozzikit.servicestatus.service.ServiceManager;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -29,23 +30,60 @@ import static org.quartz.TriggerBuilder.newTrigger;
 @Component
 public class ServiceStatusChecker  {
 
+    //Constants fields used for object id
     private static final String UUID = "UUID";
     private static final String DEFAULT_EXPAND= "HISTORY";
 
+    //Service manager used to interface with Service DAO
     @Autowired
-    ServiceService serviceService;
+    ServiceManager serviceManager;
 
-    private final OkHttpClient httpClient = new OkHttpClient();
-    private final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
+    private final OkHttpClient httpClient; //HTTP client used for requests
+    private final Scheduler scheduler;     //Quartz scheduler used for recurrent event triggering
+
+    /**
+     * Default constructor
+     * @throws SchedulerException If quartz fails to retrieve the default scheduler
+     */
     public ServiceStatusChecker() throws SchedulerException {
+        httpClient = new OkHttpClient();
+        scheduler = StdSchedulerFactory.getDefaultScheduler();
+    }
+
+    /**
+     * Schedules a singles service to be monitored
+     * @param s The service to check
+     */
+    public void schedule(ServiceEntity s){
+
+        JobDetail job = newJob(CheckTask.class)
+                .withIdentity("service-"+s.getId())
+                .build();
+
+        job.getJobDataMap().put(UUID,s.getId());
+
+        Trigger trigger = newTrigger()
+                .withIdentity("trigger-"+s.getId())
+                .startNow()
+                .withSchedule(simpleSchedule()
+                        .withIntervalInMinutes(s.getInterval())
+                        .repeatForever())
+                .build();
+
+        try {
+            //Tries to schedule the setup job
+            scheduler.scheduleJob(job, trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Schedules all events stored in the service service
      */
     public void scheduleAll(){
-        List<ServiceEntity> services = serviceService.getAllServices(DEFAULT_EXPAND);
+        List<ServiceEntity> services = serviceManager.getAllServices(DEFAULT_EXPAND);
         scheduleAll(services);
     }
 
@@ -54,31 +92,7 @@ public class ServiceStatusChecker  {
      * @param services The services whose state needs checking
      */
     public void scheduleAll(List<ServiceEntity> services){
-
-        services.forEach(s -> {
-
-            JobDetail job = newJob(CheckTask.class)
-                    .withIdentity(s.getName())
-                    .build();
-
-            job.getJobDataMap().put(UUID,s.getId());
-
-            Trigger trigger = newTrigger()
-                    .withIdentity("trigger-"+s.getName())
-                    .startNow()
-                    .withSchedule(simpleSchedule()
-                            .withIntervalInMinutes(s.getInterval())
-                            .repeatForever())
-                    .build();
-
-            try {
-                //Tries to schedule the setup job
-                scheduler.scheduleJob(job, trigger);
-            } catch (SchedulerException e) {
-                e.printStackTrace();
-            }
-        });
-
+        services.forEach(this::schedule);
     }
 
     /**
@@ -106,11 +120,11 @@ public class ServiceStatusChecker  {
 
     /**
      * Unschedules a service given by its name
-     * @param name The service's name who needs removing
+     * @param s The service whose monitoring needs removing
      * @throws SchedulerException if no associated service was found or if the unscheduling failed
      */
-    public void removeScheduledTask(String name) throws SchedulerException {
-        scheduler.deleteJob(JobKey.jobKey(name));
+    public void removeScheduledTask(ServiceEntity s) throws SchedulerException {
+        scheduler.deleteJob(JobKey.jobKey("service-"+s.getId()));
     }
 
     /**
@@ -122,16 +136,16 @@ public class ServiceStatusChecker  {
     }
 
     /**
-     * Updates the schedule asociated with the given service's name
-     * @param name The service's name
+     * Updates the schedule associated with the given service's name
+     * @param s The service to update
      * @param interval The new interval to schedule
      * @throws SchedulerException if the rescheduling fails
      */
-    public void updateSchedule(String name, int interval) throws SchedulerException {
+    public void updateSchedule(ServiceEntity s, int interval) throws SchedulerException {
 
-        scheduler.rescheduleJob(TriggerKey.triggerKey("trigger-"+name),
+        scheduler.rescheduleJob(TriggerKey.triggerKey("trigger-"+s.getId()),
                 newTrigger()
-                        .withIdentity("trigger-"+name)
+                        .withIdentity("trigger-"+s.getId())
                         .startNow()
                         .withSchedule(simpleSchedule()
                                 .withIntervalInMinutes(interval)
@@ -139,7 +153,7 @@ public class ServiceStatusChecker  {
                         .build());
     }
 
-    public class CheckTask implements Job{
+    private class CheckTask implements Job{
 
         /**
          * Check the status of a single service among the one stored in the service service
@@ -150,7 +164,7 @@ public class ServiceStatusChecker  {
 
             UUID uuid = (UUID) context.getJobDetail().getJobDataMap().get(UUID);
 
-            ServiceEntity service = serviceService.getService(uuid , DEFAULT_EXPAND);
+            ServiceEntity service = serviceManager.getService(uuid , DEFAULT_EXPAND);
 
             String url = service.getUrl();
 
@@ -177,7 +191,7 @@ public class ServiceStatusChecker  {
                     status,
                     service);
 
-            serviceService.addStatus(uuid,statusToAdd);
+            serviceManager.addStatus(uuid,statusToAdd);
 
             context.setResult(statusToAdd);
         }

@@ -4,7 +4,7 @@ import io.lozzikit.servicestatus.api.ServicesApi;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
-import io.lozzikit.servicestatus.service.ServiceService;
+import io.lozzikit.servicestatus.service.ServiceManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -24,7 +24,7 @@ import java.util.UUID;
 public class ServicesApiController implements ServicesApi {
 
     @Autowired
-    ServiceService serviceService;
+    ServiceManager serviceManager;
 
     @ApiOperation(value = "Add a service to monitor", notes = "", response = Void.class, tags = {"Service",})
     @ApiResponses(value = {
@@ -34,7 +34,7 @@ public class ServicesApiController implements ServicesApi {
             consumes = {"application/json"},
             method = RequestMethod.POST)
     public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
-        ServiceEntity service = serviceService.createService(toServiceEntity(newService));
+        ServiceEntity service = serviceManager.createService(toServiceEntity(newService));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -51,7 +51,7 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.DELETE)
     @Override
     public ResponseEntity<Void> deleteService(@ApiParam(required = true) @PathVariable("id") UUID id) {
-        serviceService.deleteServiceById(id);
+        serviceManager.deleteServiceById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -63,7 +63,7 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Service> getService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
-        ServiceEntity serviceEntity = serviceService.getService(id, expand);
+        ServiceEntity serviceEntity = serviceManager.getService(id, expand);
         return ResponseEntity.ok(toDto(serviceEntity));
     }
 
@@ -76,7 +76,7 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.GET)
     @Override
     public ResponseEntity<List<Service>> getServices(@ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
-        List<ServiceEntity> serviceEntities = serviceService.getAllServices(expand);
+        List<ServiceEntity> serviceEntities = serviceManager.getAllServices(expand);
         List<Service> services = new ArrayList<>();
 
         serviceEntities.forEach(serviceEntity -> services.add(toDto(serviceEntity)));
@@ -94,7 +94,7 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(required = true) @Valid @RequestBody NewService service) {
-        serviceService.updateService(id, toServiceEntity(service));
+        serviceManager.updateService(id, toServiceEntity(service));
         return ResponseEntity.noContent().build();
     }
 
@@ -117,7 +117,7 @@ public class ServicesApiController implements ServicesApi {
         service.setUrl(serviceEntity.getUrl());
         service.setPort(serviceEntity.getPort());
         service.setInterval(serviceEntity.getInterval());
-        service.setLocation(serviceService.getLocationUrl(serviceEntity.getId()));
+        service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
         // TODO: add status support
         service.setStatuses(null);
         service.setLastStatus(null);

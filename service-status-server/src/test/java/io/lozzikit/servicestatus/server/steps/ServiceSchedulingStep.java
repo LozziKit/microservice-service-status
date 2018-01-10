@@ -1,24 +1,16 @@
 package io.lozzikit.servicestatus.server.steps;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import cucumber.api.DataTable;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
-import io.lozzikit.servicestatus.checker.StatusCodeMatcher;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
-import io.lozzikit.servicestatus.service.ServiceService;
+import io.lozzikit.servicestatus.service.ServiceManager;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -35,7 +27,7 @@ public class ServiceSchedulingStep {
     private ServiceStatusChecker serviceStatusChecker;
     private List<ServiceEntity> services;
 
-    private ServiceService serviceService;
+    private ServiceManager serviceManager;
 
     private Map<ServiceEntity, String> endpoints = new HashMap<>();
     private Map<ServiceEntity, Integer> responses = new HashMap<>();
@@ -176,6 +168,7 @@ public class ServiceSchedulingStep {
 
     @Then("^a coherent response shall be added to its status list$")
     public void aCoherentResponseShallBeAddedToItsStatusList()  {
+
 
     }
 }
