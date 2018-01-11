@@ -49,6 +49,7 @@ public class ServiceStatusChecker  {
     public ServiceStatusChecker() throws SchedulerException {
         httpClient = new OkHttpClient();
         scheduler = StdSchedulerFactory.getDefaultScheduler();
+        scheduler.start();
     }
 
     /**
@@ -67,7 +68,7 @@ public class ServiceStatusChecker  {
                 .withIdentity("trigger-"+s.getId())
                 .startNow()
                 .withSchedule(simpleSchedule()
-                        .withIntervalInMinutes(s.getInterval())
+                        .withIntervalInSeconds(s.getInterval())
                         .repeatForever())
                 .build();
 
@@ -148,7 +149,7 @@ public class ServiceStatusChecker  {
                         .withIdentity("trigger-"+s.getId())
                         .startNow()
                         .withSchedule(simpleSchedule()
-                                .withIntervalInMinutes(interval)
+                                .withIntervalInSeconds(interval)
                                 .repeatForever())
                         .build());
     }
@@ -193,7 +194,7 @@ public class ServiceStatusChecker  {
 
             serviceManager.addStatus(uuid,statusToAdd);
 
-            context.setResult(statusToAdd);
+            System.err.println(statusToAdd.getStatus().toString() );
         }
     }
 

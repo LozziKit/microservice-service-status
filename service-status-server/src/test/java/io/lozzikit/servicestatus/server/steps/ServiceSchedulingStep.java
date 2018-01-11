@@ -122,7 +122,7 @@ public class ServiceSchedulingStep {
     @When("^a service's delay is changed$")
     public void aServiceSDelayIsChanged() throws SchedulerException {
         for(ServiceEntity service : services)
-            serviceStatusChecker.updateSchedule(service.getName(), service.getInterval()+1);
+            serviceStatusChecker.updateSchedule(service, service.getInterval()+1);
     }
 
     @Then("^its next trigger's fire time shall be updated$")
@@ -143,7 +143,7 @@ public class ServiceSchedulingStep {
     public void aServiceIsDeleted()  {
         services.forEach(service -> {
             try {
-                serviceStatusChecker.removeScheduledTask(service.getName());
+                serviceStatusChecker.removeScheduledTask(service);
             } catch (SchedulerException e) {
                 e.printStackTrace();
             }

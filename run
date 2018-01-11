@@ -3,7 +3,7 @@
 ./build
 
 (cd ./topology; docker-compose down --volumes)
-(cd ./topology; docker-compose up --build -d)
+(cd ./topology; docker-compose up --build )
 
 (cd ./topology; ./wait-for-it.sh -h localhost -p 8080 -t 30)
-(cd ./service-status-specs; mvn clean install)
+(cd ./service-status-specs; mvn clean install -Dmaven.test.skip=true)

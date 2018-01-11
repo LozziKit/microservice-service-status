@@ -133,6 +133,8 @@ public class ServiceManager {
         List<StatusEntity> tempStatuses = serviceEntity.getStatuses();
         tempStatuses.add(status);
         serviceEntity.setStatuses(tempStatuses);
+
+        serviceRepository.save(serviceEntity);
     }
 
     /**
