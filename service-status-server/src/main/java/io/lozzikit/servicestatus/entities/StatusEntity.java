@@ -4,6 +4,7 @@ import io.lozzikit.servicestatus.api.dto.Status;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
 
@@ -25,6 +26,19 @@ public class StatusEntity {
 
     @ManyToOne
     private ServiceEntity service;
+
+    public StatusEntity(){}
+
+    public StatusEntity(@NotNull Date lastCheck,
+                        @NotNull int httpStatus,
+                        @NotNull Status.StatusEnum status,
+                        @NotNull ServiceEntity serviceEntity){
+        setCheckAt(lastCheck);
+        setHttpStatus(httpStatus);
+        setStatus(status);
+        setService(serviceEntity);
+
+    }
 
     public UUID getId() {
         return id;

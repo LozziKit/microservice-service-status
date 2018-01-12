@@ -66,9 +66,7 @@ public class HttpSteps {
                 break;
             }
         }
-        if(!contains){
-            throw new Throwable();
-        }
+        assertTrue(contains);
 
     }
 

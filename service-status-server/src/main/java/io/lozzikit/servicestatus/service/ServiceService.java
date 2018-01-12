@@ -2,6 +2,7 @@ package io.lozzikit.servicestatus.service;
 
 import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
+import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -70,6 +71,20 @@ public class ServiceService {
         serviceEntity.setInterval(service.getInterval());
 
         serviceRepository.save(serviceEntity);
+    }
+
+    /**
+     * Add a status to the list of statuses tracked within a service
+     * @param id The service's id
+     * @param status The status to add to the service
+     */
+    public void addStatus(UUID id, StatusEntity status){
+
+        ServiceEntity serviceEntity = serviceRepository.findOne(id);
+
+        List<StatusEntity> tempStatuses = serviceEntity.getStatuses();
+        tempStatuses.add(status);
+        serviceEntity.setStatuses(tempStatuses);
     }
 
     public String getLocationUrl(UUID uuid) {
