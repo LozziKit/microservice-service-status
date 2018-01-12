@@ -1,24 +1,19 @@
 package io.lozzikit.servicestatus.checker;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import io.lozzikit.servicestatus.api.dto.Service;
-import io.lozzikit.servicestatus.api.dto.Status;
+import io.lozzikit.servicestatus.checker.jobs.CheckTask;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
-import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.service.ServiceManager;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -27,19 +22,20 @@ import static org.quartz.TriggerBuilder.newTrigger;
 /**
  * Class in charge of checking services' status
  */
-@Component
+@Service
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ServiceStatusChecker  {
 
     //Constants fields used for object id
-    private static final String UUID = "UUID";
-    private static final String DEFAULT_EXPAND= "HISTORY";
+    public static final String DEFAULT_EXPAND = "HISTORY";
 
     //Service manager used to interface with Service DAO
     @Autowired
     ServiceManager serviceManager;
 
+    @Autowired
+    JobListener listener;
 
-    private final OkHttpClient httpClient; //HTTP client used for requests
     private final Scheduler scheduler;     //Quartz scheduler used for recurrent event triggering
 
     /**
@@ -47,9 +43,18 @@ public class ServiceStatusChecker  {
      * @throws SchedulerException If quartz fails to retrieve the default scheduler
      */
     public ServiceStatusChecker() throws SchedulerException {
-        httpClient = new OkHttpClient();
         scheduler = StdSchedulerFactory.getDefaultScheduler();
+    }
+
+    @javax.annotation.PostConstruct
+    public void init() throws SchedulerException {
+        scheduler.getListenerManager().addJobListener(listener);
         scheduler.start();
+    }
+
+    @javax.annotation.PreDestroy
+    public void destroy(){
+        System.err.println("Service status checker destroyed.");
     }
 
     /**
@@ -62,7 +67,8 @@ public class ServiceStatusChecker  {
                 .withIdentity("service-"+s.getId())
                 .build();
 
-        job.getJobDataMap().put(UUID,s.getId());
+        job.getJobDataMap().put(CheckTask.UUID,s.getId());
+        job.getJobDataMap().put(CheckTask.SERVICE, s);
 
         Trigger trigger = newTrigger()
                 .withIdentity("trigger-"+s.getId())
@@ -153,49 +159,4 @@ public class ServiceStatusChecker  {
                                 .repeatForever())
                         .build());
     }
-
-    private class CheckTask implements Job{
-
-        /**
-         * Check the status of a single service among the one stored in the service service
-         * Stores the status of the service as result
-         */
-        @Override
-        public void execute(JobExecutionContext context) {
-
-            UUID uuid = (UUID) context.getJobDetail().getJobDataMap().get(UUID);
-
-            ServiceEntity service = serviceManager.getService(uuid , DEFAULT_EXPAND);
-
-            String url = service.getUrl();
-
-            Request request = new Request.Builder().url(url).build();
-
-            Response response;
-            int code;
-            Status.StatusEnum status;
-
-            //Contacting service to get availability
-            try{
-                response = httpClient.newCall(request).execute();
-                code = response.code();
-                status = StatusCodeMatcher.match(code);
-            }catch (IOException e){
-                code = 0;
-                status = Status.StatusEnum.DOWN;
-            }
-
-            //Creating the status from response
-            StatusEntity statusToAdd = new StatusEntity(
-                    new Date(),
-                    code,
-                    status,
-                    service);
-
-            serviceManager.addStatus(uuid,statusToAdd);
-
-            System.err.println(statusToAdd.getStatus().toString() );
-        }
-    }
-
 }

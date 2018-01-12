@@ -1,5 +1,7 @@
 package io.lozzikit.servicestatus.service;
 
+import io.lozzikit.servicestatus.api.dto.Service;
+import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
 import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
@@ -9,6 +11,7 @@ import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +22,7 @@ import java.util.UUID;
 @org.springframework.stereotype.Service
 public class ServiceManager {
 
-    private static final String EXPAND_HISTORY = "HISTORY";
+    private static final String EXPAND_HISTORY = "STATUS";
 
     @Autowired
     ServiceRepository serviceRepository;
@@ -131,6 +134,9 @@ public class ServiceManager {
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
 
         List<StatusEntity> tempStatuses = serviceEntity.getStatuses();
+        if(tempStatuses==null)
+            tempStatuses = new LinkedList<>();
+
         tempStatuses.add(status);
         serviceEntity.setStatuses(tempStatuses);
 
