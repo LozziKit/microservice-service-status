@@ -3,12 +3,15 @@ package io.lozzikit.servicestatus.api.endpoints;
 import io.lozzikit.servicestatus.api.ServicesApi;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.dto.Service;
+import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
+import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.service.ServiceManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class ServicesApiController implements ServicesApi {
@@ -119,10 +123,23 @@ public class ServicesApiController implements ServicesApi {
         service.setInterval(serviceEntity.getInterval());
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
         // TODO: add status support
-        service.setStatuses(null);
-        service.setLastStatus(null);
+        service.setStatuses(serviceEntity.getStatuses().stream().map(this::toDto).collect(Collectors.toList()));
+        service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
 
         return service;
+    }
+
+    private StatusEntity toStatusEntity(Status status, ServiceEntity service){
+        return new StatusEntity(status.getUpdateAt().toDate(),
+                status.getHttpStatus(),status.getStatus(),service);
+    }
+
+    private Status toDto(StatusEntity statusEntity){
+        Status status = new Status();
+        status.setHttpStatus(statusEntity.getHttpStatus());
+        status.setStatus(statusEntity.getStatus());
+        status.setUpdateAt(new DateTime(statusEntity.getCheckAt()));
+        return status;
     }
 
 }
