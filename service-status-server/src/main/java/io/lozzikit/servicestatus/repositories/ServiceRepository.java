@@ -12,4 +12,5 @@ public interface ServiceRepository extends CrudRepository<ServiceEntity, UUID> {
 
     @Override
     public List<ServiceEntity> findAll();
+
 }

@@ -11,27 +11,30 @@ import java.util.UUID;
 @Entity
 public class ServiceEntity {
 
+    private static final int NAME_LENGTH = 20;
+
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(name = "id", unique = true, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @NotNull
+    @Column(name = "name", nullable = false, length = NAME_LENGTH)
     private String name;
 
+    @Column(name = "description")
     private String description;
 
-    @NotNull
+    @Column(name = "url", nullable = false)
     private String url;
 
-    @NotNull
+    @Column(name = "port", nullable = false)
     private int port;
 
-    @NotNull
+    @Column(name = "check_interval", nullable = false)
     private int checkInterval;
 
-    @OneToMany(mappedBy = "service")
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     private List<StatusEntity> statuses;
 
     public UUID getId() {

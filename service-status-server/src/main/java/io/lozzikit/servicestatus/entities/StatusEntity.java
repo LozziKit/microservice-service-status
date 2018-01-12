@@ -1,6 +1,7 @@
 package io.lozzikit.servicestatus.entities;
 
 import io.lozzikit.servicestatus.api.dto.Status;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,21 +11,24 @@ import java.util.UUID;
 
 @Entity
 public class StatusEntity {
-    // checkAt, code, status
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(name = "id", unique = true, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "check_at")
     private Date checkAt;
 
+    @Column(name = "http_status")
     private int httpStatus;
 
+    @Column(name = "status")
     private Status.StatusEnum status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private ServiceEntity service;
 
     public StatusEntity(){}
