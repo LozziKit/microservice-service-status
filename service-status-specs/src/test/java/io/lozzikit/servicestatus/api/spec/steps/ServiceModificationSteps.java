@@ -6,9 +6,9 @@ import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.api.dto.ApiError;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
-import io.lozzkit.servicestatus.ApiException;
-import io.lozzkit.servicestatus.ApiResponse;
-import io.lozzkit.servicestatus.api.ServiceApi;
+import io.lozzikit.servicestatus.ApiException;
+import io.lozzikit.servicestatus.ApiResponse;
+import io.lozzikit.servicestatus.api.ServiceApi;
 
 import static org.junit.Assert.assertNull;
 
