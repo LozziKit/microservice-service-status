@@ -22,7 +22,7 @@ public class IncidentEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = true)
-    private Service service;
+    private ServiceEntity service;
 
 
     public Long getId() {
@@ -49,11 +49,11 @@ public class IncidentEntity implements Serializable {
         this.incidentUpdates = incidentUpdates;
     }
 
-    public Service getService() {
+    public ServiceEntity getService() {
         return service;
     }
 
-    public void setService(Service service) {
+    public void setService(ServiceEntity service) {
         this.service = service;
     }
 }

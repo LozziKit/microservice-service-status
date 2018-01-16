@@ -205,7 +205,7 @@ paths:
     get:
       tags:
         - Incident
-      summary: Get detalis of an incident
+      summary: Get details of an incident
       operationId: getIncident
       produces:
         - application/json

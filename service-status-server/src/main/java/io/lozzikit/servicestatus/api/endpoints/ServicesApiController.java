@@ -4,8 +4,11 @@ import io.lozzikit.servicestatus.api.ServicesApi;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.api.dto.Status;
+import io.lozzikit.servicestatus.entities.IncidentEntity;
+import io.lozzikit.servicestatus.entities.IncidentUpdateEntity;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.entities.StatusEntity;
+import io.lozzikit.servicestatus.service.IncidentManager;
 import io.lozzikit.servicestatus.service.ServiceManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,6 +32,9 @@ public class ServicesApiController implements ServicesApi {
 
     @Autowired
     ServiceManager serviceManager;
+
+    @Autowired
+    IncidentManager incidentManager;
 
     @ApiOperation(value = "Add a service to monitor", notes = "", response = Void.class, tags = {"Service",})
     @ApiResponses(value = {
@@ -110,12 +116,38 @@ public class ServicesApiController implements ServicesApi {
     @RequestMapping(value = "/services/{id}/incidents",
             consumes = {"application/json"},
             method = RequestMethod.POST)
-    public ResponseEntity<Void> createIncident(@ApiParam(required = true) @PathVariable("id") UUID id,
-                                              @ApiParam(required = true) @Valid @RequestBody Incident service) {
-        serviceManager.updateService(id, toServiceEntity(service));
+    public ResponseEntity<Void> addIncident(@ApiParam(required = true) @PathVariable("id") UUID idService,
+                                            @ApiParam(required = true) @Valid @RequestBody IncidentEntity incident) {
+        incidentManager.addIncident(idService, incident);
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "Add an update to an incident", notes = "", response = Void.class, tags = {"Incident",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Creation successful", response = Void.class),
+            @ApiResponse(code = 404, message = "Service not found", response = Void.class),
+            @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
+    @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    public ResponseEntity<Void> addIncidentUpdate(@ApiParam(required = true) @PathVariable("id") UUID idService,
+                                                  @ApiParam(required = true) @PathVariable("incidentId") Long idIncident,
+                                                  @ApiParam(required = true) @Valid @RequestBody IncidentUpdateEntity incidentUpdateEntity) {
+        incidentManager.addIncident(idService, incident);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "Get details of an incident", notes = "", response = Void.class, tags = {"Incident",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return the incident", response = Void.class),
+            @ApiResponse(code = 404, message = "Service not found", response = Void.class)})
+    @RequestMapping(value = "/services/{id}/incidents/{incidentId}"
+            method = RequestMethod.GET)
+    public ResponseEntity<Void> getIncidentUpdate(@ApiParam(required = true) @PathVariable("id") UUID idService,
+                                                  @ApiParam(required = true) @PathVariable("incidentId") Long idIncident) {
+        incidentManager.addIncident(idService, incident);
+        return ResponseEntity.noContent().build();
+    }
     private ServiceEntity toServiceEntity(NewService service) {
         ServiceEntity serviceEntity = new ServiceEntity(service.getName(),service.getDescription(),service.getUrl(),service.getPort(),service.getInterval());
 
