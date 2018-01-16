@@ -1,18 +1,20 @@
 package io.lozzikit.servicestatus.entities;
 
-import io.lozzikit.servicestatus.api.dto.Service;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "incidents")
 public class IncidentEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    private Long id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "id", unique = true, nullable = false, columnDefinition = "BINARY(16)")
+    private UUID id;
 
     @Column(name = "title")
     private String title;
@@ -24,12 +26,16 @@ public class IncidentEntity implements Serializable {
     @JoinColumn(name = "service_id", nullable = true)
     private ServiceEntity service;
 
+    public IncidentEntity(){}
+    public IncidentEntity(String title){
+        this.title=title;
+    }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
