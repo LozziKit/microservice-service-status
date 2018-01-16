@@ -1,10 +1,12 @@
 package io.lozzikit.servicestatus.service;
 
 import io.lozzikit.servicestatus.entities.IncidentEntity;
+import io.lozzikit.servicestatus.entities.IncidentUpdateEntity;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @org.springframework.stereotype.Service
@@ -21,10 +23,14 @@ public class IncidentManager {
 
     }
 
-    public void removeIncident(UUID id, IncidentEntity incidentEntity){
-        ServiceEntity serviceEntity = serviceRepository.findOne(id);
-        serviceEntity.getIncidents().remove(incidentEntity);
-        serviceRepository.save(serviceEntity);
+    public void addIncidentUpdate(UUID idService, Long idIncident, IncidentUpdateEntity incidentUpdateEntity) {
     }
 
+    public Optional<IncidentEntity> getIncident(UUID idService, Long idIncident) {
+        ServiceEntity serviceEntity = serviceRepository.findOne(idService);
+        return serviceEntity.getIncidents()
+                .stream()
+                .filter(i -> i.getId().equals(idIncident))
+                .findFirst();
+    }
 }

@@ -16,15 +16,14 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -95,7 +94,7 @@ public class ServicesApiController implements ServicesApi {
 
     @ApiOperation(value = "Update an existing service", notes = "", response = Void.class, tags = {"Service",})
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "OK", response = Void.class),
+            @ApiResponse(code = 200, message = "OK", response = Void.class),
             @ApiResponse(code = 404, message = "Not found", response = Void.class),
             @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
     @RequestMapping(value = "/services/{id}",
@@ -105,7 +104,7 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(required = true) @Valid @RequestBody NewService service) {
         serviceManager.updateService(id, toServiceEntity(service));
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "Create a new incident for this service", notes = "", response = Void.class, tags = {"Incident",})
@@ -119,7 +118,7 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Void> addIncident(@ApiParam(required = true) @PathVariable("id") UUID idService,
                                             @ApiParam(required = true) @Valid @RequestBody IncidentEntity incident) {
         incidentManager.addIncident(idService, incident);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation(value = "Add an update to an incident", notes = "", response = Void.class, tags = {"Incident",})
@@ -133,21 +132,27 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Void> addIncidentUpdate(@ApiParam(required = true) @PathVariable("id") UUID idService,
                                                   @ApiParam(required = true) @PathVariable("incidentId") Long idIncident,
                                                   @ApiParam(required = true) @Valid @RequestBody IncidentUpdateEntity incidentUpdateEntity) {
-        incidentManager.addIncident(idService, incident);
-        return ResponseEntity.noContent().build();
+        incidentManager.addIncidentUpdate(idService, idIncident ,incidentUpdateEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation(value = "Get details of an incident", notes = "", response = Void.class, tags = {"Incident",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return the incident", response = Void.class),
             @ApiResponse(code = 404, message = "Service not found", response = Void.class)})
-    @RequestMapping(value = "/services/{id}/incidents/{incidentId}"
+    @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
             method = RequestMethod.GET)
-    public ResponseEntity<Void> getIncidentUpdate(@ApiParam(required = true) @PathVariable("id") UUID idService,
-                                                  @ApiParam(required = true) @PathVariable("incidentId") Long idIncident) {
-        incidentManager.addIncident(idService, incident);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity getIncidentUpdate(@ApiParam(required = true) @PathVariable("id") UUID idService,
+                                            @ApiParam(required = true) @PathVariable("incidentId") Long idIncident) {
+        Optional<IncidentEntity> incident = incidentManager.getIncident(idService, idIncident);
+        if(incident.isPresent()) {
+            return new ResponseEntity(incident.get(),HttpStatus.OK);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
     }
+
     private ServiceEntity toServiceEntity(NewService service) {
         ServiceEntity serviceEntity = new ServiceEntity(service.getName(),service.getDescription(),service.getUrl(),service.getPort(),service.getInterval());
 
