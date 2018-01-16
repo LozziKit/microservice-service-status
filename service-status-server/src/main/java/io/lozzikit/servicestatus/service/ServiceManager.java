@@ -1,22 +1,34 @@
 package io.lozzikit.servicestatus.service;
 
+import io.lozzikit.servicestatus.api.dto.Service;
+import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
+import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Micro service manager. This class is in of providing an interface with
+ * the services's repository.
+ */
 @org.springframework.stereotype.Service
-public class ServiceService {
+public class ServiceManager {
 
-    private static final String EXPAND_HISTORY = "HISTORY";
+    private static final String EXPAND_HISTORY = "STATUS";
 
     @Autowired
     ServiceRepository serviceRepository;
+
+    @Autowired
+    ServiceStatusChecker serviceStatusChecker;
 
     public ServiceEntity getService(UUID id, String expand) {
         ServiceEntity service = serviceRepository.findOne(id);
@@ -32,6 +44,11 @@ public class ServiceService {
         return service;
     }
 
+    /**
+     * Get all services from the service repository
+     * @param expand Expand the service statuses' history
+     * @return A list of services contained in the service repository
+     */
     public List<ServiceEntity> getAllServices(String expand) {
         List<ServiceEntity> serviceEntities = serviceRepository.findAll();
 
@@ -45,18 +62,43 @@ public class ServiceService {
         return serviceEntities;
     }
 
+    /**
+     * Creates a service and saves it in the service repository
+     * @param service The service to save
+     * @return The newly created service
+     */
     public ServiceEntity createService(ServiceEntity service) {
-        return serviceRepository.save(service);
+        ServiceEntity serviceEntity = serviceRepository.save(service);
+        serviceStatusChecker.schedule(service);
+        return serviceEntity;
     }
 
+    /**
+     * Deletes a service given by its UUID
+     * @param uuid The UUID whose service needs to be removed
+     */
     public void deleteServiceById(UUID uuid) {
         if (!serviceRepository.exists(uuid)) {
             throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
         }
 
+        //Removing scheduled task associated with removed service
+        try {
+            serviceStatusChecker.removeScheduledTask(serviceRepository.findOne(uuid));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+
         serviceRepository.delete(uuid);
     }
 
+    /**
+     * Updates a service given by its UUID. All fields are
+     * erased and written over. If the new service's interval is different from the previous one,
+     * we reschedule the event.
+     * @param id The UUID whose service needs to be updated
+     * @param service The new service to update data with
+     */
     public void updateService(UUID id, ServiceEntity service) {
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
 
@@ -69,6 +111,15 @@ public class ServiceService {
         serviceEntity.setUrl(service.getUrl());
         serviceEntity.setPort(service.getPort());
         serviceEntity.setInterval(service.getInterval());
+
+        //If the service interval is different, we notifiy the scheduler
+        if (serviceEntity.getInterval() != service.getInterval() ) {
+            try {
+                serviceStatusChecker.updateSchedule(service, service.getInterval());
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
+        }
 
         serviceRepository.save(serviceEntity);
     }
@@ -83,10 +134,20 @@ public class ServiceService {
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
 
         List<StatusEntity> tempStatuses = serviceEntity.getStatuses();
+        if(tempStatuses==null)
+            tempStatuses = new LinkedList<>();
+
         tempStatuses.add(status);
         serviceEntity.setStatuses(tempStatuses);
+
+        serviceRepository.save(serviceEntity);
     }
 
+    /**
+     * Get the resource location URL
+     * @param uuid The UUID of the service that we need to fetch from
+     * @return
+     */
     public String getLocationUrl(UUID uuid) {
         return "/services/" + uuid.toString();
     }

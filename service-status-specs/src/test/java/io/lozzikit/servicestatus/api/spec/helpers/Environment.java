@@ -2,9 +2,9 @@ package io.lozzikit.servicestatus.api.spec.helpers;
 
 import com.google.gson.Gson;
 import io.lozzikit.servicestatus.api.dto.NewService;
-import io.lozzkit.servicestatus.ApiException;
-import io.lozzkit.servicestatus.ApiResponse;
-import io.lozzkit.servicestatus.api.ServiceApi;
+import io.lozzikit.servicestatus.ApiException;
+import io.lozzikit.servicestatus.ApiResponse;
+import io.lozzikit.servicestatus.api.ServiceApi;
 
 import java.io.IOException;
 import java.util.Properties;

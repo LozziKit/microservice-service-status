@@ -2,9 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.lozzikit</groupId>
-  <artifactId>microservice-service-status-specifications</artifactId>
+  <artifactId>microservice-service-status-specs</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -17,6 +18,7 @@
     <gson-version>2.6.2</gson-version>
     <io.lozzikit.service-status.server.url>http://localhost:8080/api</io.lozzikit.service-status.server.url>
   </properties>
+
   <build>
     <testResources>
       <testResource>
@@ -35,24 +37,22 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>src/main/resources/api-spec.yaml</inputSpec>
+              <inputSpec>${basedir}/src/main/resources/api-spec.yaml</inputSpec>
               <language>java</language>
-              <!--
-              <library>jersey2</library>
-              -->
               <library>okhttp-gson</library>
               <configOptions>
                 <sourceFolder>.</sourceFolder>
                 <modelPackage>io.lozzikit.servicestatus.api.dto</modelPackage>
-                <apiPackage>io.lozzkit.servicestatus.api</apiPackage>
+                <apiPackage>io.lozzikit.servicestatus.api</apiPackage>
               </configOptions>
-              <output>target/generated-sources/swagger</output>
+              <output>${basedir}/target/generated-sources/swagger</output>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -110,28 +110,21 @@
       <artifactId>gson</artifactId>
       <version>${gson-version}</version>
     </dependency>
-
-            
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>${jodatime-version}</version>
     </dependency>
-
-    <!-- Base64 encoding that works in both JVM and Android -->
     <dependency>
       <groupId>com.brsanthu</groupId>
       <artifactId>migbase64</artifactId>
       <version>2.2</version>
     </dependency>
-    
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>${swagger-core-version}</version>
     </dependency>
-
-
 
   </dependencies>
 </project>
