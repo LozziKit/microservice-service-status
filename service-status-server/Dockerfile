@@ -12,4 +12,4 @@ COPY ./target/microservice-service-status-1.0.0.jar server.jar
 EXPOSE 8080
 
 ## Release config
-CMD dockerize -wait tcp://database:3306 -timeout 1m && java -jar server.jar
+CMD dockerize -wait tcp://127.0.0.1:3306 -timeout 1m && java -jar server.jar
