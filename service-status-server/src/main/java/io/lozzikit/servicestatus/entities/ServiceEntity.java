@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -35,8 +36,20 @@ public class ServiceEntity implements Serializable{
     @Column(name = "check_interval", nullable = false)
     private int checkInterval;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private List<StatusEntity> statuses;
+
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private Set<IncidentEntity> incidents;
+
+    public ServiceEntity(){}
+    public ServiceEntity(String name, String description, String url, int port, int checkInterval){
+        this.name=name;
+        this.description=description;
+        this.url=url;
+        this.port=port;
+        this.checkInterval=checkInterval;
+    }
 
     public UUID getId() {
         return id;
@@ -92,5 +105,13 @@ public class ServiceEntity implements Serializable{
 
     public void setStatuses(List<StatusEntity> statuses) {
         this.statuses = statuses;
+    }
+
+    public Set<IncidentEntity> getIncidents() {
+        return incidents;
+    }
+
+    public void setIncidents(Set<IncidentEntity> incidents) {
+        this.incidents = incidents;
     }
 }

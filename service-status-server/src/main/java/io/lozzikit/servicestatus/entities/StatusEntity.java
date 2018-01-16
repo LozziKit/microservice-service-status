@@ -30,7 +30,7 @@ public class StatusEntity implements Serializable{
     private Status.StatusEnum status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private ServiceEntity service;
 
     public StatusEntity(){}
