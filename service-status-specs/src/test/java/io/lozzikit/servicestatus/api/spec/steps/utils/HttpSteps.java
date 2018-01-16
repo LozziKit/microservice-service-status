@@ -5,18 +5,15 @@ import com.google.gson.reflect.TypeToken;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import io.lozzikit.servicestatus.api.dto.ApiError;
+import io.lozzikit.servicestatus.api.ServiceApi;
 import io.lozzikit.servicestatus.api.dto.ApiValidationError;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
-import io.lozzikit.servicestatus.api.ServiceApi;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class HttpSteps {
 

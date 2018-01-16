@@ -5,11 +5,12 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class ServiceEntity {
+public class ServiceEntity implements Serializable{
 
     private static final int NAME_LENGTH = 20;
 
@@ -34,7 +35,7 @@ public class ServiceEntity {
     @Column(name = "check_interval", nullable = false)
     private int checkInterval;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<StatusEntity> statuses;
 
     public UUID getId() {

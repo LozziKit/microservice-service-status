@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
     database:
-        image: mysql
+        build: ./images/mysql
         container_name: microservice-db
         restart: always
         expose:
@@ -12,7 +12,7 @@ services:
             MYSQL_DATABASE: 'microservice'
     server:
         build:
-            context: service-status-server
+            context: ./images/server
         depends_on:
             - database
         image: amt/status-server

@@ -1,10 +1,10 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
 import cucumber.api.java.en.When;
-import io.lozzikit.servicestatus.api.dto.NewService;
-import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.api.ServiceApi;
+import io.lozzikit.servicestatus.api.dto.NewService;
+import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 
 public class ServiceDeletionSteps {
 
