@@ -37,10 +37,10 @@ public class ServiceEntity implements Serializable{
     @Column(name = "check_interval", nullable = false)
     private int checkInterval;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, targetEntity = StatusEntity.class)
     private List<StatusEntity> statuses;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, targetEntity = IncidentEntity.class)
     private Set<IncidentEntity> incidents;
 
     public ServiceEntity(){}

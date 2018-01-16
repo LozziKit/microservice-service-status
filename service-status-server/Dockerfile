@@ -7,7 +7,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-COPY ./target/microservice-service-status-1.0.0.jar server.jar
+COPY ./target/microservice-serviceEntity-status-1.0.0.jar server.jar
 
 EXPOSE 8080
 

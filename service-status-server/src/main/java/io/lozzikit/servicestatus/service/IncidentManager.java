@@ -22,7 +22,7 @@ public class IncidentManager {
     public void addIncident(UUID id, IncidentEntity incidentEntity){
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
         serviceEntity.getIncidents().add(incidentEntity);
-        incidentEntity.setService(serviceEntity);
+        incidentEntity.setServiceEntity(serviceEntity);
         serviceRepository.save(serviceEntity);
 
     }

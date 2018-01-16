@@ -1,7 +1,6 @@
 package io.lozzikit.servicestatus.entities;
 
 import io.lozzikit.servicestatus.api.dto.Status;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -32,7 +31,7 @@ public class StatusEntity implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
     @JoinColumn(name = "service_id")
-    private ServiceEntity service;
+    private ServiceEntity serviceEntity;
 
     public StatusEntity(){}
 
@@ -43,7 +42,7 @@ public class StatusEntity implements Serializable{
         setCheckAt(lastCheck);
         setHttpStatus(httpStatus);
         setStatus(status);
-        setService(serviceEntity);
+        setServiceEntity(serviceEntity);
 
     }
 
@@ -79,11 +78,11 @@ public class StatusEntity implements Serializable{
         this.status = status;
     }
 
-    public ServiceEntity getService() {
-        return service;
+    public ServiceEntity getServiceEntity() {
+        return serviceEntity;
     }
 
-    public void setService(ServiceEntity service) {
-        this.service = service;
+    public void setServiceEntity(ServiceEntity serviceEntity) {
+        this.serviceEntity = serviceEntity;
     }
 }

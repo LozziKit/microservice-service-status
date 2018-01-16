@@ -19,7 +19,7 @@ public class IncidentUpdateEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "incident_id", nullable = true)
-    private IncidentEntity incident;
+    private IncidentEntity incidentEntity;
 
     @Column(name = "incident_type")
     private IncidentType incidentType;
@@ -42,12 +42,12 @@ public class IncidentUpdateEntity implements Serializable {
         this.id = id;
     }
 
-    public IncidentEntity getIncident() {
-        return incident;
+    public IncidentEntity getIncidentEntity() {
+        return incidentEntity;
     }
 
-    public void setIncident(IncidentEntity incident) {
-        this.incident = incident;
+    public void setIncidentEntity(IncidentEntity incidentEntity) {
+        this.incidentEntity = incidentEntity;
     }
 
     public IncidentType getIncidentType() {

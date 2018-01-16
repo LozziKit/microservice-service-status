@@ -73,12 +73,11 @@ public class ServicesApiController implements ServicesApi {
     @RequestMapping(value = "/services/{id}",
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<Service> getService(@ApiParam(required = true) @PathVariable("id") UUID id,
+    public ResponseEntity<Service> getServiceEntity(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
         ServiceEntity serviceEntity = serviceManager.getService(id, expand);
         return ResponseEntity.ok(toDto(serviceEntity));
     }
-
 
     @ApiOperation(value = "Get a list of all services", notes = "", response = Service.class, responseContainer = "List", tags = {"Service",})
     @ApiResponses(value = {
