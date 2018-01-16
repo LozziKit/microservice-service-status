@@ -10,7 +10,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-
+@Entity
+@Table(name = "status")
 public class StatusEntity implements Serializable{
     // checkAt, code, status
     @Id
@@ -29,8 +30,8 @@ public class StatusEntity implements Serializable{
     @Column(name = "status")
     private Status.StatusEnum status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
+    @JoinColumn(name = "service_id")
     private ServiceEntity service;
 
     public StatusEntity(){}
