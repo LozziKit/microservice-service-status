@@ -151,18 +151,18 @@ paths:
       consumes:
         - application/json
       parameters:
-        - name: incident
-          in: body
-          description: Incident object to be added to the status page
-          required: true
-          schema:
-            $ref: '#/definitions/NewIncident'
         - name: id
           in: path
           description: ID of the service
           required: true
           type: string
           format: uuid
+        - name: incident
+          in: body
+          description: Incident object to be added to the status page
+          required: true
+          schema:
+           $ref: '#/definitions/NewIncident'
       responses:
         '201':
           description: Creation successful
@@ -207,8 +207,8 @@ paths:
     get:
       tags:
         - Incident
-      summary: Get detalis of an incident
-      operationId: getIncident
+      summary: Get details of an incident
+      operationId: getIncidentDetails
       produces:
         - application/json
       parameters:
@@ -343,7 +343,7 @@ definitions:
   NewIncident:
     type: object
     properties:
-      titre:
+      title:
         type: string
       IncidentUpdate:
         $ref: '#/definitions/IncidentUpdate'
@@ -363,14 +363,16 @@ definitions:
     type: object
     properties:
       IncidentType:
-        type: enum
-        length: 13
-        values: ['resolved', 'issue','retroactive','investigating','maintenance','scheduled','monitoring','update']
+        $ref: '#/definitions/IncidentType'
       message:
         type: string
     required:
       - IncidentType
       - message
+  IncidentType:
+    type: enum
+    length: 13
+    values: ['resolved', 'issue','retroactive','investigating','maintenance','scheduled','monitoring','update']
   Service:
     type: object
     allOf:

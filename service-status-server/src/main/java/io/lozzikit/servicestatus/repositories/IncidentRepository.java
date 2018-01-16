@@ -4,8 +4,10 @@ import io.lozzikit.servicestatus.entities.IncidentEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface IncidentRepository extends CrudRepository<IncidentEntity, Long> {
+import java.util.UUID;
 
-    IncidentEntity findOneById(Long idIncident);
+@Repository
+public interface IncidentRepository extends CrudRepository<IncidentEntity, UUID> {
+
+    IncidentEntity findOneById(UUID idIncident);
 }

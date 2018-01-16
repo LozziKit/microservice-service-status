@@ -27,14 +27,14 @@ public class IncidentManager {
 
     }
 
-    public void addIncidentUpdate(UUID idService, Long idIncident, IncidentUpdateEntity incidentUpdateEntity) {
+    public void addIncidentUpdate(UUID idService, UUID idIncident, IncidentUpdateEntity incidentUpdateEntity) {
         IncidentEntity incidentEntity = incidentRepository.findOneById(idIncident);
         incidentEntity.getIncidentUpdates().add(incidentUpdateEntity);
         incidentRepository.save(incidentEntity);
 
     }
 
-    public Optional<IncidentEntity> getIncident(UUID idService, Long idIncident) {
+    public Optional<IncidentEntity> getIncident(UUID idService, UUID idIncident) {
         ServiceEntity serviceEntity = serviceRepository.findOne(idService);
         return serviceEntity.getIncidents()
                 .stream()
