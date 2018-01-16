@@ -2,14 +2,17 @@ package io.lozzikit.servicestatus.server.steps;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import cucumber.api.DataTable;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import io.lozzikit.servicestatus.api.endpoints.ServicesApiController;
 import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.service.ServiceManager;
 import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,9 +24,8 @@ import static org.quartz.JobBuilder.newJob;
 
 public class ServiceSchedulingStep {
 
-    private final int PORT = 8081;
+    private final int PORT = 20000;
 
-    private WireMockServer mockServer;
     private ServiceStatusChecker serviceStatusChecker;
     private List<ServiceEntity> services;
 
@@ -33,19 +35,16 @@ public class ServiceSchedulingStep {
     private Map<ServiceEntity, Integer> responses = new HashMap<>();
     private Map<String, Integer> delays = new HashMap<>();
 
-    public ServiceSchedulingStep(){
-        mockServer = new WireMockServer(PORT);
+    public ServiceSchedulingStep() throws SchedulerException {
+        StdSchedulerFactory.getDefaultScheduler().clear();
     }
 
     @Given("^there is a Service server$")
     public void thereIsAServiceServer()  {
-        assertNotNull(mockServer);
-        mockServer.start();
     }
 
     @And("^the server is up and running$")
     public void theServerIsUpAndRunning() {
-        assertTrue(mockServer.isRunning());
     }
 
 
@@ -68,7 +67,7 @@ public class ServiceSchedulingStep {
             String endpoint = map.get("url");
 
             try {
-                URL url = new URL("http","localhost",PORT, endpoint);
+                URL url = new URL("http","127.0.0.1",PORT, endpoint);
                 service.setUrl(url.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -77,16 +76,16 @@ public class ServiceSchedulingStep {
             services.add(service);
             endpoints.put(service,endpoint);
             responses.put(service, Integer.valueOf(map.get("response")));
-            delays.put(service.getName(),service.getInterval());
+            delays.put("service-"+service.getId(),service.getInterval());
         });
     }
 
     @And("^the server is setup to answer accordingly$")
     public void theServerIsSetupToAnswerAccordingly()  {
         services.forEach(service -> {
-            mockServer
-                    .stubFor(get(urlEqualTo(endpoints.get(service)))
-                    .willReturn(aResponse().withStatus(responses.get(service))));
+           // mockServer
+            //        .stubFor(get(urlEqualTo(endpoints.get(service)))
+            //        .willReturn(aResponse().withStatus(responses.get(service))));
         });
     }
 
@@ -116,7 +115,6 @@ public class ServiceSchedulingStep {
 
     @Then("^the server can be shutdown$")
     public void theServerCanBeShutdown()  {
-        mockServer.stop();
     }
 
     @When("^a service's delay is changed$")

@@ -53,8 +53,8 @@ public class ServiceStatusChecker  {
     }
 
     @javax.annotation.PreDestroy
-    public void destroy(){
-        System.err.println("Service status checker destroyed.");
+    public void destroy() throws SchedulerException {
+        scheduler.shutdown();
     }
 
     /**
@@ -67,14 +67,13 @@ public class ServiceStatusChecker  {
                 .withIdentity("service-"+s.getId())
                 .build();
 
-        job.getJobDataMap().put(CheckTask.UUID,s.getId());
         job.getJobDataMap().put(CheckTask.SERVICE, s);
 
         Trigger trigger = newTrigger()
                 .withIdentity("trigger-"+s.getId())
                 .startNow()
                 .withSchedule(simpleSchedule()
-                        .withIntervalInSeconds(s.getInterval())
+                        .withIntervalInMinutes(s.getInterval())
                         .repeatForever())
                 .build();
 
@@ -155,7 +154,7 @@ public class ServiceStatusChecker  {
                         .withIdentity("trigger-"+s.getId())
                         .startNow()
                         .withSchedule(simpleSchedule()
-                                .withIntervalInSeconds(interval)
+                                .withIntervalInMinutes(interval)
                                 .repeatForever())
                         .build());
     }

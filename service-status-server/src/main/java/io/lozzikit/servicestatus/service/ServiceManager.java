@@ -132,6 +132,8 @@ public class ServiceManager {
     public void addStatus(UUID id, StatusEntity status){
 
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
+        if(serviceEntity==null)
+            return;
 
         List<StatusEntity> tempStatuses = serviceEntity.getStatuses();
         if(tempStatuses==null)
