@@ -102,13 +102,22 @@ public class ServicesApiController implements ServicesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "Create a new incident for this service", notes = "", response = Void.class, tags = {"Incident",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Creation successful", response = Void.class),
+            @ApiResponse(code = 404, message = "Service not found", response = Void.class),
+            @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
+    @RequestMapping(value = "/services/{id}/incidents",
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    public ResponseEntity<Void> createIncident(@ApiParam(required = true) @PathVariable("id") UUID id,
+                                              @ApiParam(required = true) @Valid @RequestBody Incident service) {
+        serviceManager.updateService(id, toServiceEntity(service));
+        return ResponseEntity.noContent().build();
+    }
+
     private ServiceEntity toServiceEntity(NewService service) {
-        ServiceEntity serviceEntity = new ServiceEntity();
-        serviceEntity.setName(service.getName());
-        serviceEntity.setDescription(service.getDescription());
-        serviceEntity.setUrl(service.getUrl());
-        serviceEntity.setPort(service.getPort());
-        serviceEntity.setInterval(service.getInterval());
+        ServiceEntity serviceEntity = new ServiceEntity(service.getName(),service.getDescription(),service.getUrl(),service.getPort(),service.getInterval());
 
         return serviceEntity;
     }
