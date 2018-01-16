@@ -8,7 +8,7 @@ Feature: Create an Incident
   Scenario: Create an Incident
     Given I have an Incident payload
     When I send a POST request to the /services/{serviceId]/incidents endpoint
-    Then I receive a 201 status code
+    Then I receive a 201 status codeh
     And I have my Incident identifier
 
   Scenario: Create an Incident with a null name field
@@ -34,4 +34,3 @@ Feature: Create an Incident
     Then I receive an exception from the server
     And I receive a 422 status code
     And I receive a invalid type validation error message
-
