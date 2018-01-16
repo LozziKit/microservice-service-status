@@ -1,4 +1,4 @@
-swagger: '2.0'
+﻿swagger: '2.0'
 info:
   description: >-
     This is a sample server Petstore server.  You can find out more about
@@ -155,7 +155,8 @@ paths:
           in: body
           description: Incident object to be added to the status page
           required: true
-          schema: $ref: '#/definitions/NewIncident'
+          schema:
+            $ref: '#/definitions/NewIncident'
         - name: id
           in: path
           description: ID of the service
@@ -182,7 +183,8 @@ paths:
           in: body
           description: Incident update to be added to the incident
           required: true
-          schema: $ref: '#/definitions/IncidentUpdate'
+          schema: 
+            $ref: '#/definitions/IncidentUpdate'
         - name: id
           in: path
           description: ID of the service
