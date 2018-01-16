@@ -29,7 +29,10 @@ public class IncidentUpdateEntity implements Serializable {
 
     public IncidentUpdateEntity(){}
 
-    public IncidentUpdateEntity(IncidentEntity incident){this.incident=incident;}
+    public IncidentUpdateEntity(IncidentType incidentType, String message){
+        this.incidentType=incidentType;
+        this.message=message;
+    }
 
     public UUID getId() {
         return id;

@@ -170,8 +170,8 @@ public class ServicesApiController implements ServicesApi {
         return new IncidentEntity(incident.getTitle());
     }
 
-    private IncidentEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
-        return new IncidentUpdateEntity(incidentUpdate.getMessage());
+    private IncidentUpdateEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
+        return new IncidentUpdateEntity(incidentUpdate.getIncidentType(),incidentUpdate.getMessage());
     }
 
     private Service toDto(ServiceEntity serviceEntity) {
