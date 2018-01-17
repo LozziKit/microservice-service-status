@@ -29,7 +29,7 @@ public class IncidentManager {
 
     public void addIncidentUpdate(UUID idService, UUID idIncident, IncidentUpdateEntity incidentUpdateEntity) {
         IncidentEntity incidentEntity = incidentRepository.findOneById(idIncident);
-        incidentEntity.getIncidentUpdates().add(incidentUpdateEntity);
+        incidentEntity.getIncident().add(incidentUpdateEntity);
         incidentRepository.save(incidentEntity);
 
     }
