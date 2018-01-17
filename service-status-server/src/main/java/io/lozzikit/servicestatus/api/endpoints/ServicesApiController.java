@@ -121,7 +121,12 @@ public class ServicesApiController implements ServicesApi {
         incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(incident.getIncidentUpdate()));
         //incidentEntity.getIncidentUpdates().add(incident.getIncidentUpdate());
         incidentManager.addIncident(idService, toIncidentEntity(incident));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{incidentId}")
+                .buildAndExpand(incidentEntity.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @ApiOperation(value = "Add an update to an incident", notes = "", response = Void.class, tags = {"Incident",})
