@@ -49,7 +49,7 @@ public class CheckTask implements Job {
             code = response.code();
             status = StatusCodeMatcher.match(code);
         }catch (IOException e){
-            code = -1; 
+            code = -1;
             status = Status.StatusEnum.DOWN;
         }
 

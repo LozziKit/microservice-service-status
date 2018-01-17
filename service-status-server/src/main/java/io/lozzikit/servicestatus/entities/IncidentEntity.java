@@ -1,11 +1,12 @@
 package io.lozzikit.servicestatus.entities;
 
+import org.hibernate.annotations.Cascade;
 import io.lozzikit.servicestatus.api.dto.IncidentUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,8 +21,10 @@ public class IncidentEntity implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @OneToMany(targetEntity = IncidentUpdateEntity.class, fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "incidentEntity")
-    private Set<IncidentUpdateEntity> incidentUpdates;
+    @OneToMany( targetEntity = IncidentUpdateEntity.class)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<IncidentUpdateEntity> incidentUpdates;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = true)
@@ -48,11 +51,11 @@ public class IncidentEntity implements Serializable {
         this.title = title;
     }
 
-    public Set<IncidentUpdateEntity> getIncidentUpdates() {
+    public List<IncidentUpdateEntity> getIncidentUpdates() {
         return incidentUpdates;
     }
 
-    public void setIncidentUpdates(Set<IncidentUpdateEntity> incidentUpdates) {
+    public void setIncidentUpdates(List<IncidentUpdateEntity> incidentUpdates) {
         this.incidentUpdates = incidentUpdates;
     }
 
