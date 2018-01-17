@@ -1,4 +1,4 @@
-swagger: '2.0'
+﻿swagger: '2.0'
 info:
   description: >-
     This is a sample server Petstore server.  You can find out more about
@@ -183,7 +183,7 @@ paths:
           in: body
           description: Incident update to be added to the incidentEntity
           required: true
-          schema:
+          schema: 
             $ref: '#/definitions/IncidentUpdate'
         - name: id
           in: path
@@ -370,9 +370,16 @@ definitions:
       - IncidentType
       - message
   IncidentType:
-    type: enum
-    length: 13
-    values: ['resolved', 'issue','retroactive','investigating','maintenance','scheduled','monitoring','update']
+    type: string
+    enum:
+      - 'resolved'
+      - 'issue'
+      - 'retroactive'
+      - 'investigating'
+      - 'maintenance'
+      - 'scheduled'
+      - 'monitoring'
+      - 'update'
   Service:
     type: object
     allOf:
@@ -401,41 +408,3 @@ definitions:
           - available
           - unavailable
           - down
-
-            #  NewMaintenance:
-            #    type: object
-            #    properties:
-            #      serviceEntity:
-            #        type: string
-            #        format: uuid
-            #      title:
-            #        type: string
-            #      description:
-            #        type: string
-            #      beginAt:
-            #        type: string
-            #        format: date-time
-            #      endAt:
-            #        type: string
-            #        format: date-time
-            #  Maintenance:
-            #    type: object
-            #    allOf:
-            #      - $ref: '#/definitions/NewMaintenance'
-            #      - properties:
-            #          location:
-            #            type: string
-            #            description: uri to access the maintenance
-            #          serviceEntity:
-            #            type: string
-            #            format: uuid
-            #          title:
-            #            type: string
-            #          description:
-            #            type: string
-            #          beginAt:
-            #            type: string
-            #            format: date-time
-            #          endAt:
-            #            type: string
-            #            format: date-time
