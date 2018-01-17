@@ -20,7 +20,7 @@ public class IncidentEntity implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @OneToMany( mappedBy = "incidentEntity", targetEntity = IncidentUpdateEntity.class, fetch = FetchType.LAZY)
+    @OneToMany( mappedBy = "incidentEntity")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<IncidentUpdateEntity> incidentUpdates;
 

@@ -7,6 +7,11 @@ services:
         restart: always
         expose:
             - '3306'
+        healthcheck:
+            test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice;\""
+            interval: 4s
+            timeout: 1s
+            retries: 5
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: 'microservice'
@@ -14,7 +19,8 @@ services:
         build:
             context: ./images/server
         depends_on:
-            - database
+            database:
+                condition: service_healthy
         image: amt/status-server
         environment:
             SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice'
