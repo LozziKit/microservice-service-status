@@ -18,9 +18,9 @@ tags:
   - name: Service
     description: Manage your services
   - name: Maintenance
-    description: Define when a serviceEntity will be unavailable
+    description: Define when a service will be unavailable
   - name: Incident
-    description: When something goes bad with a serviceEntity
+    description: When something goes bad with a service
 schemes:
   - http
 paths:
@@ -28,12 +28,12 @@ paths:
     post:
       tags:
         - Service
-      summary: Add a serviceEntity to monitor
+      summary: Add a service to monitor
       operationId: addService
       consumes:
         - application/json
       parameters:
-        - name: serviceEntity
+        - name: service
           in: body
           description: Service object that needs to be added to the status page
           required: true
@@ -58,7 +58,7 @@ paths:
       parameters:
         - name: expand
           in: query
-          description: Define if nested object of the serviceEntity are included in the response
+          description: Define if nested object of the service are included in the response
           type: string
           enum:
             - history
@@ -73,18 +73,18 @@ paths:
     get:
       tags:
         - Service
-      summary: Get details of a serviceEntity
-      operationId: getServiceEntity
+      summary: Get details of a service
+      operationId: getService
       parameters:
         - name: id
           in: path
-          description: ID of serviceEntity to update
+          description: ID of service to update
           required: true
           type: string
           format: uuid
         - name: expand
           in: query
-          description: Define if nested object of the serviceEntity are included in the response
+          description: Define if nested object of the service are included in the response
           type: string
           enum:
             - history
@@ -96,7 +96,7 @@ paths:
     put:
       tags:
         - Service
-      summary: Update an existing serviceEntity
+      summary: Update an existing service
       description: ''
       operationId: updateService
       consumes:
@@ -104,12 +104,12 @@ paths:
       parameters:
         - name: id
           in: path
-          description: ID of serviceEntity to update
+          description: ID of service to update
           required: true
           type: string
           format: uuid
         - in: body
-          name: serviceEntity
+          name: service
           description: Service object that needs to be modified
           required: true
           schema:
@@ -128,12 +128,12 @@ paths:
     delete:
       tags:
         - Service
-      summary: Delete an existing serviceEntity
+      summary: Delete an existing service
       operationId: deleteService
       parameters:
         - name: id
           in: path
-          description: ID of serviceEntity to delete
+          description: ID of service to delete
           required: true
           type: string
           format: uuid
@@ -146,18 +146,18 @@ paths:
     post:
       tags:
         - Incident
-      summary: Create a new incidentEntity for this serviceEntity
+      summary: Create a new incident for this service
       operationId: addIncident
       consumes:
         - application/json
       parameters:
         - name: id
           in: path
-          description: ID of the serviceEntity
+          description: ID of the service
           required: true
           type: string
           format: uuid
-        - name: incidentEntity
+        - name: incident
           in: body
           description: Incident object to be added to the status page
           required: true
@@ -174,26 +174,26 @@ paths:
     post:
       tags:
         - Incident
-      summary: Add an update to an incidentEntity
+      summary: Add an update to an incident
       operationId: addIncidentUpdate
       consumes:
         - application/json
       parameters:
         - name: incidentUpdate
           in: body
-          description: Incident update to be added to the incidentEntity
+          description: Incident update to be added to the incident
           required: true
           schema: 
             $ref: '#/definitions/IncidentUpdate'
         - name: id
           in: path
-          description: ID of the serviceEntity
+          description: ID of the service
           required: true
           type: string
           format: uuid
         - name: incidentId
           in: path
-          description: ID of the incidentEntity to update
+          description: ID of the incident to update
           required: true
           type: string
           format: uuid
@@ -207,14 +207,14 @@ paths:
     get:
       tags:
         - Incident
-      summary: Get details of an incidentEntity
+      summary: Get details of an incident
       operationId: getIncidentDetails
       produces:
         - application/json
       parameters:
       responses:
         '200':
-          description: Return the incidentEntity
+          description: Return the incident
           schema:
               $ref: '#/definitions/Incident'
         '404':
@@ -230,7 +230,7 @@ paths:
           #      consumes:
           #        - application/json
           #      parameters:
-          #        - name: serviceEntity
+          #        - name: service
           #          in: body
           #          description: Maintenance object that needs to be added to the status page
           #          required: true
@@ -238,7 +238,7 @@ paths:
           #            $ref: '#/definitions/NewMaintenance'
           #        - name: id
           #          in: path
-          #          description: ID of serviceEntity
+          #          description: ID of service
           #          required: true
           #          type: string
           #          format: uuid
@@ -250,7 +250,7 @@ paths:
           #    get:
           #      tags:
           #        - Maintenance
-          #      summary: Get maintenance for a given serviceEntity
+          #      summary: Get maintenance for a given service
           #      operationId: getMaintenance
           #      produces:
           #        - application/json
@@ -264,24 +264,24 @@ paths:
           #            - past
           #      responses:
           #        '200':
-          #          description: Return the list of maintenances for the given serviceEntity
+          #          description: Return the list of maintenances for the given service
           #          schema:
           #            $ref: '#/definitions/Maintenance'
           #  '/services/{id}/maintenances/{id}':
           #    get:
           #      tags:
           #        - Maintenance
-          #      summary: Get details of a serviceEntity
+          #      summary: Get details of a service
           #      parameters:
           #        - name: id
           #          in: path
-          #          description: ID of serviceEntity to update
+          #          description: ID of service to update
           #          required: true
           #          type: string
           #          format: uuid
           #        - name: expand
           #          in: query
-          #          description: Define if nested object of the serviceEntity are included in the response
+          #          description: Define if nested object of the service are included in the response
           #          type: string
           #          enum:
           #            - status
@@ -319,7 +319,7 @@ definitions:
         maxLength: 50
       description:
         type: string
-        description: A short description of what the serviceEntity does
+        description: A short description of what the service does
         minLength: 1
         maxLength: 250
       url:
