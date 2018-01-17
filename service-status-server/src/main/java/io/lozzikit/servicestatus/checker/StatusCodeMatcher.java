@@ -17,7 +17,7 @@ public class StatusCodeMatcher {
     public static Status.StatusEnum match(int httpStatusCode) throws IllegalArgumentException{
 
         if(httpStatusCode<100 || httpStatusCode > 527)
-            throw new IllegalArgumentException("Illegal HTTP status code"+httpStatusCode);
+            throw new IllegalArgumentException("Illegal HTTP status code : "+httpStatusCode);
 
         int beginningDigit = httpStatusCode/100;
 
