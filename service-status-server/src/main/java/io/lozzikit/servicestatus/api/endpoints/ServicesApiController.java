@@ -118,8 +118,8 @@ public class ServicesApiController implements ServicesApi {
                                               @ApiParam(required = true) @Valid @RequestBody NewIncident incident
                                             ) {
         IncidentEntity incidentEntity = toIncidentEntity(incident);
-        incidentEntity.getIncident().add(toIncidentUpdateEntity(incident.getIncidentUpdate()));
-        //incidentEntity.getIncident().add(incident.getIncidentUpdate());
+        incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(incident.getIncidentUpdate()));
+        //incidentEntity.getIncidentUpdates().add(incident.getIncidentUpdate());
         incidentManager.addIncident(idService, toIncidentEntity(incident));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

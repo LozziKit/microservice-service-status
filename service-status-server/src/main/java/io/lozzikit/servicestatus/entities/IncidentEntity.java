@@ -20,7 +20,7 @@ public class IncidentEntity implements Serializable {
     private String title;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "incidentEntity")
-    private List<IncidentUpdateEntity> incident;
+    private List<IncidentUpdateEntity> incidentUpdates;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,12 +48,12 @@ public class IncidentEntity implements Serializable {
         this.title = title;
     }
 
-    public List<IncidentUpdateEntity> getIncident() {
-        return incident;
+    public List<IncidentUpdateEntity> getIncidentUpdates() {
+        return incidentUpdates;
     }
 
-    public void setIncident(List<IncidentUpdateEntity> incident) {
-        this.incident = incident;
+    public void setIncidentUpdates(List<IncidentUpdateEntity> incidentUpdates) {
+        this.incidentUpdates = incidentUpdates;
     }
 
     public ServiceEntity getServiceEntity() {
