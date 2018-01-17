@@ -62,11 +62,6 @@ public class ServicesApiController implements ServicesApi {
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<Incident> getIncidentDetails() {
-        return null;
-    }
-
     @ApiOperation(value = "Get details of a service", notes = "", response = Service.class, tags = {"Service",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Service.class)})
@@ -151,8 +146,9 @@ public class ServicesApiController implements ServicesApi {
             @ApiResponse(code = 404, message = "Service not found", response = Void.class)})
     @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
             method = RequestMethod.GET)
-    public ResponseEntity<Void> getIncidentDetails(@ApiParam(required = true) @PathVariable("id") UUID idService,
-                                             @ApiParam(required = true) @PathVariable("incidentId") UUID idIncident) {
+    @Override
+    public ResponseEntity<Incident> getIncidentDetails(@ApiParam(required = true) @PathVariable("id") UUID idService,
+                                                       @ApiParam(required = true) @PathVariable("incidentId") UUID idIncident) {
         Optional<IncidentEntity> incident = incidentManager.getIncident(idService, idIncident);
         if(incident.isPresent()) {
             return new ResponseEntity(incident.get(),HttpStatus.OK);
