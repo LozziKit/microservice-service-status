@@ -1,6 +1,9 @@
 package io.lozzikit.servicestatus.api.spec.helpers;
 
 import com.google.gson.Gson;
+import io.lozzikit.servicestatus.api.dto.IncidentType;
+import io.lozzikit.servicestatus.api.dto.IncidentUpdate;
+import io.lozzikit.servicestatus.api.dto.NewIncident;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.ApiResponse;
@@ -23,7 +26,8 @@ public class Environment {
     private NewService service;
     private String serviceUUID;
 
-    public String toto;
+    private NewIncident incident;
+    private String incidentUUID;
 
     public Environment() throws IOException {
         Properties properties = new Properties();
@@ -41,6 +45,16 @@ public class Environment {
         result.setInterval(5);
         result.setPort(80);
         result.setUrl("http://www.example.com");
+        return result;
+    }
+
+    public NewIncident generateIncident() {
+        NewIncident result = new NewIncident();
+        result.setTitle("Test incident number " + ++counter);
+        IncidentUpdate iu = new IncidentUpdate();
+        iu.setIncidentType(IncidentType.ISSUE);
+        iu.setMessage("This is an incident of type " + iu.getIncidentType() + ". ");
+        result.setIncidentUpdate(iu);
         return result;
     }
 
@@ -104,4 +118,19 @@ public class Environment {
         return gson;
     }
 
+    public void setIncident(NewIncident incident) {
+        this.incident = incident;
+    }
+
+    public NewIncident getIncident() {
+        return incident;
+    }
+
+    public String getIncidentUUID() {
+        return incidentUUID;
+    }
+
+    public void setIncidentUUID(String incidentUUID) {
+        this.incidentUUID = incidentUUID;
+    }
 }

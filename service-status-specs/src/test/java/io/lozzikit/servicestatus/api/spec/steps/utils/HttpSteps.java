@@ -2,6 +2,7 @@ package io.lozzikit.servicestatus.api.spec.steps.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -124,4 +125,8 @@ public class HttpSteps {
         environment.getService().setInterval(-1);
     }
 
+    @Given("^I have an Incident payload$")
+    public void iHaveAnIncidentPayload() throws Throwable {
+        environment.setIncident(environment.generateIncident());
+    }
 }

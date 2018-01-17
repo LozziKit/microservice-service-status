@@ -212,6 +212,18 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: id
+          in: path
+          description: ID of the service
+          required: true
+          type: string
+          format: uuid
+        - name: incidentId
+          in: path
+          description: ID of the incident to update
+          required: true
+          type: string
+          format: uuid
       responses:
         '200':
           description: Return the incident
