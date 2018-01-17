@@ -1,11 +1,13 @@
 package io.lozzikit.servicestatus.entities;
 
 import org.hibernate.annotations.Cascade;
+import io.lozzikit.servicestatus.api.dto.IncidentUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +25,7 @@ public class IncidentEntity implements Serializable {
     @OneToMany( mappedBy = "incidentEntity")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<IncidentUpdateEntity> incidentUpdates;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = true)

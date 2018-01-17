@@ -2,6 +2,7 @@ Feature: Check we can receive Services
 
   Background:
     Given there is a Service server
+    And I have a Service payload
     And I have added my Service to the server
 
   Scenario: Check if I can receive a Service
