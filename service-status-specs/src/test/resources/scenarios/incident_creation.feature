@@ -7,8 +7,8 @@ Feature: Create an Incident
 
   Scenario: Create an Incident
     Given I have an Incident payload
-    When I send a POST request to the /services/{serviceId]/incidents endpoint
-    Then I receive a 201 status codeh
+    When I send a POST request to the /service/{serviceId}/incidents endpoint
+    Then I receive a 201 status code
     And I have my Incident identifier
 
   Scenario: Create an Incident with a null name field
