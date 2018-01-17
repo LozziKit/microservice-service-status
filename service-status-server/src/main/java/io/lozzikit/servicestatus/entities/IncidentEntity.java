@@ -7,7 +7,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -22,7 +21,7 @@ public class IncidentEntity implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @OneToMany( mappedBy = "incidentEntity")
+    @OneToMany( targetEntity = IncidentUpdateEntity.class)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<IncidentUpdateEntity> incidentUpdates;
 

@@ -21,6 +21,7 @@ public class IncidentUpdateEntity implements Serializable {
     @JoinColumn(name = "incident_id", nullable = true)
     private IncidentEntity incidentEntity;
 
+
     @Enumerated(EnumType.STRING)
     @Column(name = "incident_type")
     private IncidentType incidentType;
