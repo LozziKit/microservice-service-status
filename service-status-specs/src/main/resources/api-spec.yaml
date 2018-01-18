@@ -146,7 +146,7 @@ paths:
     post:
       tags:
         - Incident
-      summary: Create a new incidentUpdates for this service
+      summary: Create a new incident for this service
       operationId: addIncident
       consumes:
         - application/json
@@ -157,7 +157,7 @@ paths:
           required: true
           type: string
           format: uuid
-        - name: incidentUpdates
+        - name: newIncident
           in: body
           description: Incident object to be added to the status page
           required: true
@@ -174,14 +174,14 @@ paths:
     post:
       tags:
         - Incident
-      summary: Add an update to an incidentUpdates
+      summary: Add an update to an incident
       operationId: addIncidentUpdate
       consumes:
         - application/json
       parameters:
         - name: incidentUpdate
           in: body
-          description: Incident update to be added to the incidentUpdates
+          description: Incident update to be added to the incident
           required: true
           schema: 
             $ref: '#/definitions/IncidentUpdate'
@@ -193,7 +193,7 @@ paths:
           format: uuid
         - name: incidentId
           in: path
-          description: ID of the incidentUpdates to update
+          description: ID of the incident to update
           required: true
           type: string
           format: uuid
@@ -207,7 +207,7 @@ paths:
     get:
       tags:
         - Incident
-      summary: Get details of an incidentUpdates
+      summary: Get details of an incident
       operationId: getIncidentDetails
       produces:
         - application/json
@@ -220,13 +220,13 @@ paths:
           format: uuid
         - name: incidentId
           in: path
-          description: ID of the incidentUpdates to update
+          description: ID of the incidents to get
           required: true
           type: string
           format: uuid
       responses:
         '200':
-          description: Return the incidentUpdates
+          description: Return the incident
           schema:
               $ref: '#/definitions/Incident'
         '404':
