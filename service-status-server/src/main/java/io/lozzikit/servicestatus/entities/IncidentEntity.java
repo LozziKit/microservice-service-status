@@ -4,6 +4,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,8 +30,10 @@ public class IncidentEntity implements Serializable {
     private ServiceEntity serviceEntity;
 
     public IncidentEntity(){}
-    public IncidentEntity(String title){
+    public IncidentEntity(String title, IncidentUpdateEntity incidentUpdate){
         this.title=title;
+        this.incidentUpdates= new LinkedList<>();
+        this.incidentUpdates.add(incidentUpdate);
     }
 
     public UUID getId() {
