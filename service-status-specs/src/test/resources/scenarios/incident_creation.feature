@@ -12,7 +12,7 @@ Feature: Create an Incident
     Then I receive a 201 status code
     And I have my Incident identifier
 
-  Scenario: Create an Incident with a null name field
+  Scenario: Create an Incident with a null title field
     Given I have an Incident payload
     And the Incident title is null
     When I have added my Incident to the server
