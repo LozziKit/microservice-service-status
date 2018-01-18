@@ -23,7 +23,7 @@ public class ServiceReceiveSteps {
 
     public ServiceReceiveSteps(Environment environment) {
         this.environment = environment;
-        this.api = environment.getApi();
+        this.api = environment.getServiceApi();
         this.service = environment.getService();
     }
 
