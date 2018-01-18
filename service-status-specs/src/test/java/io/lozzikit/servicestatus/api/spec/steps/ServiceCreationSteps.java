@@ -16,7 +16,7 @@ public class ServiceCreationSteps {
 
     public ServiceCreationSteps(Environment environment) {
         this.environment = environment;
-        this.api = environment.getApi();
+        this.api = environment.getServiceApi();
         this.service = environment.getService();
     }
 

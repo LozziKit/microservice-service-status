@@ -24,7 +24,7 @@ public class HttpSteps {
 
     public HttpSteps(Environment environment) {
         this.environment = environment;
-        this.api = environment.getApi();
+        this.api = environment.getServiceApi();
         this.gson = environment.getGson();
     }
 
@@ -128,5 +128,10 @@ public class HttpSteps {
     @Given("^I have an Incident payload$")
     public void iHaveAnIncidentPayload() throws Throwable {
         environment.setIncident(environment.generateIncident());
+    }
+
+    @And("^I have my Incident identifier$")
+    public void iHaveMyIncidentIdentifier() throws Throwable {
+        assertNotNull(environment.getIncidentUUID());
     }
 }

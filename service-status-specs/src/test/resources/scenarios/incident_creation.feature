@@ -13,8 +13,8 @@ Feature: Create an Incident
     And I have my Incident identifier
 
   Scenario: Create an Incident with a null name field
-    Given I have a Incident payload
-    And the Incident name is null
+    Given I have an Incident payload
+    And the Incident title is null
     When I have added my Incident to the server
     Then I receive an exception from the server
     And I receive a 422 status code

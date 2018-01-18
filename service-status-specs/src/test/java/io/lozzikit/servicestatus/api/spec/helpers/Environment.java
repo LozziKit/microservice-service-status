@@ -1,6 +1,7 @@
 package io.lozzikit.servicestatus.api.spec.helpers;
 
 import com.google.gson.Gson;
+import io.lozzikit.servicestatus.api.IncidentApi;
 import io.lozzikit.servicestatus.api.dto.IncidentType;
 import io.lozzikit.servicestatus.api.dto.IncidentUpdate;
 import io.lozzikit.servicestatus.api.dto.NewIncident;
@@ -15,7 +16,8 @@ import java.util.Properties;
 public class Environment {
     private int counter = 0;
 
-    private ServiceApi api = new ServiceApi();
+    private ServiceApi serviceApi = new ServiceApi();
+    private IncidentApi incidentApi = new IncidentApi();
     private Gson gson = new Gson();
 
     private ApiResponse lastApiResponse;
@@ -33,9 +35,11 @@ public class Environment {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("environment.properties"));
         String url = properties.getProperty("io.lozzikit.service-status.server.url");
-        api.getApiClient().setBasePath(url);
+        serviceApi.getApiClient().setBasePath(url);
+        incidentApi.getApiClient().setBasePath(url);
 
         service = generateService();
+        incident = generateIncident();
     }
 
     public NewService generateService() {
@@ -58,12 +62,12 @@ public class Environment {
         return result;
     }
 
-    public ServiceApi getApi() {
-        return api;
+    public ServiceApi getServiceApi() {
+        return serviceApi;
     }
 
-    public void setApi(ServiceApi api) {
-        this.api = api;
+    public void setServiceApi(ServiceApi serviceApi) {
+        this.serviceApi = serviceApi;
     }
 
     public ApiResponse getLastApiResponse() {
@@ -132,5 +136,9 @@ public class Environment {
 
     public void setIncidentUUID(String incidentUUID) {
         this.incidentUUID = incidentUUID;
+    }
+
+    public IncidentApi getIncidentApi() {
+        return incidentApi;
     }
 }
