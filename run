@@ -1,5 +1,0 @@
-#!/bin/bash
-./build
-
-(cd ./topology; docker-compose down --volumes)
-(cd ./topology; docker-compose up --build )

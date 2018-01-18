@@ -1,4 +1,4 @@
-package io.lozzikit.servicestatus.server.steps;
+package io.lozzikit.servicestatus.server.steps.unit;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import cucumber.api.DataTable;
@@ -29,8 +29,6 @@ public class ServiceSchedulingStep {
     private ServiceStatusChecker serviceStatusChecker;
     private List<ServiceEntity> services;
 
-    private ServiceManager serviceManager;
-
     private Map<ServiceEntity, String> endpoints = new HashMap<>();
     private Map<ServiceEntity, Integer> responses = new HashMap<>();
     private Map<String, Integer> delays = new HashMap<>();
@@ -39,16 +37,7 @@ public class ServiceSchedulingStep {
         StdSchedulerFactory.getDefaultScheduler().clear();
     }
 
-    @Given("^there is a Service server$")
-    public void thereIsAServiceServer()  {
-    }
-
-    @And("^the server is up and running$")
-    public void theServerIsUpAndRunning() {
-    }
-
-
-    @And("^I have a service checker$")
+    @Given("^I have a service checker$")
     public void iHaveAServiceChecker() throws Throwable {
         serviceStatusChecker = new ServiceStatusChecker();
     }
@@ -80,15 +69,6 @@ public class ServiceSchedulingStep {
         });
     }
 
-    @And("^the server is setup to answer accordingly$")
-    public void theServerIsSetupToAnswerAccordingly()  {
-        services.forEach(service -> {
-           // mockServer
-            //        .stubFor(get(urlEqualTo(endpoints.get(service)))
-            //        .willReturn(aResponse().withStatus(responses.get(service))));
-        });
-    }
-
     @And("^the service checker scheduled all tasks$")
     public void theServiceCheckerScheduledAllTasks()  {
         serviceStatusChecker.scheduleAll(services);
@@ -97,10 +77,7 @@ public class ServiceSchedulingStep {
     @When("^each task shall be scheduled correctly$")
     public void eachTaskShallBeScheduledCorrectly() throws SchedulerException {
         assertEquals(services.size(),serviceStatusChecker.getScheduledTasks().size());
-    }
 
-    @Then("^each task shall be executed after their delay$")
-    public void eachTaskShallBeExecutedAfterTheirDelay() throws SchedulerException {
         List<JobKey> tasks = serviceStatusChecker.getScheduledTasks();
 
         for(JobKey task : tasks){
@@ -110,11 +87,6 @@ public class ServiceSchedulingStep {
             long diffMinutes = (long) (diff / (60.0 * 1000) % 60)+1;
             assertEquals( delays.get(task.getName()).intValue(), diffMinutes);
         }
-
-    }
-
-    @Then("^the server can be shutdown$")
-    public void theServerCanBeShutdown()  {
     }
 
     @When("^a service's delay is changed$")
@@ -148,7 +120,7 @@ public class ServiceSchedulingStep {
         });
     }
 
-    @Then("^the scheduler shouln't have any trace of future check$")
+    @Then("^the scheduler shouldn't have any trace of future check$")
     public void theSchedulerShoulnTHaveAnyTraceOfFutureCheck() throws SchedulerException {
         List<JobKey> tasks = serviceStatusChecker.getScheduledTasks();
         assertEquals(0, tasks.size());
@@ -157,16 +129,5 @@ public class ServiceSchedulingStep {
     @And("^the service checker is reset$")
     public void theServiceCheckerIsReset() throws SchedulerException {
         serviceStatusChecker.clear();
-    }
-
-    @When("^a service is contacted$")
-    public void aServiceIsContacted() throws SchedulerException {
-
-    }
-
-    @Then("^a coherent response shall be added to its status list$")
-    public void aCoherentResponseShallBeAddedToItsStatusList()  {
-
-
     }
 }
