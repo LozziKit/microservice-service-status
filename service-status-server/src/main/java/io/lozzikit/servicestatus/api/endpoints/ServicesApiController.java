@@ -91,7 +91,7 @@ public class ServicesApiController implements ServicesApi {
 
     @ApiOperation(value = "Update an existing service", notes = "", response = Void.class, tags = {"Service",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Void.class),
+            @ApiResponse(code = 204, message = "No content", response = Void.class),
             @ApiResponse(code = 404, message = "Not found", response = Void.class),
             @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
     @RequestMapping(value = "/services/{id}",
@@ -101,7 +101,7 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(required = true) @Valid @RequestBody NewService service) {
         serviceManager.updateService(id, toServiceEntity(service));
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
@@ -117,10 +117,8 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Void> addIncident(  @ApiParam(required = true) @PathVariable("id") UUID idService,
                                               @ApiParam(required = true) @Valid @RequestBody NewIncident incident
                                             ) {
-        IncidentEntity incidentEntity = toIncidentEntity(incident);
+        IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(incident));
         incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(incident.getIncidentUpdate()));
-        //incidentEntity.getIncidentUpdates().add(incident.getIncidentUpdate());
-        incidentManager.addIncident(idService, toIncidentEntity(incident));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{incidentId}")

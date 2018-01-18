@@ -19,12 +19,13 @@ public class IncidentManager {
     @Autowired
     IncidentRepository incidentRepository;
 
-    public void addIncident(UUID id, IncidentEntity incidentEntity){
+    public IncidentEntity createIncident(UUID id, IncidentEntity incidentEntity){
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
         serviceEntity.getIncidents().add(incidentEntity);
         incidentEntity.setServiceEntity(serviceEntity);
+        incidentRepository.save(incidentEntity);
         serviceRepository.save(serviceEntity);
-
+        return incidentEntity;
     }
 
     public void addIncidentUpdate(UUID idService, UUID idIncident, IncidentUpdateEntity incidentUpdateEntity) {
