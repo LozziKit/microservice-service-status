@@ -114,9 +114,9 @@ public class ServicesApiController implements ServicesApi {
             consumes = {"application/json"},
             method = RequestMethod.POST)
     @Override
-    public ResponseEntity<Void> addIncident(  @ApiParam(required = true) @PathVariable("id") UUID idService,
-                                              @ApiParam(required = true) @Valid @RequestBody NewIncident incident
-                                            ) {
+    public ResponseEntity<Void> addIncident(@ApiParam(required = true) @PathVariable("id") UUID idService,
+                                            @ApiParam(required = true) @Valid @RequestBody NewIncident incident
+    ) {
         IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(incident));
         incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(incident.getIncidentUpdate()));
 
@@ -139,38 +139,38 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Void> addIncidentUpdate(@ApiParam(required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
                                                   @ApiParam(required = true) @PathVariable("id") UUID idService,
                                                   @ApiParam(required = true) @PathVariable("incidentId") UUID idIncident) {
-        incidentManager.addIncidentUpdate(idService, idIncident ,toIncidentUpdateEntity(incidentUpdate));
+        incidentManager.addIncidentUpdate(idService, idIncident, toIncidentUpdateEntity(incidentUpdate));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation(value = "Get details of an incident", notes = "", response = Void.class, tags = {"Incident",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return the incident", response = Void.class),
-            @ApiResponse(code = 404, message = "Service not found", response = Void.class)})
+            @ApiResponse(code = 404, message = "Not found", response = Void.class)})
     @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
             method = RequestMethod.GET)
     @Override
     public ResponseEntity<Incident> getIncidentDetails(@ApiParam(required = true) @PathVariable("id") UUID idService,
                                                        @ApiParam(required = true) @PathVariable("incidentId") UUID idIncident) {
         Optional<IncidentEntity> incident = incidentManager.getIncident(idService, idIncident);
-        if(incident.isPresent()) {
-            return new ResponseEntity(incident.get(),HttpStatus.OK);
-        }else{
+        if (incident.isPresent()) {
+            return ResponseEntity.ok(toDto(incident.get()));
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
     }
 
     private ServiceEntity toServiceEntity(NewService service) {
-       return new ServiceEntity(service.getName(),service.getDescription(),service.getUrl(),service.getPort(),service.getInterval());
+        return new ServiceEntity(service.getName(), service.getDescription(), service.getUrl(), service.getPort(), service.getInterval());
     }
 
     private IncidentEntity toIncidentEntity(NewIncident incident) {
-        return new IncidentEntity(incident.getTitle());
+        return new IncidentEntity(incident.getTitle(), toIncidentUpdateEntity(incident.getIncidentUpdate()));
     }
 
     private IncidentUpdateEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
-        return new IncidentUpdateEntity(incidentUpdate.getIncidentType(),incidentUpdate.getMessage());
+        return new IncidentUpdateEntity(incidentUpdate.getIncidentType(), incidentUpdate.getMessage());
     }
 
     private Service toDto(ServiceEntity serviceEntity) {
@@ -189,12 +189,28 @@ public class ServicesApiController implements ServicesApi {
         return service;
     }
 
-    private StatusEntity toStatusEntity(Status status, ServiceEntity service){
+    private StatusEntity toStatusEntity(Status status, ServiceEntity service) {
         return new StatusEntity(status.getUpdateAt().toDate(),
-                status.getHttpStatus(),status.getStatus(),service);
+                status.getHttpStatus(), status.getStatus(), service);
     }
 
-    private Status toDto(StatusEntity statusEntity){
+    private Incident toDto(IncidentEntity incidentEntity) {
+        Incident incident = new Incident();
+        incident.setTitle(incidentEntity.getTitle());
+        List<IncidentUpdate> incidentUpdates = new LinkedList<>();
+        incidentEntity.getIncidentUpdates().forEach(incidentUpdateEntity -> incidentUpdates.add(toDto(incidentUpdateEntity)));
+        return incident;
+    }
+
+    private IncidentUpdate toDto(IncidentUpdateEntity incidentUpdateEntity) {
+        IncidentUpdate incidentUpdate = new IncidentUpdate();
+        incidentUpdate.setIncidentType(incidentUpdateEntity.getIncidentType());
+        incidentUpdate.setMessage(incidentUpdateEntity.getMessage());
+        return incidentUpdate;
+    }
+
+
+    private Status toDto(StatusEntity statusEntity) {
         Status status = new Status();
         status.setHttpStatus(statusEntity.getHttpStatus());
         status.setStatus(statusEntity.getStatus());
