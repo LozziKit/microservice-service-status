@@ -26,8 +26,18 @@ public class IncidentCreationSteps {
         this.incidentApi = environment.getIncidentApi();
     }
 
-    @When("^I send a POST request to the /service/serviceId/incidents endpoint$")
-    public void iSendAPOSTRequestToTheServiceServiceIdIncidentsEndpoint() throws Throwable {
+    @And("^the Incident title is null$")
+    public void theIncidentTitleIsNull() throws Throwable {
+        environment.getIncident().setTitle(null);
+    }
+
+    @And("^the Incident type is null")
+    public void theIncidentTypeIsNull() throws Throwable {
+        environment.getIncident().getIncidentUpdate().setIncidentType(null);
+    }
+
+    @When("^I have added my Incident to the server$")
+    public void iHaveAddedMyIncidentToTheServer() throws Throwable {
         if(incident == null){
             throw new NullPointerException("Cannot add an incident to a service if incident is null");
         } else {
@@ -47,13 +57,6 @@ public class IncidentCreationSteps {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
-
-    }
-
-    @And("^the Incident name is null$")
-    public void theIncidentTitleIsNull() throws Throwable {
-        environment.getIncident().setTitle(null);
     }
 }
