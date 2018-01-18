@@ -3,11 +3,9 @@ package io.lozzikit.servicestatus.service;
 import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
-import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.entities.StatusEntity;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;
@@ -26,9 +24,6 @@ public class ServiceManager {
 
     @Autowired
     ServiceRepository serviceRepository;
-
-    @Autowired
-    ServiceStatusChecker serviceStatusChecker;
 
     public ServiceEntity getService(UUID id, String expand) {
         ServiceEntity service = serviceRepository.findOne(id);
@@ -69,7 +64,6 @@ public class ServiceManager {
      */
     public ServiceEntity createService(ServiceEntity service) {
         ServiceEntity serviceEntity = serviceRepository.save(service);
-        serviceStatusChecker.schedule(service);
         return serviceEntity;
     }
 
@@ -82,12 +76,6 @@ public class ServiceManager {
             throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
         }
 
-        //Removing scheduled task associated with removed service
-        try {
-            serviceStatusChecker.removeScheduledTask(serviceRepository.findOne(uuid));
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
 
         serviceRepository.delete(uuid);
     }
@@ -111,15 +99,6 @@ public class ServiceManager {
         serviceEntity.setUrl(service.getUrl());
         serviceEntity.setPort(service.getPort());
         serviceEntity.setInterval(service.getInterval());
-
-        //If the service interval is different, we notifiy the scheduler
-        if (serviceEntity.getInterval() != service.getInterval() ) {
-            try {
-                serviceStatusChecker.updateSchedule(service, service.getInterval());
-            } catch (SchedulerException e) {
-                e.printStackTrace();
-            }
-        }
 
         serviceRepository.save(serviceEntity);
     }

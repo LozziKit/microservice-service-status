@@ -8,7 +8,7 @@ import io.lozzikit.servicestatus.api.dto.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "incident_update")
+@Table(name = "incident_updates")
 public class IncidentUpdateEntity implements Serializable {
 
     @Id

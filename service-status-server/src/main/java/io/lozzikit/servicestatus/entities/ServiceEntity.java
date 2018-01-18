@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "services")
 public class ServiceEntity implements Serializable{
 
-    private static final int NAME_LENGTH = 20;
+    private static final int NAME_LENGTH = 30;
 
     @Id
     @GeneratedValue(generator = "uuid2")
