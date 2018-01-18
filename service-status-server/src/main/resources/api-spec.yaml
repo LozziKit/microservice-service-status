@@ -87,7 +87,7 @@ paths:
           description: Define if nested object of the service are included in the response
           type: string
           enum:
-            - status
+            - history
       responses:
         '200':
           description: OK

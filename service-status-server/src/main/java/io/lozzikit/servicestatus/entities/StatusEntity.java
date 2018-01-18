@@ -5,11 +5,12 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
-public class StatusEntity {
+public class StatusEntity implements Serializable{
     // checkAt, code, status
     @Id
     @GeneratedValue(generator = "uuid2")
