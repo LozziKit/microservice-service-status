@@ -14,15 +14,13 @@ import java.util.UUID;
 @Table(name = "services")
 public class ServiceEntity implements Serializable{
 
-    private static final int NAME_LENGTH = 30;
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", unique = true, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "name", nullable = false, length = NAME_LENGTH)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
