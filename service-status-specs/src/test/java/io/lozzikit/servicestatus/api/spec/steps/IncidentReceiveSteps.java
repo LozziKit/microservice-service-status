@@ -1,6 +1,7 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
 import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -82,6 +83,10 @@ public class IncidentReceiveSteps {
     @Then("^I receive a payload containing all Incidents for my Service$")
     public void iReceiveAPayloadContainingAllIncidentsForMyService() throws Throwable {
         assertNotNull(lastReceivedIncidentList);
-        assertTrue(lastReceivedIncidentList.size() >= 1);
+    }
+
+    @And("^the payload contains multiple Incident$")
+    public void thePayloadContainsMultipleIncident() throws Throwable {
+        assertTrue(lastReceivedIncidentList.size() >= 2);
     }
 }

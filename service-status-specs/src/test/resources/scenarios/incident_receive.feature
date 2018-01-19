@@ -18,5 +18,7 @@ Feature: Check we can receive Incidents
     Then I receive a 404 status code
 
   Scenario: Check multiple Incidents
+    Given I have added my Incident to the server
     When I send a GET request to the /services/serviceId/incidents endpoint
     Then I receive a payload containing all Incidents for my Service
+    And the payload contains multiple Incident

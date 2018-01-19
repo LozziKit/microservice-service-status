@@ -164,7 +164,7 @@ public class ServicesApiController implements ServicesApi {
 
     @ApiOperation(value = "Get a list of all incidents of a service", notes = "", response = Incident.class, responseContainer = "List", tags = {"Incident",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return the list of services", response = Incident.class)})
+            @ApiResponse(code = 200, message = "Return the list of incidents", response = Incident.class,responseContainer = "List")})
     @RequestMapping(value = "/services/{id}/incidents",
             produces = {"application/json"},
             method = RequestMethod.GET)
