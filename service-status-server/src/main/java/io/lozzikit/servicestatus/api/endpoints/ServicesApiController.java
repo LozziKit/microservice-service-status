@@ -41,7 +41,8 @@ public class ServicesApiController implements ServicesApi {
     @RequestMapping(value = "/services",
             consumes = {"application/json"},
             method = RequestMethod.POST)
-    public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
+    @Override
+    public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true)@Valid @RequestBody NewService newService) {
         ServiceEntity service = serviceManager.createService(toServiceEntity(newService));
 
         URI location = ServletUriComponentsBuilder
@@ -58,19 +59,20 @@ public class ServicesApiController implements ServicesApi {
     @RequestMapping(value = "/services/{id}",
             method = RequestMethod.DELETE)
     @Override
-    public ResponseEntity<Void> deleteService(@ApiParam(required = true) @PathVariable("id") UUID id) {
+    public ResponseEntity<Void> deleteService(@ApiParam(value = "ID of service to delete", required = true) @PathVariable("id") UUID id) {
         serviceManager.deleteServiceById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @ApiOperation(value = "Get a list of the status history of a service", notes = "", responseContainer = "List", tags = {"Service",})
+    @ApiOperation(value = "get the status history of a service", notes = "", response = Status.class, responseContainer = "List", tags = {"Service",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return the status history",responseContainer = "List")})
+            @ApiResponse(code = 200, message = "list of status of a service", response = Status.class),
+            @ApiResponse(code = 404, message = "Not found", response = Status.class)})
     @RequestMapping(value = "/services/{id}/history",
             produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<List<Status>> getHistory(UUID id) {
+    public ResponseEntity<List<Status>> getHistory(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id) {
         ServicesApi a;
         List<StatusEntity> statusEntities = serviceManager.getService(id).getStatuses();
         List<Status> status = new ArrayList<>();
@@ -85,11 +87,12 @@ public class ServicesApiController implements ServicesApi {
     @RequestMapping(value = "/services/{id}",
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<Service> getService(@ApiParam(required = true) @PathVariable("id") UUID id,
-                                              @ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
+    public ResponseEntity<Service> getService(@ApiParam(value = "ID of service to update", required = true) @PathVariable("id") UUID id,
+                                              @ApiParam(value = "Define if nested object of the service are included in the response", allowableValues = "HISTORY") @RequestParam(value = "expand", required = false) String expand) {
         ServiceEntity serviceEntity = serviceManager.getService(id);
         return ResponseEntity.ok(toDto(serviceEntity));
     }
+
 
     @ApiOperation(value = "Get a list of all services", notes = "", response = Service.class, responseContainer = "List", tags = {"Service",})
     @ApiResponses(value = {
@@ -98,7 +101,7 @@ public class ServicesApiController implements ServicesApi {
             produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<List<Service>> getServices(@ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
+    public ResponseEntity<List<Service>> getServices(@ApiParam(value = "Define if nested object of the service are included in the response", allowableValues = "HISTORY") @RequestParam(value = "expand", required = false) String expand) {
         List<ServiceEntity> serviceEntities = serviceManager.getAllServices(expand);
         List<Service> services = new ArrayList<>();
 
@@ -108,30 +111,31 @@ public class ServicesApiController implements ServicesApi {
 
     @ApiOperation(value = "Update an existing service", notes = "", response = Void.class, tags = {"Service",})
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "No content", response = Void.class),
+            @ApiResponse(code = 201, message = "OK", response = Void.class),
             @ApiResponse(code = 404, message = "Not found", response = Void.class),
             @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
     @RequestMapping(value = "/services/{id}",
             consumes = {"application/json"},
             method = RequestMethod.PUT)
     @Override
-    public ResponseEntity<Void> updateService(@ApiParam(required = true) @PathVariable("id") UUID id,
-                                              @ApiParam(required = true) @Valid @RequestBody NewService service) {
+    public ResponseEntity<Void> updateService(@ApiParam(value = "ID of service to update", required = true) @PathVariable("id") UUID id,
+                                              @ApiParam(value = "Service object that needs to be modified", required = true)@Valid @RequestBody NewService service) {
         serviceManager.updateService(id, toServiceEntity(service));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     //Incidents
 
-    @ApiOperation(value = "Get a list of all incidents of a service", notes = "", response = Incident.class, responseContainer = "List", tags = {"Incident",})
+    @ApiOperation(value = "Get a list of all Incident of a service", notes = "", response = Incident.class, responseContainer = "List", tags = {"Incident",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return the list of incidents", response = Incident.class,responseContainer = "List")})
+            @ApiResponse(code = 200, message = "Return the list of services", response = Incident.class),
+            @ApiResponse(code = 404, message = "Not found", response = Incident.class)})
     @RequestMapping(value = "/services/{id}/incidents",
             produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<List<Incident>> getIncidents(@ApiParam(value = "ID of the service",required=true ) @PathVariable("id") UUID serviceId) {
-        Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(serviceId);
+    public ResponseEntity<List<Incident>> getIncidents(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id) {
+        Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(id);
         List<Incident> incidents = new ArrayList<>();
 
         incidentEntities.forEach(incidentEntity -> incidents.add(toDto(incidentEntity)));
@@ -147,11 +151,10 @@ public class ServicesApiController implements ServicesApi {
             consumes = {"application/json"},
             method = RequestMethod.POST)
     @Override
-    public ResponseEntity<Void> addIncident(@ApiParam(required = true) @PathVariable("id") UUID idService,
-                                            @ApiParam(required = true) @Valid @RequestBody NewIncident incident
-    ) {
-        IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(incident));
-        incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(incident.getIncidentUpdate()));
+    public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
+                                            @ApiParam(value = "Incident object to be added to the status page", required = true)@Valid @RequestBody NewIncident newIncident) {
+        IncidentEntity incidentEntity = incidentManager.createIncident(id, toIncidentEntity(newIncident));
+        incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(newIncident.getIncidentUpdate()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{incidentId}")
@@ -163,29 +166,30 @@ public class ServicesApiController implements ServicesApi {
     @ApiOperation(value = "Add an update to an incident", notes = "", response = Void.class, tags = {"Incident",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Creation successful", response = Void.class),
-            @ApiResponse(code = 404, message = "Service not found", response = Void.class),
+            @ApiResponse(code = 404, message = "Not found", response = Void.class),
             @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
     @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
             consumes = {"application/json"},
             method = RequestMethod.POST)
     @Override
-    public ResponseEntity<Void> addIncidentUpdate(@ApiParam(required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
-                                                  @ApiParam(required = true) @PathVariable("id") UUID idService,
-                                                  @ApiParam(required = true) @PathVariable("incidentId") UUID idIncident) {
-        incidentManager.addIncidentUpdate(idService, idIncident, toIncidentUpdateEntity(incidentUpdate));
+    public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
+                                                  @ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID idService,
+                                                  @ApiParam(value = "ID of the incident to update", required = true) @PathVariable("incidentId") UUID incidentId) {
+        incidentManager.addIncidentUpdate(idService, incidentId, toIncidentUpdateEntity(incidentUpdate));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "Get details of an incident", notes = "", response = Void.class, tags = {"Incident",})
+    @ApiOperation(value = "Get details of an incident", notes = "", response = Incident.class, tags = {"Incident",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return the incident", response = Void.class),
-            @ApiResponse(code = 404, message = "Not found", response = Void.class)})
+            @ApiResponse(code = 200, message = "Return the incident", response = Incident.class),
+            @ApiResponse(code = 404, message = "Not found", response = Incident.class)})
     @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
+            produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<Incident> getIncidentDetails(@ApiParam(required = true) @PathVariable("id") UUID idService,
-                                                       @ApiParam(required = true) @PathVariable("incidentId") UUID idIncident) {
-        Optional<IncidentEntity> incident = incidentManager.getIncident(idService, idIncident);
+    public ResponseEntity<Incident> getIncidentDetails(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
+                                                       @ApiParam(value = "ID of the incidents to get", required = true) @PathVariable("incidentId") UUID incidentId) {
+        Optional<IncidentEntity> incident = incidentManager.getIncident(id, incidentId);
         if (incident.isPresent()) {
             return ResponseEntity.ok(toDto(incident.get()));
         } else {
@@ -223,7 +227,7 @@ public class ServicesApiController implements ServicesApi {
         service.setInterval(serviceEntity.getInterval());
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
 
-        if(!serviceEntity.getStatuses().isEmpty()) {
+        if (!serviceEntity.getStatuses().isEmpty()) {
             int lastIndex = serviceEntity.getStatuses().size() - 1;
             service.setLastStatus(toDto(serviceEntity.getStatuses().get(lastIndex)));
         }
