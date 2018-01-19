@@ -1,6 +1,7 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
 import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.api.IncidentApi;
@@ -45,5 +46,10 @@ public class IncidentUpdateCreationSteps {
             }
         }
 
+    }
+
+    @And("^the IncidentUpdate type is null$")
+    public void theIncidentUpdateTypeIsNull() throws Throwable {
+        environment.getIncidentUpdate().setIncidentType(null);
     }
 }
