@@ -14,14 +14,12 @@ import static java.lang.Thread.sleep;
 public class IncidentCreationSteps {
 
     private Environment environment;
-    private ServiceApi serviceApi;
     private IncidentApi incidentApi;
 
     private NewIncident incident;
 
     public IncidentCreationSteps(Environment environment){
         this.environment = environment;
-        this.serviceApi = environment.getServiceApi();
         this.incident = environment.getIncident();
         this.incidentApi = environment.getIncidentApi();
     }
