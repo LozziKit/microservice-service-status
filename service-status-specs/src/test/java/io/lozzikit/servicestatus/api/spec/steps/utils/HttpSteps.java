@@ -134,4 +134,9 @@ public class HttpSteps {
     public void iHaveMyIncidentIdentifier() throws Throwable {
         assertNotNull(environment.getIncidentUUID());
     }
+
+    @And("^I have an IncidentUpdate payload$")
+    public void iHaveAnIncidentUpdatePayload() throws Throwable {
+        environment.setIncidentUpdate(environment.generateIncidentUpdate());
+    }
 }

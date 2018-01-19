@@ -31,6 +31,8 @@ public class Environment {
     private NewIncident incident;
     private String incidentUUID;
 
+    private IncidentUpdate incidentUpdate;
+
     public Environment() throws IOException {
         Properties properties = new Properties();
         properties.load(this.getClass().getClassLoader().getResourceAsStream("environment.properties"));
@@ -52,13 +54,17 @@ public class Environment {
         return result;
     }
 
-    public NewIncident generateIncident() {
-        NewIncident result = new NewIncident();
-        result.setTitle("Test incident number " + ++counter);
+    public IncidentUpdate generateIncidentUpdate() {
         IncidentUpdate iu = new IncidentUpdate();
         iu.setIncidentType(IncidentType.ISSUE);
         iu.setMessage("This is an incident of type " + iu.getIncidentType() + ". ");
-        result.setIncidentUpdate(iu);
+        return iu;
+    }
+
+    public NewIncident generateIncident() {
+        NewIncident result = new NewIncident();
+        result.setTitle("Test incident number " + ++counter);
+        result.setIncidentUpdate(generateIncidentUpdate());
         return result;
     }
 
@@ -140,5 +146,13 @@ public class Environment {
 
     public IncidentApi getIncidentApi() {
         return incidentApi;
+    }
+
+    public IncidentUpdate getIncidentUpdate() {
+        return incidentUpdate;
+    }
+
+    public void setIncidentUpdate(IncidentUpdate incidentUpdate) {
+        this.incidentUpdate = incidentUpdate;
     }
 }
