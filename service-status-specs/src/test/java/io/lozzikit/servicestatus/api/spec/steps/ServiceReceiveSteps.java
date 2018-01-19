@@ -16,14 +16,14 @@ import static org.junit.Assert.assertTrue;
 public class ServiceReceiveSteps {
 
     private Environment environment;
-    private ServiceApi api;
+    private ServiceApi serviceApi;
     private NewService service;
     private Service lastReceivedService;
     private List<Service> lastReceivedServiceList;
 
     public ServiceReceiveSteps(Environment environment) {
         this.environment = environment;
-        this.api = environment.getServiceApi();
+        this.serviceApi = environment.getServiceApi();
         this.service = environment.getService();
     }
 
@@ -31,7 +31,7 @@ public class ServiceReceiveSteps {
     @When("^I send a GET request to the /service/id endpoint$")
     public void iSendAGETRequestToTheServiceIdEndpoint() throws Throwable {
         try {
-            lastReceivedService = api.getService(environment.getServiceUUID(), "history");
+            lastReceivedService = serviceApi.getService(environment.getServiceUUID(), "history");
             environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
             environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
@@ -53,7 +53,7 @@ public class ServiceReceiveSteps {
     @When("^I send a GET request to the /services endpoint$")
     public void iSendAGETRequestToTheServicesEndpoint() throws Throwable {
         try {
-            lastReceivedServiceList = api.getServices("history");
+            lastReceivedServiceList = serviceApi.getServices("history");
             environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
         } catch (ApiException e) {

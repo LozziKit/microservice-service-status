@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.models.auth.In;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -161,9 +162,19 @@ public class ServicesApiController implements ServicesApi {
 
     }
 
+    @ApiOperation(value = "Get a list of all incidents of a service", notes = "", response = Incident.class, responseContainer = "List", tags = {"Incident",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return the list of services", response = Incident.class)})
+    @RequestMapping(value = "/services/{id}/incidents",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
     @Override
-    public ResponseEntity<List<Incident>> getIncidents(UUID id) {
-        return null;
+    public ResponseEntity<List<Incident>> getIncidents(UUID serviceId) {
+        Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(serviceId);
+        List<Incident> incidents = new ArrayList<>();
+
+        incidentEntities.forEach(incidentEntity -> incidents.add(toDto(incidentEntity)));
+        return ResponseEntity.ok(incidents);
     }
 
     private ServiceEntity toServiceEntity(NewService service) {
@@ -188,8 +199,8 @@ public class ServicesApiController implements ServicesApi {
         service.setInterval(serviceEntity.getInterval());
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
         // TODO: add status support
-        service.setStatuses(serviceEntity.getStatuses().stream().map(this::toDto).collect(Collectors.toList()));
-        service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
+        //service.setStatuses(serviceEntity.getStatuses().stream().map(this::toDto).collect(Collectors.toList()));
+        //service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
 
         return service;
     }

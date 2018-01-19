@@ -7,7 +7,9 @@ import io.lozzikit.servicestatus.repositories.IncidentRepository;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @org.springframework.stereotype.Service
@@ -26,6 +28,15 @@ public class IncidentManager {
         incidentRepository.save(incidentEntity);
         serviceRepository.save(serviceEntity);
         return incidentEntity;
+    }
+
+    /**
+     * Get all services from the service repository
+     * @return A list of services contained in the service repository
+     */
+    public Set<IncidentEntity> getAllIncidents(UUID serviceId) {
+        ServiceEntity serviceEntity = serviceRepository.findOne(serviceId);
+        return serviceEntity.getIncidents();
     }
 
     public void addIncidentUpdate(UUID idService, UUID idIncident, IncidentUpdateEntity incidentUpdateEntity) {
