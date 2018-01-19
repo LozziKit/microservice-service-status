@@ -1,10 +1,10 @@
-Feature: Check we can receive Services
+Feature: Check we can receive Incidents
 
   Background:
     Given there is a Service server
     And I have a Service payload
     And I have added my Service to the server
-    And I have added an Incident to my Service
+    And I have added my Incident to the server
 
   Scenario: Check if I can receive an Incident
     Given I have my Service identifier
