@@ -31,7 +31,7 @@ public class ServiceReceiveSteps {
     @When("^I send a GET request to the /service/id endpoint$")
     public void iSendAGETRequestToTheServiceIdEndpoint() throws Throwable {
         try {
-            lastReceivedService = serviceApi.getService(environment.getServiceUUID(), "history");
+            lastReceivedService = serviceApi.getService(environment.getServiceUUID());
             environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
             environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
@@ -53,7 +53,7 @@ public class ServiceReceiveSteps {
     @When("^I send a GET request to the /services endpoint$")
     public void iSendAGETRequestToTheServicesEndpoint() throws Throwable {
         try {
-            lastReceivedServiceList = serviceApi.getServices("history");
+            lastReceivedServiceList = serviceApi.getServices();
             environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
         } catch (ApiException e) {
