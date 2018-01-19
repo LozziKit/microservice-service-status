@@ -161,6 +161,11 @@ public class ServicesApiController implements ServicesApi {
 
     }
 
+    @Override
+    public ResponseEntity<List<Incident>> getIncidents(UUID id) {
+        return null;
+    }
+
     private ServiceEntity toServiceEntity(NewService service) {
         return new ServiceEntity(service.getName(), service.getDescription(), service.getUrl(), service.getPort(), service.getInterval());
     }

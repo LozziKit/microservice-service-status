@@ -170,7 +170,7 @@ paths:
           description: Service not found
         '422':
           description: Invalid payload
-    gets:
+    get:
       tags:
         - Incident
       summary: Get a list of all Incident of a service

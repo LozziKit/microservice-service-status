@@ -28,7 +28,7 @@ public class IncidentReceiveSteps {
     private Incident lastReceivedIncident;
     private List<Incident> lastReceivedIncidentList;
 
-    public IncidentReceiveSteps(Environment environment){
+    public IncidentReceiveSteps(Environment environment) {
         this.environment = environment;
         this.serviceApi = environment.getServiceApi();
         this.incident = environment.getIncident();
@@ -43,7 +43,7 @@ public class IncidentReceiveSteps {
             environment.setLastApiException(null);
             environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
             String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
-            environment.setServiceUUID(location.substring(location.lastIndexOf('/')+1, location.length()-1));
+            environment.setServiceUUID(location.substring(location.lastIndexOf('/') + 1, location.length() - 1));
         } catch (ApiException e) {
             environment.setLastApiCallThrewException(true);
             environment.setLastApiResponse(null);
@@ -66,16 +66,15 @@ public class IncidentReceiveSteps {
 
     @When("^I send a GET request to the /services/serviceId/incidents endpoint$")
     public void iSendAGETRequestToTheServicesServiceIdIncidentsEndpoint() throws Throwable {
-            try {
-                lastReceivedIncident = incidentApi.getIncidents(environment.getServiceUUID());
-                environment.setLastApiCallThrewException(false);
-                environment.setLastApiException(null);
-            } catch (ApiException e) {
-                environment.setLastApiCallThrewException(true);
-                environment.setLastApiResponse(null);
-                environment.setLastApiException(e);
-                environment.setLastStatusCode(environment.getLastApiException().getCode());
-            }
+        try {
+            lastReceivedIncidentList = incidentApi.getIncidents(environment.getServiceUUID());
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
+        } catch (ApiException e) {
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
     }
 }
