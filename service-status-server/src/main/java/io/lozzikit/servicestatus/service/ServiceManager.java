@@ -1,7 +1,5 @@
 package io.lozzikit.servicestatus.service;
 
-import io.lozzikit.servicestatus.api.dto.Service;
-import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
 import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;

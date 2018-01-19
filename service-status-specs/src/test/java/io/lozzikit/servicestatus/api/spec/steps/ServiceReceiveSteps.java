@@ -1,11 +1,13 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.api.ServiceApi;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.dto.Service;
+import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public class ServiceReceiveSteps {
     private NewService service;
     private Service lastReceivedService;
     private List<Service> lastReceivedServiceList;
+    private List<Status> lastReceivedStatusList;
 
     public ServiceReceiveSteps(Environment environment) {
         this.environment = environment;
@@ -70,4 +73,22 @@ public class ServiceReceiveSteps {
         assertTrue(lastReceivedServiceList.size() >= 1);
     }
 
+    @When("^I send a GET request to the /services/id/history$")
+    public void iSendAGETRequestToTheServicesIdHistory() throws Throwable {
+        try {
+            lastReceivedStatusList = serviceApi.getHistory(environment.getServiceUUID());
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
+        } catch (ApiException e) {
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
+        }
+    }
+
+    @Then("^I receive a payload containing a list of Statuses$")
+    public void iReceiveAPayloadContainingAListOfStatuses() throws Throwable {
+        assertNotNull(lastReceivedStatusList);
+    }
 }

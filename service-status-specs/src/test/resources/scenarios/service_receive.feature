@@ -18,3 +18,7 @@ Feature: Check we can receive Services
   Scenario: Check multiple Services
     When I send a GET request to the /services endpoint
     Then I receive a payload containing all Services
+
+  Scenario: Receive all statuses of a Service
+    When I send a GET request to the /services/id/history
+    Then I receive a payload containing a list of Statuses
