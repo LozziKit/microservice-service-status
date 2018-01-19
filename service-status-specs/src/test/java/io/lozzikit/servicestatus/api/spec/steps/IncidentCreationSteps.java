@@ -26,13 +26,13 @@ public class IncidentCreationSteps {
         this.incidentApi = environment.getIncidentApi();
     }
 
-    @And("^the IncidentUpdate title is null$")
+    @And("^the Incident title is null$")
     public void theIncidentTitleIsNull() throws Throwable {
         environment.getIncident().setTitle(null);
     }
 
     @And("^the IncidentUpdate type is null")
-    public void theIncidentTypeIsNull() throws Throwable {
+    public void theIncidentUpdateTypeIsNull() throws Throwable {
         environment.getIncident().getIncidentUpdate().setIncidentType(null);
     }
 
@@ -59,4 +59,5 @@ public class IncidentCreationSteps {
             }
         }
     }
+
 }

@@ -12,9 +12,9 @@ Feature: Create an Incident
     Then I receive a 201 status code
     And I have my Incident identifier
 
-  Scenario: Create an Incident with a IncidentUpdate containing a null title field
+  Scenario: Create an Incident with a null title field
     Given I have an Incident payload
-    And the IncidentUpdate title is null
+    And the Incident title is null
     When I have added my Incident to the server
     Then I receive an exception from the server
     And I receive a 422 status code
@@ -26,5 +26,5 @@ Feature: Create an Incident
     When I have added my Incident to the server
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a IncidentUpdate may not be null validation error message
+    And I receive a incidentType may not be null validation error message
 
