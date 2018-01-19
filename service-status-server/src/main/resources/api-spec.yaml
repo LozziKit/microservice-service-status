@@ -380,11 +380,11 @@ definitions:
     properties:
       title:
         type: string
-      IncidentUpdate:
+      incidentUpdate:
         $ref: '#/definitions/IncidentUpdate'
     required:
       - title
-      - IncidentUpdate
+      - incidentUpdate
   Incident:
     type: object
     properties:
@@ -400,13 +400,12 @@ definitions:
   IncidentUpdate:
     type: object
     properties:
-      IncidentType:
+      incidentType:
         $ref: '#/definitions/IncidentType'
       message:
         type: string
     required:
-      - IncidentType
-      - message
+      - incidentType
   IncidentType:
     type: string
     enum:
