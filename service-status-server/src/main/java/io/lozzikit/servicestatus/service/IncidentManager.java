@@ -22,16 +22,19 @@ public class IncidentManager {
     IncidentRepository incidentRepository;
 
     public IncidentEntity createIncident(UUID id, IncidentEntity incidentEntity){
+
         ServiceEntity serviceEntity = serviceRepository.findOne(id);
         serviceEntity.getIncidents().add(incidentEntity);
         incidentEntity.setServiceEntity(serviceEntity);
         incidentRepository.save(incidentEntity);
         serviceRepository.save(serviceEntity);
         return incidentEntity;
+
     }
 
     /**
      * Get all services from the service repository
+     *
      * @return A list of services contained in the service repository
      */
     public Set<IncidentEntity> getAllIncidents(UUID serviceId) {

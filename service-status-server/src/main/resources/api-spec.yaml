@@ -383,7 +383,7 @@ definitions:
       IncidentUpdate:
         $ref: '#/definitions/IncidentUpdate'
     required:
-      - titre
+      - title
       - IncidentUpdate
   Incident:
     type: object
@@ -394,6 +394,9 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/IncidentUpdate'
+    required:
+      - title
+      - incidents
   IncidentUpdate:
     type: object
     properties:
