@@ -87,6 +87,6 @@ public class IncidentReceiveSteps {
 
     @And("^the payload contains multiple Incident$")
     public void thePayloadContainsMultipleIncident() throws Throwable {
-        assertTrue(lastReceivedIncidentList.size() >= 2);
+        assertTrue(lastReceivedIncidentList.size() > 1);
     }
 }
