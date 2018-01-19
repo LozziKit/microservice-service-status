@@ -225,7 +225,9 @@ public class ServicesApiController implements ServicesApi {
         service.setInterval(serviceEntity.getInterval());
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
 
-        service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
+        if(!serviceEntity.getStatuses().isEmpty()) {
+            service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
+        }
 
         return service;
     }
