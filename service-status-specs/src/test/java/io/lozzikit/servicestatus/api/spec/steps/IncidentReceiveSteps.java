@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class IncidentReceiveSteps {
 
@@ -76,5 +77,11 @@ public class IncidentReceiveSteps {
             environment.setLastApiException(e);
             environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
+    }
+
+    @Then("^I receive a payload containing all Incidents for my Service$")
+    public void iReceiveAPayloadContainingAllIncidentsForMyService() throws Throwable {
+        assertNotNull(lastReceivedIncidentList);
+        assertTrue(lastReceivedIncidentList.size() >= 1);
     }
 }
