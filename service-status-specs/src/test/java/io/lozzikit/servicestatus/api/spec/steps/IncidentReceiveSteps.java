@@ -67,8 +67,7 @@ public class IncidentReceiveSteps {
     @When("^I send a GET request to the /services/serviceId/incidents endpoint$")
     public void iSendAGETRequestToTheServicesServiceIdIncidentsEndpoint() throws Throwable {
             try {
-                //TODO get all incidenterinos
-                lastReceivedIncidentList = new LinkedList<>();
+                lastReceivedIncident = incidentApi.getIncidents(environment.getServiceUUID());
                 environment.setLastApiCallThrewException(false);
                 environment.setLastApiException(null);
             } catch (ApiException e) {
