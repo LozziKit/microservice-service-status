@@ -63,6 +63,22 @@ public class ServicesApiController implements ServicesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value = "Get a list of the status history of a service", notes = "", responseContainer = "List", tags = {"Service",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return the status history",responseContainer = "List")})
+    @RequestMapping(value = "/services/{id}/history",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    @Override
+    public ResponseEntity<List<Status>> getHistory(UUID id) {
+        ServicesApi a;
+        List<StatusEntity> statusEntities = serviceManager.getService(id).getStatuses();
+        List<Status> status = new ArrayList<>();
+
+        statusEntities.forEach(statusEntity -> status.add(toDto(statusEntity)));
+        return ResponseEntity.ok(status);
+    }
+
     @ApiOperation(value = "Get details of a service", notes = "", response = Service.class, tags = {"Service",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Service.class)})
@@ -71,7 +87,7 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Service> getService(@ApiParam(required = true) @PathVariable("id") UUID id,
                                               @ApiParam(allowableValues = "STATUS") @RequestParam(value = "expand", required = false, defaultValue = "HISTORY") String expand) {
-        ServiceEntity serviceEntity = serviceManager.getService(id, expand);
+        ServiceEntity serviceEntity = serviceManager.getService(id);
         return ResponseEntity.ok(toDto(serviceEntity));
     }
 
@@ -105,6 +121,22 @@ public class ServicesApiController implements ServicesApi {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    //Incidents
+
+    @ApiOperation(value = "Get a list of all incidents of a service", notes = "", response = Incident.class, responseContainer = "List", tags = {"Incident",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return the list of incidents", response = Incident.class,responseContainer = "List")})
+    @RequestMapping(value = "/services/{id}/incidents",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    @Override
+    public ResponseEntity<List<Incident>> getIncidents(UUID serviceId) {
+        Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(serviceId);
+        List<Incident> incidents = new ArrayList<>();
+
+        incidentEntities.forEach(incidentEntity -> incidents.add(toDto(incidentEntity)));
+        return ResponseEntity.ok(incidents);
+    }
 
     @ApiOperation(value = "Create a new incident for this service", notes = "", response = Void.class, tags = {"Incident",})
     @ApiResponses(value = {
@@ -162,20 +194,9 @@ public class ServicesApiController implements ServicesApi {
 
     }
 
-    @ApiOperation(value = "Get a list of all incidents of a service", notes = "", response = Incident.class, responseContainer = "List", tags = {"Incident",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return the list of incidents", response = Incident.class,responseContainer = "List")})
-    @RequestMapping(value = "/services/{id}/incidents",
-            produces = {"application/json"},
-            method = RequestMethod.GET)
-    @Override
-    public ResponseEntity<List<Incident>> getIncidents(UUID serviceId) {
-        Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(serviceId);
-        List<Incident> incidents = new ArrayList<>();
 
-        incidentEntities.forEach(incidentEntity -> incidents.add(toDto(incidentEntity)));
-        return ResponseEntity.ok(incidents);
-    }
+
+    //Transformations
 
     private ServiceEntity toServiceEntity(NewService service) {
         return new ServiceEntity(service.getName(), service.getDescription(), service.getUrl(), service.getPort(), service.getInterval());
@@ -187,6 +208,11 @@ public class ServicesApiController implements ServicesApi {
 
     private IncidentUpdateEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
         return new IncidentUpdateEntity(incidentUpdate.getIncidentType(), incidentUpdate.getMessage());
+    }
+
+    private StatusEntity toStatusEntity(Status status, ServiceEntity service) {
+        return new StatusEntity(status.getUpdateAt().toDate(),
+                status.getHttpStatus(), status.getStatus(), service);
     }
 
     private Service toDto(ServiceEntity serviceEntity) {
@@ -204,11 +230,6 @@ public class ServicesApiController implements ServicesApi {
         return service;
     }
 
-    private StatusEntity toStatusEntity(Status status, ServiceEntity service) {
-        return new StatusEntity(status.getUpdateAt().toDate(),
-                status.getHttpStatus(), status.getStatus(), service);
-    }
-
     private Incident toDto(IncidentEntity incidentEntity) {
         Incident incident = new Incident();
         incident.setTitle(incidentEntity.getTitle());
@@ -223,7 +244,6 @@ public class ServicesApiController implements ServicesApi {
         incidentUpdate.setMessage(incidentUpdateEntity.getMessage());
         return incidentUpdate;
     }
-
 
     private Status toDto(StatusEntity statusEntity) {
         Status status = new Status();
