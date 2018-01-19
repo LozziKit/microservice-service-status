@@ -198,9 +198,8 @@ public class ServicesApiController implements ServicesApi {
         service.setPort(serviceEntity.getPort());
         service.setInterval(serviceEntity.getInterval());
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
-        // TODO: add status support
-        //service.setStatuses(serviceEntity.getStatuses().stream().map(this::toDto).collect(Collectors.toList()));
-        //service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
+
+        service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
 
         return service;
     }

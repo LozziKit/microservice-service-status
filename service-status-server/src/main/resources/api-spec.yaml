@@ -426,10 +426,6 @@ definitions:
             type: string
           lastStatus:
             $ref: '#/definitions/Status'
-          statuses:
-            type: array
-            items:
-              $ref: '#/definitions/Status'
   Status:
     type: object
     properties:
@@ -445,3 +441,7 @@ definitions:
           - available
           - unavailable
           - down
+    required:
+      - httpStatus
+      - status
+
