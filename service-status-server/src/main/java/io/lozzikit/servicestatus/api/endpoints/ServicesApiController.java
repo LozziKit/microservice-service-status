@@ -15,8 +15,11 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.models.auth.In;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -152,6 +155,9 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
+        if(newIncident.getIncidentUpdate().getIncidentType() == null){
+           //TODO gérer le cas : P.e. faire un validator ?
+        }
         IncidentEntity incidentEntity = incidentManager.createIncident(id, toIncidentEntity(newIncident));
         incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(newIncident.getIncidentUpdate()));
 
