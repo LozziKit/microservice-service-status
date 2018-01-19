@@ -22,7 +22,7 @@ Feature: Create an Incident
 
   Scenario: Create an Incident with a IncidentUpdate containing a null type field
     Given I have an Incident payload
-    And the Incident type is null
+    And the IncidentUpdate type is null
     When I have added my Incident to the server
     Then I receive an exception from the server
     And I receive a 422 status code
