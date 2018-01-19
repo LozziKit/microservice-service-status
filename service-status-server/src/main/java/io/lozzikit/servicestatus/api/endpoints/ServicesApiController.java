@@ -130,7 +130,7 @@ public class ServicesApiController implements ServicesApi {
             produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<List<Incident>> getIncidents(UUID serviceId) {
+    public ResponseEntity<List<Incident>> getIncidents(@ApiParam(value = "ID of the service",required=true ) @PathVariable("id") UUID serviceId) {
         Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(serviceId);
         List<Incident> incidents = new ArrayList<>();
 
@@ -194,8 +194,6 @@ public class ServicesApiController implements ServicesApi {
 
     }
 
-
-
     //Transformations
 
     private ServiceEntity toServiceEntity(NewService service) {
@@ -226,7 +224,8 @@ public class ServicesApiController implements ServicesApi {
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
 
         if(!serviceEntity.getStatuses().isEmpty()) {
-            service.setLastStatus(toDto(serviceEntity.getStatuses().get(0)));
+            int lastIndex = serviceEntity.getStatuses().size() - 1;
+            service.setLastStatus(toDto(serviceEntity.getStatuses().get(lastIndex)));
         }
 
         return service;
