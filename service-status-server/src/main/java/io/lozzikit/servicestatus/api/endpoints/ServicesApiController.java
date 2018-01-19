@@ -81,28 +81,27 @@ public class ServicesApiController implements ServicesApi {
         return ResponseEntity.ok(status);
     }
 
-    @ApiOperation(value = "Get details of a service", notes = "", response = Service.class, tags = {"Service",})
+    @ApiOperation(value = "Get details of a service", notes = "", response = Service.class, tags={ "Service", })
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Service.class)})
+            @ApiResponse(code = 200, message = "OK", response = Service.class) })
     @RequestMapping(value = "/services/{id}",
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<Service> getService(@ApiParam(value = "ID of service to update", required = true) @PathVariable("id") UUID id,
-                                              @ApiParam(value = "Define if nested object of the service are included in the response", allowableValues = "HISTORY") @RequestParam(value = "expand", required = false) String expand) {
-        ServiceEntity serviceEntity = serviceManager.getService(id);
+    public ResponseEntity<Service> getService(@ApiParam(value = "ID of service to update",required=true ) @PathVariable("id") UUID id){
+    ServiceEntity serviceEntity = serviceManager.getService(id);
         return ResponseEntity.ok(toDto(serviceEntity));
     }
 
 
-    @ApiOperation(value = "Get a list of all services", notes = "", response = Service.class, responseContainer = "List", tags = {"Service",})
+    @ApiOperation(value = "Get a list of all services", notes = "", response = Service.class, responseContainer = "List", tags={ "Service", })
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return the list of services", response = Service.class)})
+            @ApiResponse(code = 200, message = "Return the list of services", response = Service.class) })
     @RequestMapping(value = "/services",
-            produces = {"application/json"},
+            produces = { "application/json" },
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<List<Service>> getServices(@ApiParam(value = "Define if nested object of the service are included in the response", allowableValues = "HISTORY") @RequestParam(value = "expand", required = false) String expand) {
-        List<ServiceEntity> serviceEntities = serviceManager.getAllServices(expand);
+    public ResponseEntity<List<Service>> getServices(){
+        List<ServiceEntity> serviceEntities = serviceManager.getAllServices();
         List<Service> services = new ArrayList<>();
 
         serviceEntities.forEach(serviceEntity -> services.add(toDto(serviceEntity)));

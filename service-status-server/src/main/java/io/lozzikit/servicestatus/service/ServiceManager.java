@@ -40,10 +40,9 @@ public class ServiceManager {
 
     /**
      * Get all services from the service repository
-     * @param expand Expand the service statuses' history
      * @return A list of services contained in the service repository
      */
-    public List<ServiceEntity> getAllServices(String expand) {
+    public List<ServiceEntity> getAllServices() {
         List<ServiceEntity> serviceEntities = serviceRepository.findAll();
 
         return serviceEntities;

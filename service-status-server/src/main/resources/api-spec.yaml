@@ -55,13 +55,6 @@ paths:
       operationId: getServices
       produces:
         - application/json
-      parameters:
-        - name: expand
-          in: query
-          description: Define if nested object of the service are included in the response
-          type: string
-          enum:
-            - history
       responses:
         '200':
           description: Return the list of services
@@ -82,12 +75,6 @@ paths:
           required: true
           type: string
           format: uuid
-        - name: expand
-          in: query
-          description: Define if nested object of the service are included in the response
-          type: string
-          enum:
-            - history
       responses:
         '200':
           description: OK
