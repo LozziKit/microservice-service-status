@@ -4,4 +4,4 @@ COPY ./server.jar .
 EXPOSE 8080
 
 ## Release config
-CMD java -jar server.jar
+CMD java -jar server.jar --spring.config.name=test

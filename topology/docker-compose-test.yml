@@ -8,7 +8,7 @@ services:
         expose:
             - '3306'
         healthcheck:
-            test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice;\""
+            test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice_test;\""
             interval: 4s
             timeout: 1s
             retries: 5
@@ -18,12 +18,20 @@ services:
     server:
         build:
             context: ./images/server
+        container_name: service_server
         depends_on:
             database:
                 condition: service_healthy
         image: amt/status-server
         environment:
-            SPRING_DATASOURCE_URL: 'jdbc:mysql://172.20.0.2:3306/microservice_test'
+            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice_test'
         ports:
             - '8080:8080'
         restart: always
+     
+    mockserver:
+        container_name: mock_server
+        image: rodolpheche/wiremock
+        restart: always
+        ports:
+            - '8081:8080'
