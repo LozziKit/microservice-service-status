@@ -56,4 +56,8 @@ public class IncidentManager {
                 .filter(i -> i.getId().equals(idIncident))
                 .findFirst();
     }
+
+    public String getLocationUrl( IncidentEntity incidentEntity) {
+        return "/services/"+incidentEntity.getServiceEntity().getId().toString() +"/incidents/" + incidentEntity.getId().toString();
+    }
 }

@@ -245,6 +245,7 @@ public class ServicesApiController implements ServicesApi {
         incident.setTitle(incidentEntity.getTitle());
         List<IncidentUpdate> incidentUpdates = new LinkedList<>();
         incidentEntity.getIncidentUpdates().forEach(incidentUpdateEntity -> incidentUpdates.add(toDto(incidentUpdateEntity)));
+        incident.setLocation(incidentManager.getLocationUrl(incidentEntity));
         return incident;
     }
 
