@@ -1,6 +1,7 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
 import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.ApiException;
@@ -10,7 +11,9 @@ import io.lozzikit.servicestatus.api.dto.Service;
 import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -90,5 +93,19 @@ public class ServiceReceiveSteps {
     @Then("^I receive a payload containing a list of Statuses$")
     public void iReceiveAPayloadContainingAListOfStatuses() throws Throwable {
         assertNotNull(lastReceivedStatusList);
+    }
+
+    @And("^the list is sorted chronologically$")
+    public void theListIsSortedChronologically() throws Throwable {
+
+        assertTrue(lastReceivedStatusList.stream()
+                .sorted(new Comparator<Status>() {
+                    @Override
+                    public int compare(Status o1, Status o2) {
+                        return o1.getUpdateAt().compareTo(o2.getUpdateAt());
+                    }
+                })
+                .collect(Collectors.toList())
+                .equals(lastReceivedStatusList));
     }
 }
