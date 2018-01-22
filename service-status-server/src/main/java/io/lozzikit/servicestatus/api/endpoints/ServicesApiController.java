@@ -153,11 +153,11 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
-        if (newIncident.getIncidentUpdate().getIncidentType() == null) {
+        if (newIncident.getType() == null) {
             //TODO gérer le cas : P.e. faire un validator ?
         }
         IncidentEntity incidentEntity = incidentManager.createIncident(id, toIncidentEntity(newIncident));
-        incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(newIncident.getIncidentUpdate()));
+        incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(newIncident.getUpdate()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{incidentId}")
@@ -203,16 +203,16 @@ public class ServicesApiController implements ServicesApi {
     }
 
     private IncidentEntity toIncidentEntity(NewIncident incident) {
-        return new IncidentEntity(incident.getTitle(), toIncidentUpdateEntity(incident.getIncidentUpdate()));
+        return new IncidentEntity(incident.getTitle(), incident.getType(),incident.getMessage());
     }
 
     private IncidentUpdateEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
-        return new IncidentUpdateEntity(incidentUpdate.getIncidentType(), incidentUpdate.getMessage());
+        return new IncidentUpdateEntity(incidentUpdate.getType(), incidentUpdate.getMessage());
     }
 
     private StatusEntity toStatusEntity(Status status, ServiceEntity service) {
         return new StatusEntity(status.getUpdateAt().toDate(),
-                status.getHttpStatus(), status.getStatus(), service);
+                status.getHttpStatus(), status.getState(), service);
     }
 
     private Service toDto(ServiceEntity serviceEntity) {
@@ -236,7 +236,7 @@ public class ServicesApiController implements ServicesApi {
     private Incident toDto(IncidentEntity incidentEntity) {
         Incident incident = new Incident();
         incident.setTitle(incidentEntity.getTitle());
-        incident.setIncidents(incidentEntity.getIncidentUpdates()
+        incident.setUpdates(incidentEntity.getIncidentUpdates()
                 .stream()
                 .sorted(Comparator.comparing(IncidentUpdateEntity::getDate))
                 .map(incidentUpdateEntity -> (toDto(incidentUpdateEntity)))
@@ -247,7 +247,7 @@ public class ServicesApiController implements ServicesApi {
 
     private IncidentUpdate toDto(IncidentUpdateEntity incidentUpdateEntity) {
         IncidentUpdate incidentUpdate = new IncidentUpdate();
-        incidentUpdate.setIncidentType(incidentUpdateEntity.getIncidentType());
+        incidentUpdate.setType(incidentUpdateEntity.getIncidentType());
         incidentUpdate.setMessage(incidentUpdateEntity.getMessage());
         incidentUpdate.setDate(new DateTime(incidentUpdateEntity.getDate()));
         return incidentUpdate;
@@ -256,7 +256,7 @@ public class ServicesApiController implements ServicesApi {
     private Status toDto(StatusEntity statusEntity) {
         Status status = new Status();
         status.setHttpStatus(statusEntity.getHttpStatus());
-        status.setStatus(statusEntity.getStatus());
+        status.setState(statusEntity.getStatus());
         status.setUpdateAt(new DateTime(statusEntity.getCheckAt()));
         return status;
     }

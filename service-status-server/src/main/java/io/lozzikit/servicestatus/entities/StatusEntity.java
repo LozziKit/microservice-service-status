@@ -27,7 +27,7 @@ public class StatusEntity implements Serializable{
     private int httpStatus;
 
     @Column(name = "status")
-    private Status.StatusEnum status;
+    private Status.StateEnum status;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
     @JoinColumn(name = "service_id")
@@ -37,7 +37,7 @@ public class StatusEntity implements Serializable{
 
     public StatusEntity(@NotNull Date lastCheck,
                         @NotNull int httpStatus,
-                        @NotNull Status.StatusEnum status,
+                        @NotNull Status.StateEnum status,
                         @NotNull ServiceEntity serviceEntity){
         setCheckAt(lastCheck);
         setHttpStatus(httpStatus);
@@ -70,11 +70,11 @@ public class StatusEntity implements Serializable{
         this.httpStatus = httpStatus;
     }
 
-    public Status.StatusEnum getStatus() {
+    public Status.StateEnum getStatus() {
         return status;
     }
 
-    public void setStatus(Status.StatusEnum status) {
+    public void setStatus(Status.StateEnum status) {
         this.status = status;
     }
 

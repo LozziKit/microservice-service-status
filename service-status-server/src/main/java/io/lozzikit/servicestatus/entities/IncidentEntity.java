@@ -1,5 +1,6 @@
 package io.lozzikit.servicestatus.entities;
 
+import io.lozzikit.servicestatus.api.dto.IncidentType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -31,10 +32,11 @@ public class IncidentEntity implements Serializable {
     private ServiceEntity serviceEntity;
 
     public IncidentEntity(){}
-    public IncidentEntity(String title, IncidentUpdateEntity incidentUpdate){
+
+    public IncidentEntity(String title, IncidentType type, String message) {
         this.title=title;
         this.incidentUpdates= new LinkedList<>();
-        this.incidentUpdates.add(incidentUpdate);
+        this.incidentUpdates.add(new IncidentUpdateEntity(type,message));
     }
 
     public UUID getId() {

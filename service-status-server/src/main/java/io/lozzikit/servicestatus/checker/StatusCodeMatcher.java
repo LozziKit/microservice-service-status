@@ -14,7 +14,7 @@ public class StatusCodeMatcher {
      * @param httpStatusCode An HTTP response code
      * @return The appropriate StatusEnum based on internal logic
      */
-    public static Status.StatusEnum match(int httpStatusCode) throws IllegalArgumentException{
+    public static Status.StateEnum match(int httpStatusCode) throws IllegalArgumentException{
 
         if(httpStatusCode<100 || httpStatusCode > 527)
             throw new IllegalArgumentException("Illegal HTTP status code : "+httpStatusCode);
@@ -24,11 +24,11 @@ public class StatusCodeMatcher {
         switch(beginningDigit){
 
             case 2:
-                return Status.StatusEnum.AVAILABLE;
+                return Status.StateEnum.AVAILABLE;
             case 5:
-                return Status.StatusEnum.DOWN;
+                return Status.StateEnum.DOWN;
             default:
-                return Status.StatusEnum.UNAVAILABLE;
+                return Status.StateEnum.UNAVAILABLE;
         }
     }
 }
