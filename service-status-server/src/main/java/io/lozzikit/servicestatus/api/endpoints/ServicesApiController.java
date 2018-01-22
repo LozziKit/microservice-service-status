@@ -12,14 +12,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.models.auth.In;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -180,9 +176,9 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.POST)
     @Override
     public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
-                                                  @ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID idService,
+                                                  @ApiParam(value = "ID of the service",required=true ) @PathVariable("id") UUID id,
                                                   @ApiParam(value = "ID of the incident to update", required = true) @PathVariable("incidentId") UUID incidentId) {
-        incidentManager.addIncidentUpdate(idService, incidentId, toIncidentUpdateEntity(incidentUpdate));
+        incidentManager.addIncidentUpdate(incidentId, id,toIncidentUpdateEntity(incidentUpdate));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -196,13 +192,8 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Incident> getIncidentDetails(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
                                                        @ApiParam(value = "ID of the incidents to get", required = true) @PathVariable("incidentId") UUID incidentId) {
-        Optional<IncidentEntity> incident = incidentManager.getIncident(id, incidentId);
-        if (incident.isPresent()) {
-            return ResponseEntity.ok(toDto(incident.get()));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
+        IncidentEntity incident = incidentManager.getIncident(id, incidentId);
+        return ResponseEntity.ok(toDto(incident));
     }
 
     //Transformations
@@ -245,7 +236,7 @@ public class ServicesApiController implements ServicesApi {
     private Incident toDto(IncidentEntity incidentEntity) {
         Incident incident = new Incident();
         incident.setTitle(incidentEntity.getTitle());
-        incident.setIncidents( incidentEntity.getIncidentUpdates()
+        incident.setIncidents(incidentEntity.getIncidentUpdates()
                 .stream()
                 .sorted(Comparator.comparing(IncidentUpdateEntity::getDate))
                 .map(incidentUpdateEntity -> (toDto(incidentUpdateEntity)))

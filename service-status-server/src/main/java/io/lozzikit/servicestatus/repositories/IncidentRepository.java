@@ -12,5 +12,4 @@ import java.util.UUID;
 public interface IncidentRepository extends CrudRepository<IncidentEntity, UUID> {
 
     IncidentEntity findOneById(UUID idIncident);
-    List<IncidentUpdateEntity> findAllByOrderByIncidentUpdatesAsc();
 }

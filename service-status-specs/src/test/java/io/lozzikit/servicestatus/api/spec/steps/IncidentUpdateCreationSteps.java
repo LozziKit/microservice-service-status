@@ -31,7 +31,7 @@ public class IncidentUpdateCreationSteps {
             throw new NullPointerException("Cannot add an IncidentUpdate to an incident if incident is null");
         } else {
             try {
-                incidentApi.addIncidentUpdateWithHttpInfo(environment.getIncidentUpdate(), environment.getServiceUUID(), environment.getIncidentUUID());
+                incidentApi.addIncidentUpdateWithHttpInfo(environment.getIncidentUpdate(),environment.getServiceUUID(), environment.getIncidentUUID());
                 environment.setLastApiCallThrewException(false);
                 environment.setLastApiException(null);
                 environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());

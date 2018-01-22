@@ -1,5 +1,6 @@
 package io.lozzikit.servicestatus.service;
 
+import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
 import io.lozzikit.servicestatus.entities.IncidentEntity;
 import io.lozzikit.servicestatus.entities.IncidentUpdateEntity;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
@@ -7,11 +8,14 @@ import io.lozzikit.servicestatus.repositories.IncidentRepository;
 import io.lozzikit.servicestatus.repositories.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Micro service manager. This class is in of providing an interface with
+ * the incident's repository.
+ */
 @org.springframework.stereotype.Service
 public class IncidentManager {
 
@@ -19,11 +23,20 @@ public class IncidentManager {
     ServiceRepository serviceRepository;
 
     @Autowired
+    ServiceManager serviceManager;
+
+    @Autowired
     IncidentRepository incidentRepository;
 
-    public IncidentEntity createIncident(UUID id, IncidentEntity incidentEntity){
+    /**
+     * Create an Incident for a Service
+     * @param idService the uuid of the service the IncidentEntity will be added
+     * @param incidentEntity the incident to be added
+     * @return the IncidentEntity
+     */
+    public IncidentEntity createIncident(UUID idService, IncidentEntity incidentEntity){
 
-        ServiceEntity serviceEntity = serviceRepository.findOne(id);
+        ServiceEntity serviceEntity = serviceManager.getService(idService);
         serviceEntity.getIncidents().add(incidentEntity);
         incidentEntity.setServiceEntity(serviceEntity);
         incidentRepository.save(incidentEntity);
@@ -38,25 +51,47 @@ public class IncidentManager {
      * @return A list of services contained in the service repository
      */
     public Set<IncidentEntity> getAllIncidents(UUID serviceId) {
-        ServiceEntity serviceEntity = serviceRepository.findOne(serviceId);
-        return serviceEntity.getIncidents();
+        return serviceManager.getService(serviceId).getIncidents();
     }
 
-    public void addIncidentUpdate(UUID idService, UUID idIncident, IncidentUpdateEntity incidentUpdateEntity) {
-        IncidentEntity incidentEntity = incidentRepository.findOneById(idIncident);
+    /**
+     * Add an IncidentUpdateEntity to an IncidentEntity
+     * @param idIncident the if of an IncidentEntity the IncidentUpdateEntity will be added
+     * @param incidentUpdateEntity the IncidentUpdateEntity to be added
+     */
+    public void addIncidentUpdate(UUID idIncident, UUID idService, IncidentUpdateEntity incidentUpdateEntity) {
+        IncidentEntity incidentEntity = getIncident(idService,idIncident);
         incidentEntity.getIncidentUpdates().add(incidentUpdateEntity);
         incidentRepository.save(incidentEntity);
-
     }
 
-    public Optional<IncidentEntity> getIncident(UUID idService, UUID idIncident) {
-        ServiceEntity serviceEntity = serviceRepository.findOne(idService);
-        return serviceEntity.getIncidents()
-                .stream()
-                .filter(i -> i.getId().equals(idIncident))
-                .findFirst();
+    /**
+     * @param idService the id of a service
+     * @param idIncident the id of an Incident
+     * @return an Optional<IncidentEntity>
+     */
+    public IncidentEntity getIncident(UUID idService, UUID idIncident) {
+        ServiceEntity service = serviceManager.getService(idService);
+        IncidentEntity incident = incidentRepository.findOneById(idIncident);
+
+        //check if the incident is from this service
+        boolean isRelated = false;
+        for(IncidentEntity incidentEntity : service.getIncidents()){
+            if(incidentEntity.getId().equals(idIncident)){
+                isRelated=true;
+            }
+        }
+        if (incident == null || !isRelated) {
+            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("incident"));
+        }else{
+            return incident;
+        }
     }
 
+    /**
+     * @param incidentEntity an IncidentEntity
+     * @return the path of the incident
+     */
     public String getLocationUrl( IncidentEntity incidentEntity) {
         return "/services/"+incidentEntity.getServiceEntity().getId().toString() +"/incidents/" + incidentEntity.getId().toString();
     }
