@@ -153,8 +153,7 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
-        IncidentEntity incidentEntity = incidentManager.createIncident(id, toIncidentEntity(newIncident));
-        incidentEntity.getIncidentUpdates().add(new IncidentUpdateEntity(newIncident.getType(),newIncident.getMessage()));
+        IncidentEntity incidentEntity = incidentManager.createIncident(id, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(),newIncident.getMessage()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{incidentId}")

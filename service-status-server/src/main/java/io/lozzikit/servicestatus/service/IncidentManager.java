@@ -32,13 +32,18 @@ public class IncidentManager {
      * Create an Incident for a Service
      * @param idService the uuid of the service the IncidentEntity will be added
      * @param incidentEntity the incident to be added
+     * @param incidentUpdateEntity
      * @return the IncidentEntity
      */
-    public IncidentEntity createIncident(UUID idService, IncidentEntity incidentEntity){
+    public IncidentEntity createIncident(UUID idService, IncidentEntity incidentEntity, IncidentUpdateEntity incidentUpdateEntity){
 
         ServiceEntity serviceEntity = serviceManager.getService(idService);
         serviceEntity.getIncidents().add(incidentEntity);
         incidentEntity.setServiceEntity(serviceEntity);
+
+        incidentEntity.getIncidentUpdates().add(incidentUpdateEntity);
+        incidentUpdateEntity.setIncidentEntity(incidentEntity);
+
         incidentRepository.save(incidentEntity);
         serviceRepository.save(serviceEntity);
         return incidentEntity;
