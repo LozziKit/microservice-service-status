@@ -23,7 +23,6 @@ public class IncidentEntity implements Serializable {
     private String title;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "incidentEntity")
-    @Valid
     private List<IncidentUpdateEntity> incidentUpdates;
 
 
