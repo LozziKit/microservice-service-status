@@ -76,11 +76,13 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.GET)
     @Override
     public ResponseEntity<List<Status>> getHistory(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id) {
-        ServicesApi a;
         List<StatusEntity> statusEntities = serviceManager.getService(id).getStatuses();
-        List<Status> status = new ArrayList<>();
+        List<Status> status = statusEntities
+                .stream()
+                .sorted(Comparator.comparing(StatusEntity::getCheckAt))
+                .map(statusEntity -> toDto(statusEntity))
+                .collect(Collectors.toList());
 
-        statusEntities.forEach(statusEntity -> status.add(toDto(statusEntity)));
         return ResponseEntity.ok(status);
     }
 
@@ -155,8 +157,8 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
-        if(newIncident.getIncidentUpdate().getIncidentType() == null){
-           //TODO gérer le cas : P.e. faire un validator ?
+        if (newIncident.getIncidentUpdate().getIncidentType() == null) {
+            //TODO gérer le cas : P.e. faire un validator ?
         }
         IncidentEntity incidentEntity = incidentManager.createIncident(id, toIncidentEntity(newIncident));
         incidentEntity.getIncidentUpdates().add(toIncidentUpdateEntity(newIncident.getIncidentUpdate()));
@@ -243,8 +245,11 @@ public class ServicesApiController implements ServicesApi {
     private Incident toDto(IncidentEntity incidentEntity) {
         Incident incident = new Incident();
         incident.setTitle(incidentEntity.getTitle());
-        List<IncidentUpdate> incidentUpdates = new LinkedList<>();
-        incidentEntity.getIncidentUpdates().forEach(incidentUpdateEntity -> incidentUpdates.add(toDto(incidentUpdateEntity)));
+        incident.setIncidents( incidentEntity.getIncidentUpdates()
+                .stream()
+                .sorted(Comparator.comparing(IncidentUpdateEntity::getDate))
+                .map(incidentUpdateEntity -> (toDto(incidentUpdateEntity)))
+                .collect(Collectors.toList()));
         incident.setLocation(incidentManager.getLocationUrl(incidentEntity));
         return incident;
     }
@@ -253,6 +258,7 @@ public class ServicesApiController implements ServicesApi {
         IncidentUpdate incidentUpdate = new IncidentUpdate();
         incidentUpdate.setIncidentType(incidentUpdateEntity.getIncidentType());
         incidentUpdate.setMessage(incidentUpdateEntity.getMessage());
+        incidentUpdate.setDate(new DateTime(incidentUpdateEntity.getDate()));
         return incidentUpdate;
     }
 
