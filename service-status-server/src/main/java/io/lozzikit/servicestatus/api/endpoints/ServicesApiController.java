@@ -130,7 +130,7 @@ public class ServicesApiController implements ServicesApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return the list of services", response = Incident.class),
             @ApiResponse(code = 404, message = "Not found", response = Incident.class)})
-    @RequestMapping(value = "/services/{id}/incidents",
+    @RequestMapping(value = "/services/{idService}/incidents",
             produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
@@ -147,13 +147,13 @@ public class ServicesApiController implements ServicesApi {
             @ApiResponse(code = 201, message = "Creation successful", response = Void.class),
             @ApiResponse(code = 404, message = "Service not found", response = Void.class),
             @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
-    @RequestMapping(value = "/services/{id}/incidents",
+    @RequestMapping(value = "/services/{idService}/incidents",
             consumes = {"application/json"},
             method = RequestMethod.POST)
     @Override
-    public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
+    public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
-        IncidentEntity incidentEntity = incidentManager.createIncident(id, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(),newIncident.getMessage()));
+        IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(),newIncident.getMessage()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{incidentId}")
@@ -167,14 +167,14 @@ public class ServicesApiController implements ServicesApi {
             @ApiResponse(code = 201, message = "Creation successful", response = Void.class),
             @ApiResponse(code = 404, message = "Not found", response = Void.class),
             @ApiResponse(code = 422, message = "Invalid payload", response = Void.class)})
-    @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
+    @RequestMapping(value = "/services/{idService}/incidents/{idIncident}",
             consumes = {"application/json"},
             method = RequestMethod.POST)
     @Override
     public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
-                                                  @ApiParam(value = "ID of the service",required=true ) @PathVariable("id") UUID id,
-                                                  @ApiParam(value = "ID of the incident to update", required = true) @PathVariable("incidentId") UUID incidentId) {
-        incidentManager.addIncidentUpdate(incidentId, id,toIncidentUpdateEntity(incidentUpdate));
+                                                  @ApiParam(value = "ID of the service",required=true ) @PathVariable("idService") UUID idService,
+                                                  @ApiParam(value = "ID of the incident to update", required = true) @PathVariable("idIncident") UUID idIncident) {
+        incidentManager.addIncidentUpdate(idIncident, idService,toIncidentUpdateEntity(incidentUpdate));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -182,13 +182,13 @@ public class ServicesApiController implements ServicesApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return the incident", response = Incident.class),
             @ApiResponse(code = 404, message = "Not found", response = Incident.class)})
-    @RequestMapping(value = "/services/{id}/incidents/{incidentId}",
+    @RequestMapping(value = "/services/{idService}/incidents/{idIncident}",
             produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<Incident> getIncidentDetails(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id,
-                                                       @ApiParam(value = "ID of the incidents to get", required = true) @PathVariable("incidentId") UUID incidentId) {
-        IncidentEntity incident = incidentManager.getIncident(id, incidentId);
+    public ResponseEntity<Incident> getIncidentDetails(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
+                                                       @ApiParam(value = "ID of the incidents to get", required = true) @PathVariable("idIncident") UUID idIncident) {
+        IncidentEntity incident = incidentManager.getIncident(idService, idIncident);
         return ResponseEntity.ok(toDto(incident));
     }
 
