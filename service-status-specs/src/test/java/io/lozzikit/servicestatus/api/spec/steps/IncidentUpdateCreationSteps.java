@@ -50,6 +50,6 @@ public class IncidentUpdateCreationSteps {
 
     @And("^the IncidentUpdate type is null$")
     public void theIncidentUpdateTypeIsNull() throws Throwable {
-        environment.getIncidentUpdate().setIncidentType(null);
+        environment.getIncidentUpdate().setType(null);
     }
 }
