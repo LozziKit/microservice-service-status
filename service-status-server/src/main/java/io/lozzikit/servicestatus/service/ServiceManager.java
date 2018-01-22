@@ -132,9 +132,4 @@ public class ServiceManager {
     public String getLocationUrl(UUID uuid) {
         return "/services/" + uuid.toString();
     }
-
-    public List<StatusEntity> getStatus(UUID uuid){
-        serviceRepository.findAll();
-        return getService(uuid).getStatuses();
-    }
 }
