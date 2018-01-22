@@ -21,7 +21,7 @@ Feature: Check we can add IncidentUpdates to an Incident
     When I have added my IncidentUpdate to the Server
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a incidentType may not be null validation error message
+    And I receive a type may not be null validation error message
 
   Scenario: Add an IncidentUpdate to an Incident with an invalid ServiceID
     Given I have an invalid Service identifier

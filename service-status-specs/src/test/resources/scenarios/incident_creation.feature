@@ -20,11 +20,11 @@ Feature: Create an Incident
     And I receive a 422 status code
     And I receive a title may not be null validation error message
 
-  Scenario: Create an Incident with a IncidentUpdate containing a null type field
+  Scenario: Create an Incident with a null type field
     Given I have an Incident payload
-    And the Incident's IncidentUpdate type is null
+    And the Incident type is null
     When I have added my Incident to the server
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a incidentUpdate.incidentType may not be null validation error message
+    And I receive a type may not be null validation error message
 

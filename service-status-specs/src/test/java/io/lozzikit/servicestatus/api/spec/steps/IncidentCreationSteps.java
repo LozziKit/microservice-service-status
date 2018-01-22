@@ -29,8 +29,8 @@ public class IncidentCreationSteps {
         environment.getIncident().setTitle(null);
     }
 
-    @And("^the Incident's IncidentUpdate type is null")
-    public void theIncidentsIncidentUpdateTypeIsNull() throws Throwable {
+    @And("^the Incident type is null")
+    public void theIncidentTypeIsNull() throws Throwable {
         environment.getIncident().setType(null);
     }
 
