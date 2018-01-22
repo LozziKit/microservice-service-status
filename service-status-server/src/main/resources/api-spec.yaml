@@ -417,6 +417,9 @@ definitions:
         $ref: '#/definitions/IncidentType'
       message:
         type: string
+      date:
+        type: string
+        format: date-time
     required:
       - incidentType
   IncidentType:

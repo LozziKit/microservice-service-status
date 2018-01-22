@@ -93,7 +93,7 @@ public class ServiceManager {
         serviceEntity.setPort(service.getPort());
         serviceEntity.setInterval(service.getInterval());
 
-        //If the service interval is different, we notifiy the scheduler
+        //If the service interval is different, we notify the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
             try {
                 serviceStatusChecker.updateSchedule(service, service.getInterval());
@@ -134,6 +134,7 @@ public class ServiceManager {
     }
 
     public List<StatusEntity> getStatus(UUID uuid){
+        serviceRepository.findAll();
         return getService(uuid).getStatuses();
     }
 }

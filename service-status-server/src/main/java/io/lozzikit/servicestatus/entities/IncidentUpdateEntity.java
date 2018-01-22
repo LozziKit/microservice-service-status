@@ -2,6 +2,7 @@ package io.lozzikit.servicestatus.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 import io.lozzikit.servicestatus.api.dto.*;
@@ -29,11 +30,18 @@ public class IncidentUpdateEntity implements Serializable {
     @Column(name = "message")
     private String message;
 
-    public IncidentUpdateEntity(){}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "date")
+    private Date date;
+
+    public IncidentUpdateEntity(){
+        date = new Date();
+    }
 
     public IncidentUpdateEntity(IncidentType incidentType, String message){
         this.incidentType=incidentType;
         this.message=message;
+        date = new Date();
     }
 
     public UUID getId() {
@@ -66,5 +74,9 @@ public class IncidentUpdateEntity implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }
