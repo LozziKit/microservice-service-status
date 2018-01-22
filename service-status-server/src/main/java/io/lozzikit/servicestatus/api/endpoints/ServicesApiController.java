@@ -134,8 +134,8 @@ public class ServicesApiController implements ServicesApi {
             produces = {"application/json"},
             method = RequestMethod.GET)
     @Override
-    public ResponseEntity<List<Incident>> getIncidents(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id) {
-        Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(id);
+    public ResponseEntity<List<Incident>> getIncidents(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService) {
+        Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(idService);
         List<Incident> incidents = new ArrayList<>();
 
         incidentEntities.forEach(incidentEntity -> incidents.add(toDto(incidentEntity)));
