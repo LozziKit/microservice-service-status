@@ -31,7 +31,7 @@ public class IncidentCreationSteps {
 
     @And("^the Incident's IncidentUpdate type is null")
     public void theIncidentsIncidentUpdateTypeIsNull() throws Throwable {
-        environment.getIncident().getIncidentUpdate().setIncidentType(null);
+        environment.getIncident().setType(null);
     }
 
     @When("^I have added my Incident to the server$")

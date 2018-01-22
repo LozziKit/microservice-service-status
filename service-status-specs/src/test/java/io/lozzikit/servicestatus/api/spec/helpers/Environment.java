@@ -56,15 +56,17 @@ public class Environment {
 
     public IncidentUpdate generateIncidentUpdate() {
         IncidentUpdate iu = new IncidentUpdate();
-        iu.setIncidentType(IncidentType.ISSUE);
-        iu.setMessage("This is an incident of type " + iu.getIncidentType() + ". ");
+        iu.setType(IncidentType.ISSUE);
+        iu.setMessage("This is an incident of type " + iu.getType() + ". ");
         return iu;
     }
 
     public NewIncident generateIncident() {
         NewIncident result = new NewIncident();
         result.setTitle("Test incident number " + ++counter);
-        result.setIncidentUpdate(generateIncidentUpdate());
+        IncidentUpdate temp = generateIncidentUpdate();
+        result.setType(temp.getType());
+        result.setMessage(temp.getMessage());
         return result;
     }
 
