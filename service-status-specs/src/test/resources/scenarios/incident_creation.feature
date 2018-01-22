@@ -26,5 +26,5 @@ Feature: Create an Incident
     When I have added my Incident to the server
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a incidentType may not be null validation error message
+    And I receive a incidentUpdate.incidentType may not be null validation error message
 

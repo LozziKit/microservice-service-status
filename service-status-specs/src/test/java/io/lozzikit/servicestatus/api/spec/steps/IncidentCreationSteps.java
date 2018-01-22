@@ -30,7 +30,7 @@ public class IncidentCreationSteps {
     }
 
     @And("^the Incident's IncidentUpdate type is null")
-    public void theIncidentUpdateTypeIsNull() throws Throwable {
+    public void theIncidentsIncidentUpdateTypeIsNull() throws Throwable {
         environment.getIncident().getIncidentUpdate().setIncidentType(null);
     }
 
@@ -40,7 +40,7 @@ public class IncidentCreationSteps {
             throw new NullPointerException("Cannot add an incident to a service if incident is null");
         } else {
             try {
-                environment.setLastApiResponse(incidentApi.addIncidentWithHttpInfo(environment.getServiceUUID(), incident));
+                environment.setLastApiResponse(incidentApi.addIncidentWithHttpInfo(environment.getServiceUUID(), environment.getIncident()));
                 environment.setLastApiCallThrewException(false);
                 environment.setLastApiException(null);
                 environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());

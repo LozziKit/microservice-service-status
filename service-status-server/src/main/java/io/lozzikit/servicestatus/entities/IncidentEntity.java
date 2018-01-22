@@ -3,6 +3,7 @@ package io.lozzikit.servicestatus.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ public class IncidentEntity implements Serializable {
     private String title;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "incidentEntity")
+    @Valid
     private List<IncidentUpdateEntity> incidentUpdates;
 
 
