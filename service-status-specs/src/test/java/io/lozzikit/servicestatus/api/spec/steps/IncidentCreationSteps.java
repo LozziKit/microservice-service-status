@@ -1,13 +1,13 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.api.IncidentApi;
-import io.lozzikit.servicestatus.api.ServiceApi;
 import io.lozzikit.servicestatus.api.dto.NewIncident;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
+
+import java.util.UUID;
 
 import static java.lang.Thread.sleep;
 
@@ -45,7 +45,7 @@ public class IncidentCreationSteps {
                 environment.setLastApiException(null);
                 environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
                 String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
-                environment.setIncidentUUID(location.substring(location.lastIndexOf('/') + 1, location.length() - 1));
+                environment.setIncidentUUID(UUID.fromString(location.substring(location.lastIndexOf('/') + 1, location.length() - 1)));
                 sleep(1000);
             } catch (ApiException e) {
                 environment.setLastApiCallThrewException(true);

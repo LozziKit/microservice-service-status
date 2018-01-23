@@ -60,7 +60,7 @@ public class IncidentReceiveSteps {
 
     @Given("^I have an invalid Incident identifier$")
     public void iHaveAnInvalidIncidentIdentifier() throws Throwable {
-        environment.setIncidentUUID(UUID.randomUUID().toString());
+        environment.setIncidentUUID(UUID.randomUUID());
     }
 
     @When("^I send a GET request to the /services/serviceId/incidents endpoint$")

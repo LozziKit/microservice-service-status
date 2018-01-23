@@ -6,6 +6,8 @@ import io.lozzikit.servicestatus.api.ServiceApi;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 
+import java.util.UUID;
+
 import static java.lang.Thread.sleep;
 
 public class ServiceCreationSteps {
@@ -31,7 +33,7 @@ public class ServiceCreationSteps {
                 environment.setLastApiException(null);
                 environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
                 String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
-                environment.setServiceUUID(location.substring(location.lastIndexOf('/') + 1, location.length() - 1));
+                environment.setServiceUUID(UUID.fromString(location.substring(location.lastIndexOf('/') + 1, location.length() - 1)));
                 sleep(1000);
             } catch (ApiException e) {
                 environment.setLastApiCallThrewException(true);

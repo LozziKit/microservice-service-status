@@ -12,6 +12,7 @@ import io.lozzikit.servicestatus.api.ServiceApi;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.UUID;
 
 public class Environment {
     private int counter = 0;
@@ -26,10 +27,10 @@ public class Environment {
     private int lastStatusCode;
 
     private NewService service;
-    private String serviceUUID;
+    private UUID serviceUUID;
 
     private NewIncident incident;
-    private String incidentUUID;
+    private UUID incidentUUID;
 
     private IncidentUpdate incidentUpdate;
 
@@ -118,11 +119,11 @@ public class Environment {
         this.service = service;
     }
 
-    public String getServiceUUID() {
+    public UUID getServiceUUID() {
         return serviceUUID;
     }
 
-    public void setServiceUUID(String serviceUUID) {
+    public void setServiceUUID(UUID serviceUUID) {
         this.serviceUUID = serviceUUID;
     }
 
@@ -138,11 +139,11 @@ public class Environment {
         return incident;
     }
 
-    public String getIncidentUUID() {
+    public UUID getIncidentUUID() {
         return incidentUUID;
     }
 
-    public void setIncidentUUID(String incidentUUID) {
+    public void setIncidentUUID(UUID incidentUUID) {
         this.incidentUUID = incidentUUID;
     }
 

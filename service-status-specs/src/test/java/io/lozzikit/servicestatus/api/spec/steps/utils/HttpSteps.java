@@ -70,7 +70,7 @@ public class HttpSteps {
 
     @Given("^I have an invalid Service identifier$")
     public void iHaveAWrongServiceIdentifier() throws Throwable {
-        environment.setServiceUUID(UUID.randomUUID().toString());
+        environment.setServiceUUID(UUID.randomUUID());
     }
 
 
