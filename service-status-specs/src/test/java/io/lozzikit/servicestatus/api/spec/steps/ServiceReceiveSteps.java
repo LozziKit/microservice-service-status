@@ -33,7 +33,6 @@ public class ServiceReceiveSteps {
         this.service = environment.getService();
     }
 
-
     @When("^I send a GET request to the /service/id endpoint$")
     public void iSendAGETRequestToTheServiceIdEndpoint() throws Throwable {
         try {
@@ -47,9 +46,7 @@ public class ServiceReceiveSteps {
             environment.setLastApiException(e);
             environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
-
     }
-
 
     @Then("^I receive a payload containing the Service$")
     public void iReceiveAPayloadContainingTheService() throws Throwable {
