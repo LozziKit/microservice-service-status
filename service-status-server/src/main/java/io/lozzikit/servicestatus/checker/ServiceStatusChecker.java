@@ -68,6 +68,7 @@ public class ServiceStatusChecker  {
      */
     public ServiceStatusChecker() throws SchedulerException {
         scheduler = StdSchedulerFactory.getDefaultScheduler();
+        clear();
     }
 
     @PostConstruct
@@ -180,11 +181,8 @@ public class ServiceStatusChecker  {
      */
     public void updateSchedule(ServiceEntity s, int interval) throws SchedulerException {
 
-        scheduler.rescheduleJob(TriggerKey.triggerKey("trigger-"+s.getId()),
-                newTrigger()
-                        .withIdentity("trigger-"+s.getId())
-                        .startNow()
-                        .withSchedule(CheckerUtils.appropriateSchedule(interval,granularity))
-                        .build());
+        removeScheduledTask(s);
+        s.setInterval(interval);
+        schedule(s);
     }
 }
