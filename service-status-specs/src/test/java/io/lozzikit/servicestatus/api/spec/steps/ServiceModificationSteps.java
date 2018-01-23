@@ -6,7 +6,7 @@ import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.ApiResponse;
 import io.lozzikit.servicestatus.api.ServiceApi;
 import io.lozzikit.servicestatus.api.dto.NewService;
-import io.lozzikit.servicestatus.api.spec.steps.utils.Environment;
+import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 
 import static org.junit.Assert.assertNull;
 

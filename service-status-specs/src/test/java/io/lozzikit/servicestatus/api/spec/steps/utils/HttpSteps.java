@@ -7,6 +7,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import io.lozzikit.servicestatus.api.ServiceApi;
 import io.lozzikit.servicestatus.api.dto.ApiValidationError;
+import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
