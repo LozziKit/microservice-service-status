@@ -3,18 +3,18 @@ version: '2.1'
 services:
     database:
         build: ./images/mysql
-        container_name: microservice-db
+        container_name: microservice-db-test
         restart: always
         expose:
             - '3306'
         healthcheck:
-            test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice;\""
+            test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice_test;\""
             interval: 4s
             timeout: 1s
             retries: 5
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: 'microservice'
+            MYSQL_DATABASE: 'microservice_test'
     server:
         build:
             context: ./images/server
@@ -24,7 +24,14 @@ services:
                 condition: service_healthy
         image: amt/status-server
         environment:
-            SPRING_DATASOURCE_URL: 'jdbc:mysql://172.20.0.2:3306/microservice'
+            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice_test'
         ports:
             - '8080:8080'
         restart: always
+     
+    mockserver:
+        container_name: mock_server
+        image: rodolpheche/wiremock
+        restart: always
+        ports:
+            - '8081:8080'

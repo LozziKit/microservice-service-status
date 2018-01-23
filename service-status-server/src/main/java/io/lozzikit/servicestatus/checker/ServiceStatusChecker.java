@@ -1,17 +1,21 @@
 package io.lozzikit.servicestatus.checker;
 
 import io.lozzikit.servicestatus.checker.jobs.CheckTask;
+import io.lozzikit.servicestatus.checker.utils.CheckerUtils;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.service.ServiceManager;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +30,27 @@ import static org.quartz.TriggerBuilder.newTrigger;
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ServiceStatusChecker  {
 
+    //Time granularity enumeration
+    public enum TIME_GRANULARITY{
+        MILLISECONDS("ms"),
+        SECONDS("s"),
+        MINUTES("m"),
+        HOURS("h");
+
+        private String s;
+
+        TIME_GRANULARITY(String s){
+            this.s=s;
+        }
+
+    }
+
     //Constants fields used for object id
     public static final String DEFAULT_EXPAND = "HISTORY";
+
+
+    @Value("${ssc.time-granularity}")
+    private String sGranularity;
 
     //Service manager used to interface with Service DAO
     @Autowired
@@ -37,6 +60,7 @@ public class ServiceStatusChecker  {
     JobListener listener;
 
     private final Scheduler scheduler;     //Quartz scheduler used for recurrent event triggering
+    private TIME_GRANULARITY granularity;
 
     /**
      * Default constructor
@@ -46,13 +70,14 @@ public class ServiceStatusChecker  {
         scheduler = StdSchedulerFactory.getDefaultScheduler();
     }
 
-    @javax.annotation.PostConstruct
+    @PostConstruct
     public void init() throws SchedulerException {
         scheduler.getListenerManager().addJobListener(listener);
         scheduler.start();
+        granularity = TIME_GRANULARITY.valueOf(sGranularity);
     }
 
-    @javax.annotation.PreDestroy
+    @PreDestroy
     public void destroy() throws SchedulerException {
         scheduler.shutdown();
     }
@@ -72,9 +97,7 @@ public class ServiceStatusChecker  {
         Trigger trigger = newTrigger()
                 .withIdentity("trigger-"+s.getId())
                 .startNow()
-                .withSchedule(simpleSchedule()
-                        .withIntervalInMinutes(s.getInterval())
-                        .repeatForever())
+                .withSchedule(CheckerUtils.appropriateSchedule(s.getInterval(),granularity))
                 .build();
 
         try {
@@ -125,6 +148,14 @@ public class ServiceStatusChecker  {
     }
 
     /**
+     * Gets the time granularity of the service status checker
+     * @return A TIME_GRANULARITY enumeration
+     */
+    public TIME_GRANULARITY getGranularity() {
+        return granularity;
+    }
+
+    /**
      * Unschedules a service given by its name
      * @param s The service whose monitoring needs removing
      * @throws SchedulerException if no associated service was found or if the unscheduling failed
@@ -135,7 +166,7 @@ public class ServiceStatusChecker  {
 
     /**
      * Clear all scheduling data
-     * @throws SchedulerException
+     * @throws SchedulerException if the scheduler fails to clear its scheduled tasks
      */
     public void clear() throws SchedulerException {
         scheduler.clear();
@@ -153,9 +184,7 @@ public class ServiceStatusChecker  {
                 newTrigger()
                         .withIdentity("trigger-"+s.getId())
                         .startNow()
-                        .withSchedule(simpleSchedule()
-                                .withIntervalInMinutes(interval)
-                                .repeatForever())
+                        .withSchedule(CheckerUtils.appropriateSchedule(interval,granularity))
                         .build());
     }
 }
