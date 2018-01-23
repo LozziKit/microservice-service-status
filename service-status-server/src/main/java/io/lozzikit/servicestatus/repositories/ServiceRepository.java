@@ -11,5 +11,6 @@ import java.util.UUID;
 public interface ServiceRepository extends CrudRepository<ServiceEntity, UUID> {
 
     @Override
-    public List<ServiceEntity> findAll();
+    List<ServiceEntity> findAll();
+
 }

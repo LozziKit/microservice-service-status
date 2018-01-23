@@ -7,33 +7,48 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@Table(name = "services")
 public class ServiceEntity implements Serializable{
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(name = "id", unique = true, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @NotNull
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description")
     private String description;
 
-    @NotNull
+    @Column(name = "url", nullable = false)
     private String url;
 
-    @NotNull
+    @Column(name = "port", nullable = false)
     private int port;
 
-    @NotNull
+    @Column(name = "check_interval", nullable = false)
     private int checkInterval;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<StatusEntity> statuses;
+
+    @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private Set<IncidentEntity> incidents;
+
+    public ServiceEntity(){}
+    public ServiceEntity(String name, String description, String url, int port, int checkInterval){
+        this.name=name;
+        this.description=description;
+        this.url=url;
+        this.port=port;
+        this.checkInterval=checkInterval;
+    }
 
     public UUID getId() {
         return id;
@@ -89,5 +104,13 @@ public class ServiceEntity implements Serializable{
 
     public void setStatuses(List<StatusEntity> statuses) {
         this.statuses = statuses;
+    }
+
+    public Set<IncidentEntity> getIncidents() {
+        return incidents;
+    }
+
+    public void setIncidents(Set<IncidentEntity> incidents) {
+        this.incidents = incidents;
     }
 }

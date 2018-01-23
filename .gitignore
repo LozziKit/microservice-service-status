@@ -1,4 +1,5 @@
 microservice-service-status.iml
 microservice-service-status-specifications.iml
+node_modules
 .idea
 *.jar

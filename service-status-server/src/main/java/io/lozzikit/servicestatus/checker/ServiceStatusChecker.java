@@ -112,7 +112,7 @@ public class ServiceStatusChecker  {
      * Schedules all events stored in the service service
      */
     public void scheduleAll(){
-        List<ServiceEntity> services = serviceManager.getAllServices(DEFAULT_EXPAND);
+        List<ServiceEntity> services = serviceManager.getAllServices();
         scheduleAll(services);
     }
 

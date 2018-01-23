@@ -1,15 +1,19 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.api.ServiceApi;
 import io.lozzikit.servicestatus.api.dto.NewService;
 import io.lozzikit.servicestatus.api.dto.Service;
+import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
+
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -17,36 +21,32 @@ import static org.junit.Assert.assertTrue;
 public class ServiceReceiveSteps {
 
     private Environment environment;
-    private ServiceApi api;
+    private ServiceApi serviceApi;
     private NewService service;
     private Service lastReceivedService;
     private List<Service> lastReceivedServiceList;
+    private List<Status> lastReceivedStatusList;
 
     public ServiceReceiveSteps(Environment environment) {
         this.environment = environment;
-        this.api = environment.getApi();
+        this.serviceApi = environment.getServiceApi();
         this.service = environment.getService();
     }
-
 
     @When("^I send a GET request to the /service/id endpoint$")
     public void iSendAGETRequestToTheServiceIdEndpoint() throws Throwable {
         try {
-            lastReceivedService = api.getService(environment.getServiceUUID(), "history");
+            lastReceivedService = serviceApi.getService(environment.getServiceUUID());
             environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
             environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
-            String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
-            environment.setServiceUUID(UUID.fromString(location.substring(location.lastIndexOf('/')+1, location.length()-1)));
         } catch (ApiException e) {
             environment.setLastApiCallThrewException(true);
             environment.setLastApiResponse(null);
             environment.setLastApiException(e);
             environment.setLastStatusCode(environment.getLastApiException().getCode());
         }
-
     }
-
 
     @Then("^I receive a payload containing the Service$")
     public void iReceiveAPayloadContainingTheService() throws Throwable {
@@ -56,7 +56,7 @@ public class ServiceReceiveSteps {
     @When("^I send a GET request to the /services endpoint$")
     public void iSendAGETRequestToTheServicesEndpoint() throws Throwable {
         try {
-            lastReceivedServiceList = api.getServices("history");
+            lastReceivedServiceList = serviceApi.getServices();
             environment.setLastApiCallThrewException(false);
             environment.setLastApiException(null);
         } catch (ApiException e) {
@@ -73,4 +73,36 @@ public class ServiceReceiveSteps {
         assertTrue(lastReceivedServiceList.size() >= 1);
     }
 
+    @When("^I send a GET request to the /services/id/history$")
+    public void iSendAGETRequestToTheServicesIdHistory() throws Throwable {
+        try {
+            lastReceivedStatusList = serviceApi.getHistory(environment.getServiceUUID());
+            environment.setLastApiCallThrewException(false);
+            environment.setLastApiException(null);
+        } catch (ApiException e) {
+            environment.setLastApiCallThrewException(true);
+            environment.setLastApiResponse(null);
+            environment.setLastApiException(e);
+            environment.setLastStatusCode(environment.getLastApiException().getCode());
+        }
+    }
+
+    @Then("^I receive a payload containing a list of Statuses$")
+    public void iReceiveAPayloadContainingAListOfStatuses() throws Throwable {
+        assertNotNull(lastReceivedStatusList);
+    }
+
+    @And("^the list is sorted chronologically$")
+    public void theListIsSortedChronologically() throws Throwable {
+
+        assertTrue(lastReceivedStatusList.stream()
+                .sorted(new Comparator<Status>() {
+                    @Override
+                    public int compare(Status o1, Status o2) {
+                        return o1.getUpdateAt().compareTo(o2.getUpdateAt());
+                    }
+                })
+                .collect(Collectors.toList())
+                .equals(lastReceivedStatusList));
+    }
 }

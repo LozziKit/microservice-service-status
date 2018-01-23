@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.UUID;
 
 @Service
 public class JobListener implements org.quartz.JobListener {
@@ -46,6 +44,6 @@ public class JobListener implements org.quartz.JobListener {
 
         assert statusEntity != null;
 
-        serviceManager.addStatus(statusEntity.getService().getId(), statusEntity);
+        serviceManager.addStatus(statusEntity.getServiceEntity().getId(), statusEntity);
     }
 }
