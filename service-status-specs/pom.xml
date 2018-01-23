@@ -59,13 +59,6 @@
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
           <version>4.12</version>
-          <scope>test</scope>
-          <exclusions>
-              <exclusion>
-                  <groupId>org.hamcrest</groupId>
-                  <artifactId>hamcrest-core</artifactId>
-              </exclusion>
-          </exclusions>
       </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -132,28 +125,6 @@
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>${swagger-core-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>5.0.2.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>5.0.2.RELEASE</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <version>1.5.9.RELEASE</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.lozzikit</groupId>
-      <artifactId>microservice-service-status-server</artifactId>
-      <version>1.0.0</version>
     </dependency>
   </dependencies>
 </project>

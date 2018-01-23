@@ -2,6 +2,7 @@ package io.lozzikit.servicestatus.api.spec.steps.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -23,7 +24,7 @@ public class HttpSteps {
 
     public HttpSteps(Environment environment) {
         this.environment = environment;
-        this.api = environment.getApi();
+        this.api = environment.getServiceApi();
         this.gson = environment.getGson();
     }
 
@@ -69,7 +70,7 @@ public class HttpSteps {
 
     @Given("^I have an invalid Service identifier$")
     public void iHaveAWrongServiceIdentifier() throws Throwable {
-        environment.setServiceUUID(UUID.randomUUID().toString());
+        environment.setServiceUUID(UUID.randomUUID());
     }
 
 
@@ -124,4 +125,18 @@ public class HttpSteps {
         environment.getService().setInterval(-1);
     }
 
+    @Given("^I have an Incident payload$")
+    public void iHaveAnIncidentPayload() throws Throwable {
+        environment.setIncident(environment.generateIncident());
+    }
+
+    @And("^I have my Incident identifier$")
+    public void iHaveMyIncidentIdentifier() throws Throwable {
+        assertNotNull(environment.getIncidentUUID());
+    }
+
+    @And("^I have an IncidentUpdate payload$")
+    public void iHaveAnIncidentUpdatePayload() throws Throwable {
+        environment.setIncidentUpdate(environment.generateIncidentUpdate());
+    }
 }

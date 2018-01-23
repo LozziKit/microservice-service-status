@@ -47,7 +47,7 @@ public class CheckTask implements Job {
 
         Response response;
         int code;
-        Status.StatusEnum status;
+        Status.StateEnum status;
 
         //Contacting service to get availability
         try{
@@ -56,7 +56,7 @@ public class CheckTask implements Job {
             status = StatusCodeMatcher.match(code);
         }catch (IOException e){
             code = -1;
-            status = Status.StatusEnum.DOWN;
+            status = Status.StateEnum.DOWN;
         }
 
         //Creating the status from response

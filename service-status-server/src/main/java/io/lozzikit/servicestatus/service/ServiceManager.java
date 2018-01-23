@@ -1,7 +1,5 @@
 package io.lozzikit.servicestatus.service;
 
-import io.lozzikit.servicestatus.api.dto.Service;
-import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.api.exceptions.ErrorMessageUtil;
 import io.lozzikit.servicestatus.checker.ServiceStatusChecker;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
@@ -22,23 +20,17 @@ import java.util.UUID;
 @org.springframework.stereotype.Service
 public class ServiceManager {
 
-    private static final String EXPAND_HISTORY = "STATUS";
-
     @Autowired
     ServiceRepository serviceRepository;
 
     @Autowired
     ServiceStatusChecker serviceStatusChecker;
 
-    public ServiceEntity getService(UUID id, String expand) {
+    public ServiceEntity getService(UUID id) {
         ServiceEntity service = serviceRepository.findOne(id);
 
         if (service == null) {
             throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
-        }
-
-        if (expand.equals(EXPAND_HISTORY)) {
-            service.setStatuses(null);
         }
 
         return service;
@@ -46,18 +38,10 @@ public class ServiceManager {
 
     /**
      * Get all services from the service repository
-     * @param expand Expand the service statuses' history
      * @return A list of services contained in the service repository
      */
-    public List<ServiceEntity> getAllServices(String expand) {
+    public List<ServiceEntity> getAllServices() {
         List<ServiceEntity> serviceEntities = serviceRepository.findAll();
-
-        if (expand.equals(EXPAND_HISTORY)) {
-            serviceEntities.stream().map(service -> {
-                service.setStatuses(null);
-                return service;
-            });
-        }
 
         return serviceEntities;
     }
@@ -78,6 +62,7 @@ public class ServiceManager {
      * @param uuid The UUID whose service needs to be removed
      */
     public void deleteServiceById(UUID uuid) {
+
         if (!serviceRepository.exists(uuid)) {
             throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
         }
@@ -100,11 +85,7 @@ public class ServiceManager {
      * @param service The new service to update data with
      */
     public void updateService(UUID id, ServiceEntity service) {
-        ServiceEntity serviceEntity = serviceRepository.findOne(id);
-
-        if (serviceEntity == null) {
-            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
-        }
+        ServiceEntity serviceEntity = getService(id);
 
         //If the service interval is different, we notifiy the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
@@ -132,9 +113,7 @@ public class ServiceManager {
      */
     public void addStatus(UUID id, StatusEntity status){
 
-        ServiceEntity serviceEntity = serviceRepository.findOne(id);
-        if(serviceEntity==null)
-            return;
+        ServiceEntity serviceEntity = getService(id);
 
         List<StatusEntity> tempStatuses = serviceEntity.getStatuses();
         if(tempStatuses==null)

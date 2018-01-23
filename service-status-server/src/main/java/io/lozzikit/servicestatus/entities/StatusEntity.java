@@ -10,34 +10,39 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Table(name = "status")
 public class StatusEntity implements Serializable{
     // checkAt, code, status
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(name = "id", unique = true, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "check_at")
     private Date checkAt;
 
+    @Column(name = "http_status")
     private int httpStatus;
 
-    private Status.StatusEnum status;
+    @Column(name = "status")
+    private Status.StateEnum status;
 
-    @ManyToOne
-    private ServiceEntity service;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
+    @JoinColumn(name = "service_id")
+    private ServiceEntity serviceEntity;
 
     public StatusEntity(){}
 
     public StatusEntity(@NotNull Date lastCheck,
                         @NotNull int httpStatus,
-                        @NotNull Status.StatusEnum status,
+                        @NotNull Status.StateEnum status,
                         @NotNull ServiceEntity serviceEntity){
         setCheckAt(lastCheck);
         setHttpStatus(httpStatus);
         setStatus(status);
-        setService(serviceEntity);
+        setServiceEntity(serviceEntity);
 
     }
 
@@ -65,20 +70,20 @@ public class StatusEntity implements Serializable{
         this.httpStatus = httpStatus;
     }
 
-    public Status.StatusEnum getStatus() {
+    public Status.StateEnum getStatus() {
         return status;
     }
 
-    public void setStatus(Status.StatusEnum status) {
+    public void setStatus(Status.StateEnum status) {
         this.status = status;
     }
 
-    public ServiceEntity getService() {
-        return service;
+    public ServiceEntity getServiceEntity() {
+        return serviceEntity;
     }
 
-    public void setService(ServiceEntity service) {
-        this.service = service;
+    public void setServiceEntity(ServiceEntity serviceEntity) {
+        this.serviceEntity = serviceEntity;
     }
 
     @Override
