@@ -93,6 +93,8 @@ public class ServiceManager {
         serviceEntity.setPort(service.getPort());
         serviceEntity.setInterval(service.getInterval());
 
+        serviceRepository.save(serviceEntity);
+
         //If the service interval is different, we notify the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
             try {
@@ -101,8 +103,6 @@ public class ServiceManager {
                 e.printStackTrace();
             }
         }
-
-        serviceRepository.save(serviceEntity);
     }
 
     /**

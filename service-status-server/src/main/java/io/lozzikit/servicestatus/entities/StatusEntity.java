@@ -85,4 +85,12 @@ public class StatusEntity implements Serializable{
     public void setServiceEntity(ServiceEntity serviceEntity) {
         this.serviceEntity = serviceEntity;
     }
+
+    @Override
+    public String toString() {
+        return "id : "+getId()+"\n"+
+                "date : "+getCheckAt()+"\n"+
+                "status : "+getStatus()+"\n"+
+                "httpStatus : "+getHttpStatus();
+    }
 }

@@ -1,6 +1,5 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -14,6 +13,7 @@ import io.lozzikit.servicestatus.api.spec.helpers.Environment;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

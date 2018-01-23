@@ -10,7 +10,9 @@ import io.lozzikit.servicestatus.entities.StatusEntity;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.UUID;
 
@@ -60,7 +62,19 @@ public class CheckTask implements Job {
                 status,
                 service);
 
-        context.setResult(statusToAdd);
+        //Serializing statusEntity
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
+        try {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(statusToAdd);
+            objectOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        context.setResult(byteArrayOutputStream.toByteArray());
+
+        System.out.println("Pinged at interval "+service.getInterval());
     }
 }
