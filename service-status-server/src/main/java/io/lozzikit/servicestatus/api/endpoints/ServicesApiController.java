@@ -245,7 +245,6 @@ public class ServicesApiController implements ServicesApi {
         IncidentUpdate incidentUpdate = new IncidentUpdate();
         incidentUpdate.setType(incidentUpdateEntity.getIncidentType());
         incidentUpdate.setMessage(incidentUpdateEntity.getMessage());
-        incidentUpdate.setDate(new DateTime(incidentUpdateEntity.getDate()));
         return incidentUpdate;
     }
 
