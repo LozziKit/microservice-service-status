@@ -68,7 +68,6 @@ public class ServiceStatusChecker  {
      */
     public ServiceStatusChecker() throws SchedulerException {
         scheduler = StdSchedulerFactory.getDefaultScheduler();
-        clear();
     }
 
     @PostConstruct
