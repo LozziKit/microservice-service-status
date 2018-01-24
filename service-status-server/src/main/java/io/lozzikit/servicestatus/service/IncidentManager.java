@@ -66,14 +66,16 @@ public class IncidentManager {
      */
     public void addIncidentUpdate(UUID idIncident, UUID idService, IncidentUpdateEntity incidentUpdateEntity) {
         IncidentEntity incidentEntity = getIncident(idService,idIncident);
+        incidentUpdateEntity.setIncidentEntity(incidentEntity);
         incidentEntity.getIncidentUpdates().add(incidentUpdateEntity);
+
         incidentRepository.save(incidentEntity);
     }
 
     /**
      * @param idService the id of a service
      * @param idIncident the id of an Incident
-     * @return an Optional<IncidentEntity>
+     * @return an IncidentEntity
      */
     public IncidentEntity getIncident(UUID idService, UUID idIncident) {
         ServiceEntity service = serviceManager.getService(idService);
