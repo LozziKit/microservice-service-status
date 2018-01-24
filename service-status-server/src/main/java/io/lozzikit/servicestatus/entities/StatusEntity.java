@@ -12,7 +12,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "status")
 public class StatusEntity implements Serializable{
-    // checkAt, code, status
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
@@ -29,7 +28,7 @@ public class StatusEntity implements Serializable{
     @Column(name = "status")
     private Status.StateEnum status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL})
     @JoinColumn(name = "service_id")
     private ServiceEntity serviceEntity;
 

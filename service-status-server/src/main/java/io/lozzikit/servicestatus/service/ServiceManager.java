@@ -111,16 +111,9 @@ public class ServiceManager {
      * @param status The status to add to the service
      */
     public void addStatus(UUID id, StatusEntity status){
-
         ServiceEntity serviceEntity = getService(id);
-
-        List<StatusEntity> tempStatuses = serviceEntity.getStatuses();
-        if(tempStatuses==null)
-            tempStatuses = new LinkedList<>();
-
-        tempStatuses.add(status);
-        serviceEntity.setStatuses(tempStatuses);
-
+        serviceEntity.getStatuses().add(status);
+        status.setServiceEntity(serviceEntity);
         serviceRepository.save(serviceEntity);
     }
 
