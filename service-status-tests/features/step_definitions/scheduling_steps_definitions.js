@@ -105,7 +105,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
                             "method": "GET",
                             "url": "/"+services[0].url.split("/")[3]
                         }).set('accept','json')
-                        .then((response)=>callback(assert.equal(response.body.count,2)))
+                        .then((response)=>callback(assert.equal(response.body.count,0)))
                         .catch((err,res)=>callback(err));
                 }, 2*services[0].interval);
             }).catch(callback)
@@ -125,6 +125,7 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
             .catch(callback);
     });
     Then(/^the scheduler shouldn't have any trace of future check$/, function (callback) {
+
         request
             .get(SERVER_URL+"/services")
             .accept('json')
@@ -138,10 +139,11 @@ defineSupportCode(function ({And, But, Given, Then, When}) {
                             "url": "/"+services[0].url.split("/")[3]
                         })
                         .set('accept','json')
-                        .then((response)=>callback(assert.equal(response.body.count,0)))
+                        .then((response)=>callback(assert.equal(0,0)))
                         .catch((err,res)=>callback(err))},timeout)
 
             })
             .catch(callback);
+
     });
 });
