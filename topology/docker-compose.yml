@@ -13,7 +13,8 @@ services:
             timeout: 1s
             retries: 5
         environment:
-            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: servicestatus
+            MYSQL_PASSWORD: servicestatus
             MYSQL_DATABASE: 'microservice'
     server:
         build:
