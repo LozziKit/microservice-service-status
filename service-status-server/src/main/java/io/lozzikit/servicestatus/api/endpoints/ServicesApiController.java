@@ -45,12 +45,7 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
         ServiceEntity service = null;
-        try {
             service = serviceManager.createService(toServiceEntity(newService));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -131,6 +126,7 @@ public class ServicesApiController implements ServicesApi {
         try {
             serviceManager.updateService(id, toServiceEntity(service));
         } catch (MalformedURLException e) {
+            //TODO Changer comme pour addService... (qui n'est pas encore fonctionnel)
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -209,8 +205,6 @@ public class ServicesApiController implements ServicesApi {
     private ServiceEntity toServiceEntity(NewService service) throws MalformedURLException {
         URL url = new URL(service.getUrl());
         if(url.getPort()== 0 || url.getPort()> 65535 || url.getPort() < -1){ //-1 represent is the default port
-            System.out.println("Port : "+url.getPort());
-            System.out.println("Default : "+url.getDefaultPort());
             throw new MalformedURLException("Invalid port");
         }
         return new ServiceEntity(service.getName(), service.getDescription(), url, service.getInterval());
