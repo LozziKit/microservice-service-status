@@ -25,7 +25,8 @@ services:
                 condition: service_healthy
         image: amt/status-server
         environment:
-            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice'
+            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice?useSSL=false'
+            IO_LOZZIKIT_QUARTZ_CONFIG: 'quartz-docker.properties'
         ports:
             - '8080:8080'
         restart: always
