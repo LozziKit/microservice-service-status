@@ -11,9 +11,10 @@ services:
             test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice;\""
             interval: 4s
             timeout: 1s
-            retries: 5
+            retries: 10
         environment:
-            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: servicestatus
+            MYSQL_PASSWORD: servicestatus
             MYSQL_DATABASE: 'microservice'
     server:
         build:
@@ -24,7 +25,7 @@ services:
                 condition: service_healthy
         image: amt/status-server
         environment:
-            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice'
+            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice?useSSL=false'
         ports:
             - '8080:8080'
         restart: always

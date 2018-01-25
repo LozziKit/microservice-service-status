@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./build
+cp ../service-status-server/target/microservice-service-status-server-1.0.0.jar ../topology/images/server/server.jar
 
 (cd ../topology; docker-compose down --volumes)
-(cd ../topology; docker-compose up --build )
+(cd ../topology; docker-compose up --build)

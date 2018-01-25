@@ -46,7 +46,6 @@ public class IncidentCreationSteps {
                 environment.setLastStatusCode(environment.getLastApiResponse().getStatusCode());
                 String location = String.valueOf(environment.getLastApiResponse().getHeaders().get("Location"));
                 environment.setIncidentUUID(UUID.fromString(location.substring(location.lastIndexOf('/') + 1, location.length() - 1)));
-                sleep(1000);
             } catch (ApiException e) {
                 environment.setLastApiCallThrewException(true);
                 environment.setLastApiResponse(null);

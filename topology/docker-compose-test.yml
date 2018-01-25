@@ -24,7 +24,8 @@ services:
                 condition: service_healthy
         image: amt/status-server
         environment:
-            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice_test'
+            SPRING_CONFIG_NAME: test
+            SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice_test?useSSL=false'
         ports:
             - '8080:8080'
         restart: always
