@@ -45,7 +45,13 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
         ServiceEntity service = null;
+        //TODO c'est ici qu on veut que le catcher catch l'exception.
+        try {
             service = serviceManager.createService(toServiceEntity(newService));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            System.out.println("Cette exception doit etre catch par le handler");
+        }
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -127,6 +133,7 @@ public class ServicesApiController implements ServicesApi {
             serviceManager.updateService(id, toServiceEntity(service));
         } catch (MalformedURLException e) {
             //TODO Changer comme pour addService... (qui n'est pas encore fonctionnel)
+            System.out.println("Cette exception doit etre catch par le handler");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -161,7 +168,7 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
-        IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(),newIncident.getMessage()));
+        IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(), newIncident.getMessage()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{incidentId}")
@@ -180,9 +187,9 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.POST)
     @Override
     public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
-                                                  @ApiParam(value = "ID of the service",required=true ) @PathVariable("idService") UUID idService,
+                                                  @ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                                   @ApiParam(value = "ID of the incident to update", required = true) @PathVariable("idIncident") UUID idIncident) {
-        incidentManager.addIncidentUpdate(idIncident, idService,toIncidentUpdateEntity(incidentUpdate));
+        incidentManager.addIncidentUpdate(idIncident, idService, toIncidentUpdateEntity(incidentUpdate));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -204,14 +211,14 @@ public class ServicesApiController implements ServicesApi {
 
     private ServiceEntity toServiceEntity(NewService service) throws MalformedURLException {
         URL url = new URL(service.getUrl());
-        if(url.getPort()== 0 || url.getPort()> 65535 || url.getPort() < -1){ //-1 represent is the default port
+        if (url.getPort() == 0 || url.getPort() > 65535 || url.getPort() < -1) { //-1 represent is the default port
             throw new MalformedURLException("Invalid port");
         }
         return new ServiceEntity(service.getName(), service.getDescription(), url, service.getInterval());
     }
 
     private IncidentEntity toIncidentEntity(NewIncident incident) {
-        return new IncidentEntity(incident.getTitle(), incident.getType(),incident.getMessage());
+        return new IncidentEntity(incident.getTitle(), incident.getType(), incident.getMessage());
     }
 
     private IncidentUpdateEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
