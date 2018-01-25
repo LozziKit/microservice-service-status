@@ -1,0 +1,4 @@
+#!/bin/bash
+
+(cd ../service-status-server; mvn clean compile)
+(cd ../service-status-specs; mvn clean compile)
