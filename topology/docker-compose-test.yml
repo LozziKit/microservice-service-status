@@ -9,9 +9,9 @@ services:
             - '3306'
         healthcheck:
             test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice_test;\""
-            interval: 4s
-            timeout: 1s
-            retries: 5
+            interval: 5s
+            timeout: 5s
+            retries: 20
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: 'microservice_test'
