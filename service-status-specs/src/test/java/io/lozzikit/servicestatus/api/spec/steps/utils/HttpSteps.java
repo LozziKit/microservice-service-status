@@ -98,7 +98,7 @@ public class HttpSteps {
 
     @And("^the Service port is negative$")
     public void theServicePortIsNegative() throws Throwable {
-        environment.getService().setUrl(environment.getService().getUrl()+":-1");
+        environment.getService().setUrl(environment.getService().getUrl()+":-5");
     }
 
     @And("^the Service port is zero$")

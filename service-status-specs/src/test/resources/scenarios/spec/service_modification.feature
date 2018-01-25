@@ -41,21 +41,18 @@ Feature: Modify a Service
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a port must be greater than or equal to 1 validation error message
 
   Scenario: I try to modify a Service with a port of zero
     Given the Service port is zero
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a port must be greater than or equal to 1 validation error message
 
   Scenario: I try to modify a Service with a too big port
     Given the Service port is too big
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a port must be less than or equal to 65535 validation error message
 
   Scenario: I try to modify a Service with a null interval
     Given the Service interval is null

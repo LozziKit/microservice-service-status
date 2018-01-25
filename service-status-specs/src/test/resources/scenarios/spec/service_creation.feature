@@ -43,7 +43,6 @@ Feature: Create a Service
     When I have added my Service to the server
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a port must be greater than or equal to 1 validation error message
 
   Scenario: Create a Service with a port of zero
     Given I have a Service payload
@@ -51,7 +50,6 @@ Feature: Create a Service
     When I have added my Service to the server
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a port must be greater than or equal to 1 validation error message
 
   Scenario: Create a Service with a too big port
     Given I have a Service payload
@@ -59,7 +57,6 @@ Feature: Create a Service
     When I have added my Service to the server
     Then I receive an exception from the server
     And I receive a 422 status code
-    And I receive a port must be less than or equal to 65535 validation error message
 
   Scenario: Create a Service with a null Interval field
     Given I have a Service payload

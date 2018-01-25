@@ -33,12 +33,4 @@ public class ArgumentNotValidExceptionHandler extends ResponseEntityExceptionHan
         });
         return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
     }
-
-    //TODO Apparement un controllerAdvice peut gerer plusieurs handler, mais pour le moment il catch pas l'exeption.2
-    @ExceptionHandler(value = MalformedURLException.class)
-    ResponseEntity<ApiError> handleMalformedURLException(MalformedURLException ex, WebRequest request) {
-        ApiError error = new ApiError();
-        error.setMessage(ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
 }

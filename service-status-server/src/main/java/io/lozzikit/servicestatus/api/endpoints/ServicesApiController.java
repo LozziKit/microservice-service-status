@@ -45,12 +45,10 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
         ServiceEntity service = null;
-        //TODO c'est ici qu on veut que le catcher catch l'exception.
         try {
             service = serviceManager.createService(toServiceEntity(newService));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-            System.out.println("Cette exception doit etre catch par le handler");
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
         URI location = ServletUriComponentsBuilder
@@ -132,8 +130,6 @@ public class ServicesApiController implements ServicesApi {
         try {
             serviceManager.updateService(id, toServiceEntity(service));
         } catch (MalformedURLException e) {
-            //TODO Changer comme pour addService... (qui n'est pas encore fonctionnel)
-            System.out.println("Cette exception doit etre catch par le handler");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
