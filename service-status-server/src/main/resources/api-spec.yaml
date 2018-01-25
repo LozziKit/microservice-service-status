@@ -1,24 +1,15 @@
 ﻿swagger: '2.0'
 info:
-  description: >-
-    This is a sample server Petstore server.  You can find out more about
-    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
-    #swagger](http://swagger.io/irc/).      For this sample, you can use the api
-    key `special-key` to test the authorization     filters.
   version: 1.0.0
   title: Lozzikit Status Service
-  termsOfService: 'http://swagger.io/terms/'
   contact:
-    email: apiteam@swagger.io
   license:
     name: MIT
     url: 'https://mit-license.org/'
-basePath: /v2
+basePath: /v1
 tags:
   - name: Service
     description: Manage your services
-  - name: Maintenance
-    description: Define when a service will be unavailable
   - name: Incident
     description: When something goes bad with a service
 schemes:
@@ -388,4 +379,3 @@ definitions:
     required:
       - httpStatus
       - state
-

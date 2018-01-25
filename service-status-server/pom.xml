@@ -45,7 +45,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${basedir}/src/main/resources/api-spec.yaml</inputSpec>
+                            <inputSpec>src/main/resources/api-spec.yaml</inputSpec>
                             <language>spring</language>
                             <configOptions>
                                 <useBeanValidation>true</useBeanValidation>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>com.squareup.okhttp</groupId>
             <artifactId>okhttp</artifactId>
-            <version>RELEASE</version>
+            <version>2.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
