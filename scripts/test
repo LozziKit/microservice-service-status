@@ -1,13 +1,11 @@
 #!/bin/bash
 
-./build
+./compile
+
+cp ../service-status-server/target/microservice-service-status-server-1.0.0.jar ../topology/images/server/server.jar
 
 (cd ../topology; docker-compose -f docker-compose-test.yml down --volumes)
 (cd ../topology; docker-compose -f docker-compose-test.yml up --build -d)
-
-cd ../service-status-tests
-
-#mvn test -Dio.lozzikit.service-status.server.url=http://localhost:8080/api
 
 while [ 1 ]
 do
@@ -20,5 +18,5 @@ do
      sleep 1
 done
 
-npm install
-npm test
+(cd ../service-status-tests; npm install; npm test)
+(cd ../service-status-specs; mvn clean test)
