@@ -7,8 +7,10 @@ import io.lozzikit.servicestatus.api.dto.Status;
 import io.lozzikit.servicestatus.checker.StatusCodeMatcher;
 import io.lozzikit.servicestatus.entities.ServiceEntity;
 import io.lozzikit.servicestatus.entities.StatusEntity;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+import org.quartz.PersistJobDataAfterExecution;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.UUID;
 
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
 public class CheckTask implements Job {
 
     public static final String UUID = "UUID";

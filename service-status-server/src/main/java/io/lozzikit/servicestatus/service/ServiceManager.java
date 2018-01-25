@@ -87,6 +87,16 @@ public class ServiceManager {
     public void updateService(UUID id, ServiceEntity service) {
         ServiceEntity serviceEntity = getService(id);
 
+        //If the service interval is different, we notifiy the scheduler
+        if (serviceEntity.getInterval() != service.getInterval() ) {
+            try {
+                serviceStatusChecker.updateSchedule(serviceEntity, service.getInterval());
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
         serviceEntity.setName(service.getName());
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setUrl(service.getUrl());
@@ -94,15 +104,6 @@ public class ServiceManager {
         serviceEntity.setInterval(service.getInterval());
 
         serviceRepository.save(serviceEntity);
-
-        //If the service interval is different, we notify the scheduler
-        if (serviceEntity.getInterval() != service.getInterval() ) {
-            try {
-                serviceStatusChecker.updateSchedule(service, service.getInterval());
-            } catch (SchedulerException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
