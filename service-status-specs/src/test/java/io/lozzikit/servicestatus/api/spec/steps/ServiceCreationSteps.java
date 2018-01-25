@@ -1,5 +1,6 @@
 package io.lozzikit.servicestatus.api.spec.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.api.ServiceApi;
@@ -45,6 +46,5 @@ public class ServiceCreationSteps {
             }
         }
     }
-
 
 }

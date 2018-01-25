@@ -90,7 +90,6 @@ public class ServiceManager {
         serviceEntity.setName(service.getName());
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setUrl(service.getUrl());
-        serviceEntity.setPort(service.getPort());
         serviceEntity.setInterval(service.getInterval());
 
         serviceRepository.save(serviceEntity);

@@ -9,7 +9,10 @@ info:
   title: Lozzikit Status Service
   termsOfService: 'http://swagger.io/terms/'
   contact:
-    email: apiteam@swagger.io
+    email: michael.spierer@heig-vd.ch
+    email: benoit.gianinetti@heig-vd.ch
+    email: colin.lavanchy@heig-vd.ch
+    email: edward.ransome@heig-vd.ch
   license:
     name: MIT
     url: 'https://mit-license.org/'
@@ -299,12 +302,8 @@ definitions:
         maxLength: 250
       url:
         type: string
+        description: the url of the service. It MUST be in the format of a URL. A port can be specified.
         format: url
-      port:
-        type: integer
-        format: int32
-        minimum: 1
-        maximum: 65535
       interval:
         type: integer
         format: int32
@@ -313,7 +312,6 @@ definitions:
     required:
       - name
       - url
-      - port
       - interval
   NewIncident:
     type: object

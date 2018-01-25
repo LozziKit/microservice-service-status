@@ -30,22 +30,11 @@ Feature: Modify a Service
     And I receive a 422 status code
     And I receive a name may not be null validation error message
 
-
-
   Scenario: I try to modify a Service with a null description
     Given the Service Description is null
     When I send a PUT request to the /service/id endpoint
     Then I receive a 204 status code
     And the new Service description is null
-
-
-  Scenario: I try to modify a Service with a null port
-    Given the Service port is null
-    When I send a PUT request to the /service/id endpoint
-    Then I receive an exception from the server
-    And I receive a 422 status code
-    And I receive a port may not be null validation error message
-
 
   Scenario: I try to modify a Service with a negative port
     Given the Service port is negative
@@ -54,7 +43,6 @@ Feature: Modify a Service
     And I receive a 422 status code
     And I receive a port must be greater than or equal to 1 validation error message
 
-
   Scenario: I try to modify a Service with a port of zero
     Given the Service port is zero
     When I send a PUT request to the /service/id endpoint
@@ -62,14 +50,12 @@ Feature: Modify a Service
     And I receive a 422 status code
     And I receive a port must be greater than or equal to 1 validation error message
 
-
   Scenario: I try to modify a Service with a too big port
     Given the Service port is too big
     When I send a PUT request to the /service/id endpoint
     Then I receive an exception from the server
     And I receive a 422 status code
     And I receive a port must be less than or equal to 65535 validation error message
-
 
   Scenario: I try to modify a Service with a null interval
     Given the Service interval is null
@@ -91,6 +77,3 @@ Feature: Modify a Service
     Then I receive an exception from the server
     And I receive a 422 status code
     And I receive a interval must be greater than or equal to 5 validation error message
-
-
-
