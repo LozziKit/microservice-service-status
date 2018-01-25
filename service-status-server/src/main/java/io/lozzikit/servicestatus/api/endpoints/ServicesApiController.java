@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,13 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.POST)
     @Override
     public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
-        ServiceEntity service = serviceManager.createService(toServiceEntity(newService));
+        ServiceEntity service = null;
+        try {
+            service = serviceManager.createService(toServiceEntity(newService));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -120,7 +128,11 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> updateService(@ApiParam(value = "ID of service to update", required = true) @PathVariable("id") UUID id,
                                               @ApiParam(value = "Service object that needs to be modified", required = true) @Valid @RequestBody NewService service) {
-        serviceManager.updateService(id, toServiceEntity(service));
+        try {
+            serviceManager.updateService(id, toServiceEntity(service));
+        } catch (MalformedURLException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -194,8 +206,14 @@ public class ServicesApiController implements ServicesApi {
 
     //Transformations
 
-    private ServiceEntity toServiceEntity(NewService service) {
-        return new ServiceEntity(service.getName(), service.getDescription(), service.getUrl(), service.getPort(), service.getInterval());
+    private ServiceEntity toServiceEntity(NewService service) throws MalformedURLException {
+        URL url = new URL(service.getUrl());
+        if(url.getPort()== 0 || url.getPort()> 65535 || url.getPort() < -1){ //-1 represent is the default port
+            System.out.println("Port : "+url.getPort());
+            System.out.println("Default : "+url.getDefaultPort());
+            throw new MalformedURLException("Invalid port");
+        }
+        return new ServiceEntity(service.getName(), service.getDescription(), url, service.getInterval());
     }
 
     private IncidentEntity toIncidentEntity(NewIncident incident) {
@@ -216,8 +234,7 @@ public class ServicesApiController implements ServicesApi {
 
         service.setName(serviceEntity.getName());
         service.setDescription(serviceEntity.getDescription());
-        service.setUrl(serviceEntity.getUrl());
-        service.setPort(serviceEntity.getPort());
+        service.setUrl(serviceEntity.getUrl().toString());
         service.setInterval(serviceEntity.getInterval());
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
 

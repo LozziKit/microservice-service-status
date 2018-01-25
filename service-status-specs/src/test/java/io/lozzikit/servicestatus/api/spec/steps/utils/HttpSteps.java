@@ -91,23 +91,23 @@ public class HttpSteps {
         environment.getService().setDescription(null);
     }
 
-    @And("^the Service port is null$")
-    public void theServicePortIsNull() throws Throwable {
-        environment.getService().setPort(null);
+    @And("^the URL contains a valid port$")
+    public void theURLContainsAValidPort() throws Throwable {
+        environment.getService().setUrl(environment.getService().getUrl()+":89");
     }
 
     @And("^the Service port is negative$")
     public void theServicePortIsNegative() throws Throwable {
-        environment.getService().setPort(-1);
+        environment.getService().setUrl(environment.getService().getUrl()+":-1");
     }
 
     @And("^the Service port is zero$")
     public void theServicePortIsZero() throws Throwable {
-        environment.getService().setPort(0);
+        environment.getService().setUrl(environment.getService().getUrl()+":0");
     }
     @And("^the Service port is too big$")
     public void theServicePortIsToBig() throws Throwable {
-        environment.getService().setPort(65536);
+        environment.getService().setUrl(environment.getService().getUrl()+":65536");
     }
 
     @And("^the Service interval is null$")

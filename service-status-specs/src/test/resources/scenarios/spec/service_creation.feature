@@ -31,13 +31,11 @@ Feature: Create a Service
     When I have added my Service to the server
     Then I receive a 201 status code
 
-  Scenario: Create a Service with a null port field
+  Scenario: Create a Service with a port
     Given I have a Service payload
-    And the Service port is null
+    And the URL contains a valid port
     When I have added my Service to the server
-    Then I receive an exception from the server
-    And I receive a 422 status code
-    And I receive a port may not be null validation error message
+    And I receive a 201 status code
 
   Scenario: Create a Service with a negative port
     Given I have a Service payload
