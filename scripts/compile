@@ -1,4 +1,4 @@
 #!/bin/bash
 
-(cd ../service-status-server; mvn clean compile)
+(cd ../service-status-server; mvn clean install)
 (cd ../service-status-specs; mvn clean compile)
