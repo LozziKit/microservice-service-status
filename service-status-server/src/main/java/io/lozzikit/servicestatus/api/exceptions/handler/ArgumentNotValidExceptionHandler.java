@@ -1,5 +1,6 @@
 package io.lozzikit.servicestatus.api.exceptions.handler;
 
+import io.lozzikit.servicestatus.api.dto.ApiError;
 import io.lozzikit.servicestatus.api.dto.ApiValidationError;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -8,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +31,14 @@ public class ArgumentNotValidExceptionHandler extends ResponseEntityExceptionHan
             error.setRejectedValue(((FieldError) e).getRejectedValue());
             errors.add(error);
         });
-
         return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    //TODO Apparement un controllerAdvice peut gerer plusieurs handler, mais pour le moment il catch pas l'exeption.2
+    @ExceptionHandler(value = MalformedURLException.class)
+    ResponseEntity<ApiError> handleMalformedURLException(MalformedURLException ex, WebRequest request) {
+        ApiError error = new ApiError();
+        error.setMessage(ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
