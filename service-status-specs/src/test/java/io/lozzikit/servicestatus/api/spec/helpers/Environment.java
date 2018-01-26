@@ -50,7 +50,6 @@ public class Environment {
         result.setName("Test Service number " + ++counter);
         result.setDescription("A service for API testing");
         result.setInterval(5);
-        result.setPort(80);
         result.setUrl("http://www.example.com");
         return result;
     }

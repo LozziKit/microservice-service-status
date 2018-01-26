@@ -15,6 +15,7 @@ import org.quartz.PersistJobDataAfterExecution;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class CheckTask implements Job {
         UUID uuid = (UUID) context.getJobDetail().getJobDataMap().get(UUID);
         ServiceEntity service = (ServiceEntity)context.getJobDetail().getJobDataMap().get(SERVICE);
 
-        String url = service.getUrl();
+        URL url = service.getUrl();
 
         Request request = new Request.Builder().url(url).build();
 
