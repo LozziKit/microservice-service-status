@@ -9,9 +9,9 @@ services:
             - '3306'
         healthcheck:
             test: "/usr/bin/mysql --user=root --password=root --execute \"USE microservice_test;\""
-            interval: 4s
-            timeout: 1s
-            retries: 5
+            interval: 5s
+            timeout: 5s
+            retries: 20
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: 'microservice_test'
@@ -26,6 +26,8 @@ services:
         environment:
             SPRING_CONFIG_NAME: test
             SPRING_DATASOURCE_URL: 'jdbc:mysql://database:3306/microservice_test?useSSL=false'
+            IO_LOZZIKIT_QUARTZ_CONFIG: 'quartz-docker.properties'
+
         ports:
             - '8080:8080'
         restart: always

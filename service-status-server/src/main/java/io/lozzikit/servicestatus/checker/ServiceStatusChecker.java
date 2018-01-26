@@ -45,9 +45,8 @@ public class ServiceStatusChecker  {
 
     }
 
-    //Constants fields used for object id
-    public static final String DEFAULT_EXPAND = "HISTORY";
-
+    @Value("${io.lozzikit.quartz.config}")
+    private String quartzConfiguration;
 
     @Value("${ssc.time-granularity}")
     private String sGranularity;
@@ -59,19 +58,15 @@ public class ServiceStatusChecker  {
     @Autowired
     JobListener listener;
 
-    private final Scheduler scheduler;     //Quartz scheduler used for recurrent event triggering
+    private Scheduler scheduler;     //Quartz scheduler used for recurrent event triggering
     private TIME_GRANULARITY granularity;
-
-    /**
-     * Default constructor
-     * @throws SchedulerException If quartz fails to retrieve the default scheduler
-     */
-    public ServiceStatusChecker() throws SchedulerException {
-        scheduler = StdSchedulerFactory.getDefaultScheduler();
-    }
 
     @PostConstruct
     public void init() throws SchedulerException {
+        StdSchedulerFactory sf = new StdSchedulerFactory();
+        sf.initialize(quartzConfiguration);
+        scheduler = sf.getScheduler();
+
         scheduler.getListenerManager().addJobListener(listener);
         scheduler.start();
         granularity = TIME_GRANULARITY.valueOf(sGranularity);

@@ -20,3 +20,5 @@ done
 
 (cd ../service-status-tests; npm install; npm test)
 (cd ../service-status-specs; mvn clean test)
+
+(cd ../topology; docker-compose -f docker-compose-test.yml down --volumes)
