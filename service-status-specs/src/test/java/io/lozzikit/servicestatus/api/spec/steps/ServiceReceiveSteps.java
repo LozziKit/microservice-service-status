@@ -99,7 +99,7 @@ public class ServiceReceiveSteps {
                 .sorted(new Comparator<Status>() {
                     @Override
                     public int compare(Status o1, Status o2) {
-                        return o1.getUpdateAt().compareTo(o2.getUpdateAt());
+                        return o1.getUpdatedAt().compareTo(o2.getUpdatedAt());
                     }
                 })
                 .collect(Collectors.toList())

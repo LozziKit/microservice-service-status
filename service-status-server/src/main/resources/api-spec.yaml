@@ -213,7 +213,7 @@ paths:
           description: Incident update to be added to the incident
           required: true
           schema: 
-            $ref: '#/definitions/IncidentUpdate'
+            $ref: '#/definitions/NewIncidentUpdate'
         - name: idService
           in: path
           description: ID of the service
@@ -331,7 +331,7 @@ definitions:
     required:
       - title
       - updates
-  IncidentUpdate:
+  NewIncidentUpdate:
     type: object
     properties:
       type:
@@ -340,6 +340,15 @@ definitions:
         type: string
     required:
       - type
+  IncidentUpdate:
+    type: object
+    properties:
+    allOf:
+      - $ref:  '#/definitions/NewIncidentUpdate'
+      - properties:
+          createdAt:
+            type: string
+            format: date-time
   IncidentType:
     type: string
     enum:

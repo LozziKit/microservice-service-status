@@ -181,7 +181,7 @@ public class ServicesApiController implements ServicesApi {
             consumes = {"application/json"},
             method = RequestMethod.POST)
     @Override
-    public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
+    public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody NewIncidentUpdate incidentUpdate,
                                                   @ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                                   @ApiParam(value = "ID of the incident to update", required = true) @PathVariable("idIncident") UUID idIncident) {
         incidentManager.addIncidentUpdate(idIncident, idService, toIncidentUpdateEntity(incidentUpdate));
@@ -216,7 +216,7 @@ public class ServicesApiController implements ServicesApi {
         return new IncidentEntity(incident.getTitle(), incident.getType(), incident.getMessage());
     }
 
-    private IncidentUpdateEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
+    private IncidentUpdateEntity toIncidentUpdateEntity(NewIncidentUpdate incidentUpdate) {
         return new IncidentUpdateEntity(incidentUpdate.getType(), incidentUpdate.getMessage());
     }
 
@@ -258,6 +258,7 @@ public class ServicesApiController implements ServicesApi {
         IncidentUpdate incidentUpdate = new IncidentUpdate();
         incidentUpdate.setType(incidentUpdateEntity.getIncidentType());
         incidentUpdate.setMessage(incidentUpdateEntity.getMessage());
+        incidentUpdate.setCreatedAt(new DateTime(incidentUpdateEntity.getDate()));
         return incidentUpdate;
     }
 
