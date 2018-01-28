@@ -82,8 +82,7 @@ public class ServicesApiController implements ServicesApi {
         List<StatusEntity> statusEntities = serviceManager.getService(id).getStatuses();
         List<Status> status = statusEntities
                 .stream()
-                .sorted(Comparator.comparing(StatusEntity::getCheckAt))
-                .map(statusEntity -> toDto(statusEntity))
+                .map(this::toDto)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(status);
@@ -222,7 +221,7 @@ public class ServicesApiController implements ServicesApi {
     }
 
     private StatusEntity toStatusEntity(Status status, ServiceEntity service) {
-        return new StatusEntity(status.getUpdateAt().toDate(),
+        return new StatusEntity(status.getUpdatedAt().toDate(),
                 status.getHttpStatus(), status.getState(), service);
     }
 
@@ -266,7 +265,7 @@ public class ServicesApiController implements ServicesApi {
         Status status = new Status();
         status.setHttpStatus(statusEntity.getHttpStatus());
         status.setState(statusEntity.getStatus());
-        status.setUpdateAt(new DateTime(statusEntity.getCheckAt()));
+        status.setUpdatedAt(new DateTime(statusEntity.getCheckAt()));
         return status;
     }
 

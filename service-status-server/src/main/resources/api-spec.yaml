@@ -363,7 +363,7 @@ definitions:
   Status:
     type: object
     properties:
-      updateAt:
+      updatedAt:
         type: string
         format: date-time
       httpStatus:
