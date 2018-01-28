@@ -32,6 +32,8 @@ public class ServiceEntity implements Serializable{
     private int checkInterval;
 
     @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+
+    @OrderBy("checkAt ASC")
     private List<StatusEntity> statuses;
 
     @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
