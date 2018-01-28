@@ -55,6 +55,7 @@ public class CheckTask implements Job {
             response = client.newCall(request).execute();
             code = response.code();
             status = StatusCodeMatcher.match(code);
+            response.body().close();
         }catch (IOException e){
             code = -1;
             status = Status.StateEnum.DOWN;
@@ -79,7 +80,5 @@ public class CheckTask implements Job {
         }
 
         context.setResult(byteArrayOutputStream.toByteArray());
-
-        System.out.println("Pinged at interval "+service.getInterval());
     }
 }
