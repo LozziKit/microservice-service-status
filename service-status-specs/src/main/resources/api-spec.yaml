@@ -1,24 +1,19 @@
 ﻿swagger: '2.0'
 info:
-  description: >-
-    This is a sample server Petstore server.  You can find out more about
-    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
-    #swagger](http://swagger.io/irc/).      For this sample, you can use the api
-    key `special-key` to test the authorization     filters.
   version: 1.0.0
   title: Lozzikit Status Service
-  termsOfService: 'http://swagger.io/terms/'
   contact:
-    email: apiteam@swagger.io
+    email: michael.spierer@heig-vd.ch
+    email: benoit.gianinetti@heig-vd.ch
+    email: colin.lavanchy@heig-vd.ch
+    email: edward.ransome@heig-vd.ch
   license:
     name: MIT
     url: 'https://mit-license.org/'
-basePath: /v2
+basePath: /v1
 tags:
   - name: Service
     description: Manage your services
-  - name: Maintenance
-    description: Define when a service will be unavailable
   - name: Incident
     description: When something goes bad with a service
 schemes:
@@ -218,7 +213,7 @@ paths:
           description: Incident update to be added to the incident
           required: true
           schema:
-            $ref: '#/definitions/IncidentUpdate'
+            $ref: '#/definitions/NewIncidentUpdate'
         - name: idService
           in: path
           description: ID of the service
@@ -299,12 +294,8 @@ definitions:
         maxLength: 250
       url:
         type: string
+        description: the url of the service. It MUST be in the format of a URL. A port can be specified.
         format: url
-      port:
-        type: integer
-        format: int32
-        minimum: 1
-        maximum: 65535
       interval:
         type: integer
         format: int32
@@ -313,7 +304,6 @@ definitions:
     required:
       - name
       - url
-      - port
       - interval
   NewIncident:
     type: object
@@ -341,7 +331,7 @@ definitions:
     required:
       - title
       - updates
-  IncidentUpdate:
+  NewIncidentUpdate:
     type: object
     properties:
       type:
@@ -350,6 +340,15 @@ definitions:
         type: string
     required:
       - type
+  IncidentUpdate:
+    type: object
+    properties:
+    allOf:
+      - $ref:  '#/definitions/NewIncidentUpdate'
+      - properties:
+          createdAt:
+            type: string
+            format: date-time
   IncidentType:
     type: string
     enum:
@@ -373,7 +372,7 @@ definitions:
   Status:
     type: object
     properties:
-      updateAt:
+      updatedAt:
         type: string
         format: date-time
       httpStatus:
@@ -388,4 +387,3 @@ definitions:
     required:
       - httpStatus
       - state
-

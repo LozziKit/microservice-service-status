@@ -15,6 +15,7 @@ import org.quartz.PersistJobDataAfterExecution;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class CheckTask implements Job {
 
         ServiceEntity service = (ServiceEntity)context.getJobDetail().getJobDataMap().get(SERVICE);
 
-        String url = service.getUrl();
+        URL url = service.getUrl();
 
         Request request = new Request.Builder().url(url).build();
 
@@ -58,6 +59,7 @@ public class CheckTask implements Job {
             response = client.newCall(request).execute();
             code = response.code();
             status = StatusCodeMatcher.match(code);
+            response.body().close();
         }catch (IOException e){
             code = -1;
             status = Status.StateEnum.DOWN;
@@ -82,6 +84,5 @@ public class CheckTask implements Job {
         }
 
         context.setResult(byteArrayOutputStream.toByteArray());
-
     }
 }

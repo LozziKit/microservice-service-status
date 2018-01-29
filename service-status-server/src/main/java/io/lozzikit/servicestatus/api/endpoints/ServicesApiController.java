@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,12 @@ public class ServicesApiController implements ServicesApi {
             method = RequestMethod.POST)
     @Override
     public ResponseEntity<Void> addService(@ApiParam(value = "Service object that needs to be added to the status page", required = true) @Valid @RequestBody NewService newService) {
-        ServiceEntity service = serviceManager.createService(toServiceEntity(newService));
+        ServiceEntity service = null;
+        try {
+            service = serviceManager.createService(toServiceEntity(newService));
+        } catch (MalformedURLException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
@@ -79,8 +86,7 @@ public class ServicesApiController implements ServicesApi {
         List<StatusEntity> statusEntities = serviceManager.getService(id).getStatuses();
         List<Status> status = statusEntities
                 .stream()
-                .sorted(Comparator.comparing(StatusEntity::getCheckAt))
-                .map(statusEntity -> toDto(statusEntity))
+                .map(this::toDto)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(status);
@@ -128,7 +134,11 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> updateService(@ApiParam(value = "ID of service to update", required = true) @PathVariable("id") UUID id,
                                               @ApiParam(value = "Service object that needs to be modified", required = true) @Valid @RequestBody NewService service) {
-        serviceManager.updateService(id, toServiceEntity(service));
+        try {
+            serviceManager.updateService(id, toServiceEntity(service));
+        } catch (MalformedURLException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -164,7 +174,7 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
-        IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(),newIncident.getMessage()));
+        IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(), newIncident.getMessage()));
 
         if(incidentEntity == null)
             return ResponseEntity.status(422).build();
@@ -185,10 +195,10 @@ public class ServicesApiController implements ServicesApi {
             consumes = {"application/json"},
             method = RequestMethod.POST)
     @Override
-    public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody IncidentUpdate incidentUpdate,
-                                                  @ApiParam(value = "ID of the service",required=true ) @PathVariable("idService") UUID idService,
+    public ResponseEntity<Void> addIncidentUpdate(@ApiParam(value = "Incident update to be added to the incident", required = true) @Valid @RequestBody NewIncidentUpdate incidentUpdate,
+                                                  @ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                                   @ApiParam(value = "ID of the incident to update", required = true) @PathVariable("idIncident") UUID idIncident) {
-        incidentManager.addIncidentUpdate(idIncident, idService,toIncidentUpdateEntity(incidentUpdate));
+        incidentManager.addIncidentUpdate(idIncident, idService, toIncidentUpdateEntity(incidentUpdate));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -212,20 +222,24 @@ public class ServicesApiController implements ServicesApi {
 
     //Transformations
 
-    private ServiceEntity toServiceEntity(NewService service) {
-        return new ServiceEntity(service.getName(), service.getDescription(), service.getUrl(), service.getPort(), service.getInterval());
+    private ServiceEntity toServiceEntity(NewService service) throws MalformedURLException {
+        URL url = new URL(service.getUrl());
+        if (url.getPort() == 0 || url.getPort() > 65535 || url.getPort() < -1) { //-1 represent is the default port
+            throw new MalformedURLException("Invalid port");
+        }
+        return new ServiceEntity(service.getName(), service.getDescription(), url, service.getInterval());
     }
 
     private IncidentEntity toIncidentEntity(NewIncident incident) {
-        return new IncidentEntity(incident.getTitle(), incident.getType(),incident.getMessage());
+        return new IncidentEntity(incident.getTitle(), incident.getType(), incident.getMessage());
     }
 
-    private IncidentUpdateEntity toIncidentUpdateEntity(IncidentUpdate incidentUpdate) {
+    private IncidentUpdateEntity toIncidentUpdateEntity(NewIncidentUpdate incidentUpdate) {
         return new IncidentUpdateEntity(incidentUpdate.getType(), incidentUpdate.getMessage());
     }
 
     private StatusEntity toStatusEntity(Status status, ServiceEntity service) {
-        return new StatusEntity(status.getUpdateAt().toDate(),
+        return new StatusEntity(status.getUpdatedAt().toDate(),
                 status.getHttpStatus(), status.getState(), service);
     }
 
@@ -234,8 +248,7 @@ public class ServicesApiController implements ServicesApi {
 
         service.setName(serviceEntity.getName());
         service.setDescription(serviceEntity.getDescription());
-        service.setUrl(serviceEntity.getUrl());
-        service.setPort(serviceEntity.getPort());
+        service.setUrl(serviceEntity.getUrl().toString());
         service.setInterval(serviceEntity.getInterval());
         service.setLocation(serviceManager.getLocationUrl(serviceEntity.getId()));
 
@@ -263,6 +276,7 @@ public class ServicesApiController implements ServicesApi {
         IncidentUpdate incidentUpdate = new IncidentUpdate();
         incidentUpdate.setType(incidentUpdateEntity.getIncidentType());
         incidentUpdate.setMessage(incidentUpdateEntity.getMessage());
+        incidentUpdate.setCreatedAt(new DateTime(incidentUpdateEntity.getDate()));
         return incidentUpdate;
     }
 
@@ -270,7 +284,7 @@ public class ServicesApiController implements ServicesApi {
         Status status = new Status();
         status.setHttpStatus(statusEntity.getHttpStatus());
         status.setState(statusEntity.getStatus());
-        status.setUpdateAt(new DateTime(statusEntity.getCheckAt()));
+        status.setUpdatedAt(new DateTime(statusEntity.getCheckAt()));
         return status;
     }
 

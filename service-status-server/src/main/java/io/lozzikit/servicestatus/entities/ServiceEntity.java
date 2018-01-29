@@ -1,10 +1,9 @@
 package io.lozzikit.servicestatus.entities;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.net.URL;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -27,26 +26,24 @@ public class ServiceEntity implements Serializable{
     private String description;
 
     @Column(name = "url", nullable = false)
-    private String url;
-
-    @Column(name = "port", nullable = false)
-    private int port;
+    private URL url;
 
     @Column(name = "check_interval", nullable = false)
     private int checkInterval;
 
     @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+
+    @OrderBy("checkAt ASC")
     private List<StatusEntity> statuses;
 
     @OneToMany(mappedBy = "serviceEntity", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private Set<IncidentEntity> incidents;
 
     public ServiceEntity(){}
-    public ServiceEntity(String name, String description, String url, int port, int checkInterval){
+    public ServiceEntity(String name, String description, URL url, int checkInterval){
         this.name=name;
         this.description=description;
         this.url=url;
-        this.port=port;
         this.checkInterval=checkInterval;
     }
 
@@ -74,20 +71,12 @@ public class ServiceEntity implements Serializable{
         this.description = description;
     }
 
-    public String getUrl() {
+    public URL getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(URL url) {
         this.url = url;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public int getInterval() {

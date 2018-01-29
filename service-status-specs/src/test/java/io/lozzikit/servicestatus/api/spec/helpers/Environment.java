@@ -2,10 +2,7 @@ package io.lozzikit.servicestatus.api.spec.helpers;
 
 import com.google.gson.Gson;
 import io.lozzikit.servicestatus.api.IncidentApi;
-import io.lozzikit.servicestatus.api.dto.IncidentType;
-import io.lozzikit.servicestatus.api.dto.IncidentUpdate;
-import io.lozzikit.servicestatus.api.dto.NewIncident;
-import io.lozzikit.servicestatus.api.dto.NewService;
+import io.lozzikit.servicestatus.api.dto.*;
 import io.lozzikit.servicestatus.ApiException;
 import io.lozzikit.servicestatus.ApiResponse;
 import io.lozzikit.servicestatus.api.ServiceApi;
@@ -32,7 +29,7 @@ public class Environment {
     private NewIncident incident;
     private UUID incidentUUID;
 
-    private IncidentUpdate incidentUpdate;
+    private NewIncidentUpdate incidentUpdate;
 
     public Environment() throws IOException {
         Properties properties = new Properties();
@@ -50,13 +47,12 @@ public class Environment {
         result.setName("Test Service number " + ++counter);
         result.setDescription("A service for API testing");
         result.setInterval(5);
-        result.setPort(80);
         result.setUrl("http://www.example.com");
         return result;
     }
 
-    public IncidentUpdate generateIncidentUpdate() {
-        IncidentUpdate iu = new IncidentUpdate();
+    public NewIncidentUpdate generateIncidentUpdate() {
+        NewIncidentUpdate iu = new NewIncidentUpdate();
         iu.setType(IncidentType.ISSUE);
         iu.setMessage("This is an incident of type " + iu.getType() + ". ");
         return iu;
@@ -65,7 +61,7 @@ public class Environment {
     public NewIncident generateIncident() {
         NewIncident result = new NewIncident();
         result.setTitle("Test incident number " + ++counter);
-        IncidentUpdate temp = generateIncidentUpdate();
+        NewIncidentUpdate temp = generateIncidentUpdate();
         result.setType(temp.getType());
         result.setMessage(temp.getMessage());
         return result;
@@ -151,11 +147,11 @@ public class Environment {
         return incidentApi;
     }
 
-    public IncidentUpdate getIncidentUpdate() {
+    public NewIncidentUpdate getIncidentUpdate() {
         return incidentUpdate;
     }
 
-    public void setIncidentUpdate(IncidentUpdate incidentUpdate) {
+    public void setIncidentUpdate(NewIncidentUpdate incidentUpdate) {
         this.incidentUpdate = incidentUpdate;
     }
 }

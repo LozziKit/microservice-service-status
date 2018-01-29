@@ -98,6 +98,14 @@ public class ServiceManager {
         if(serviceEntity == null)
             return;
 
+        serviceEntity.setName(service.getName());
+        serviceEntity.setDescription(service.getDescription());
+        serviceEntity.setUrl(service.getUrl());
+        serviceEntity.setInterval(service.getInterval());
+
+        serviceRepository.save(serviceEntity);
+
+
         //If the service interval is different, we notify the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
             try {
@@ -111,7 +119,6 @@ public class ServiceManager {
         serviceEntity.setName(service.getName());
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setUrl(service.getUrl());
-        serviceEntity.setPort(service.getPort());
         serviceEntity.setInterval(service.getInterval());
 
         serviceRepository.save(serviceEntity);
