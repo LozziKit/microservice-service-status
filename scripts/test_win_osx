@@ -1,0 +1,24 @@
+#!/bin/bash
+
+./compile
+
+cp ../service-status-server/target/microservice-service-status-server-1.0.0.jar ../topology/images/server/server.jar
+
+(cd ../topology; docker-compose -f docker-compose-test.yml down --volumes)
+(cd ../topology; docker-compose -f docker-compose-test.yml up --build -d)
+
+while [ 1 ]
+do
+     curl -s '192.168.99.100:8080/api' > /dev/null
+     if [ $? == 0 ]
+     then
+         break
+     fi
+     echo Waiting for main server to be online.....
+     sleep 1
+done
+
+(cd ../service-status-tests; npm install; npm test)
+(cd ../service-status-specs; mvn -Dio.lozzikit.service-status.server.url=http://192.168.99.100:8080/api test)
+
+(cd ../topology; docker-compose -f docker-compose-test.yml down --volumes)
