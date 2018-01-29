@@ -39,9 +39,9 @@ public class ServiceManager {
                 serviceStatusChecker.removeScheduledTask(id);
             } catch (SchedulerException e) {
                 System.err.println("No jobs associated with service-"+id);
-            } finally {
-                throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
             }
+            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
+
         }
         return service;
     }
