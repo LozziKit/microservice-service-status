@@ -40,7 +40,7 @@ public class ServiceManager {
             } catch (SchedulerException e) {
                 System.err.println("No jobs associated with service-"+id);
             }
-            return null;
+            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
         }
 
         return service;
@@ -95,16 +95,12 @@ public class ServiceManager {
     public void updateService(UUID id, ServiceEntity service) {
         ServiceEntity serviceEntity = getService(id);
 
-        if(serviceEntity == null)
-            return;
-
         serviceEntity.setName(service.getName());
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setUrl(service.getUrl());
         serviceEntity.setInterval(service.getInterval());
 
         serviceRepository.save(serviceEntity);
-
 
         //If the service interval is different, we notify the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
@@ -131,10 +127,7 @@ public class ServiceManager {
      */
     public void addStatus(UUID id, StatusEntity status){
         ServiceEntity serviceEntity = getService(id);
-        if(serviceEntity == null){
-            System.err.println("Unable to add status : parent service not found");
-            return;
-        }
+
         serviceEntity.getStatuses().add(status);
         status.setServiceEntity(serviceEntity);
         serviceRepository.save(serviceEntity);

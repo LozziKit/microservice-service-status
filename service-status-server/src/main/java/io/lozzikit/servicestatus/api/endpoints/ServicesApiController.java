@@ -80,9 +80,6 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<List<Status>> getHistory(@ApiParam(value = "ID of the service", required = true) @PathVariable("id") UUID id) {
 
-        if(serviceManager.getService(id) == null)
-            return ResponseEntity.notFound().build();
-
         List<StatusEntity> statusEntities = serviceManager.getService(id).getStatuses();
         List<Status> status = statusEntities
                 .stream()
@@ -102,9 +99,7 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Service> getService(@ApiParam(value = "ID of service to update", required = true) @PathVariable("id") UUID id) {
         ServiceEntity serviceEntity = serviceManager.getService(id);
 
-        return serviceEntity==null?
-                ResponseEntity.notFound().build():
-                ResponseEntity.ok(toDto(serviceEntity));
+        return ResponseEntity.ok(toDto(serviceEntity));
     }
 
 
@@ -154,8 +149,6 @@ public class ServicesApiController implements ServicesApi {
     @Override
     public ResponseEntity<List<Incident>> getIncidents(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService) {
         Set<IncidentEntity> incidentEntities = incidentManager.getAllIncidents(idService);
-        if(incidentEntities == null)
-            return ResponseEntity.notFound().build();
 
         List<Incident> incidents = new ArrayList<>();
 
@@ -175,9 +168,6 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Void> addIncident(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                             @ApiParam(value = "Incident object to be added to the status page", required = true) @Valid @RequestBody NewIncident newIncident) {
         IncidentEntity incidentEntity = incidentManager.createIncident(idService, toIncidentEntity(newIncident), new IncidentUpdateEntity(newIncident.getType(), newIncident.getMessage()));
-
-        if(incidentEntity == null)
-            return ResponseEntity.status(422).build();
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{incidentId}")
@@ -213,9 +203,6 @@ public class ServicesApiController implements ServicesApi {
     public ResponseEntity<Incident> getIncidentDetails(@ApiParam(value = "ID of the service", required = true) @PathVariable("idService") UUID idService,
                                                        @ApiParam(value = "ID of the incidents to get", required = true) @PathVariable("idIncident") UUID idIncident) {
         IncidentEntity incident = incidentManager.getIncident(idService, idIncident);
-
-        if(incident == null)
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(toDto(incident));
     }
