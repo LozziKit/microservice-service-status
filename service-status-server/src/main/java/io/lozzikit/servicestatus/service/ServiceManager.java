@@ -39,10 +39,10 @@ public class ServiceManager {
                 serviceStatusChecker.removeScheduledTask(id);
             } catch (SchedulerException e) {
                 System.err.println("No jobs associated with service-"+id);
+            } finally {
+                throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
             }
-            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
         }
-
         return service;
     }
 
@@ -99,7 +99,7 @@ public class ServiceManager {
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setUrl(service.getUrl());
         serviceEntity.setInterval(service.getInterval());
-        
+
         //If the service interval is different, we notify the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
             try {
