@@ -5,6 +5,7 @@ This is the repository of the Service Status microservice included in the [Lozzi
 ## Quick-start
 You can quickly deploy the server by executing the rightly named `deploy` script.
 Based on this logic, the function of the `test` script is easily guessed.
+For Windows and OS X users, the `test_win_osx` script will ajust the test URL to the default docker-machine ip : `192.168.99.100` rather than `localhost`. 
 
 If you wish to setup a development environment, you can use your favorite IDE in conjunction with a `microservice` MySQL database that should have been populated with the 
 following quartz script : `/topology/images/mysql/docker-entrypoint-initdb.d/quartz.sql`
