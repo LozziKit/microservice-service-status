@@ -38,6 +38,10 @@ public class IncidentManager {
     public IncidentEntity createIncident(UUID idService, IncidentEntity incidentEntity, IncidentUpdateEntity incidentUpdateEntity){
 
         ServiceEntity serviceEntity = serviceManager.getService(idService);
+
+        if(serviceEntity==null)
+            return null;
+
         serviceEntity.getIncidents().add(incidentEntity);
         incidentEntity.setServiceEntity(serviceEntity);
 
@@ -56,7 +60,8 @@ public class IncidentManager {
      * @return A list of services contained in the service repository
      */
     public Set<IncidentEntity> getAllIncidents(UUID serviceId) {
-        return serviceManager.getService(serviceId).getIncidents();
+        ServiceEntity service = serviceManager.getService(serviceId);
+        return service==null?null:service.getIncidents();
     }
 
     /**
@@ -66,6 +71,12 @@ public class IncidentManager {
      */
     public void addIncidentUpdate(UUID idIncident, UUID idService, IncidentUpdateEntity incidentUpdateEntity) {
         IncidentEntity incidentEntity = getIncident(idService,idIncident);
+
+        if(incidentEntity == null){
+            System.err.println("Unable to add incident update : no parent service found");
+            return;
+        }
+
         incidentUpdateEntity.setIncidentEntity(incidentEntity);
         incidentEntity.getIncidentUpdates().add(incidentUpdateEntity);
 
@@ -79,6 +90,9 @@ public class IncidentManager {
      */
     public IncidentEntity getIncident(UUID idService, UUID idIncident) {
         ServiceEntity service = serviceManager.getService(idService);
+        if(service == null)
+            return null;
+
         IncidentEntity incident = incidentRepository.findOneById(idIncident);
 
         //check if the incident is from this service

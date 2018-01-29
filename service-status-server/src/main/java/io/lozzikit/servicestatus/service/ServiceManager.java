@@ -9,7 +9,6 @@ import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,11 +25,22 @@ public class ServiceManager {
     @Autowired
     ServiceStatusChecker serviceStatusChecker;
 
+    /**
+     * Returns the service entity given by its id
+     * @param id The id of the service we look for
+     * @return The ServiceEntity matching the given id or null if no such services exists
+     */
     public ServiceEntity getService(UUID id) {
         ServiceEntity service = serviceRepository.findOne(id);
 
         if (service == null) {
-            throw new EntityNotFoundException(ErrorMessageUtil.buildEntityNotFoundMessage("service"));
+            System.err.println("Service not found. Attempting to remove related jobs...");
+            try {
+                serviceStatusChecker.removeScheduledTask(id);
+            } catch (SchedulerException e) {
+                System.err.println("No jobs associated with service-"+id);
+            }
+            return null;
         }
 
         return service;
@@ -41,9 +51,7 @@ public class ServiceManager {
      * @return A list of services contained in the service repository
      */
     public List<ServiceEntity> getAllServices() {
-        List<ServiceEntity> serviceEntities = serviceRepository.findAll();
-
-        return serviceEntities;
+        return serviceRepository.findAll();
     }
 
     /**
@@ -87,7 +95,10 @@ public class ServiceManager {
     public void updateService(UUID id, ServiceEntity service) {
         ServiceEntity serviceEntity = getService(id);
 
-        //If the service interval is different, we notifiy the scheduler
+        if(serviceEntity == null)
+            return;
+
+        //If the service interval is different, we notify the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
             try {
                 serviceStatusChecker.updateSchedule(serviceEntity, service.getInterval());
@@ -113,6 +124,10 @@ public class ServiceManager {
      */
     public void addStatus(UUID id, StatusEntity status){
         ServiceEntity serviceEntity = getService(id);
+        if(serviceEntity == null){
+            System.err.println("Unable to add status : parent service not found");
+            return;
+        }
         serviceEntity.getStatuses().add(status);
         status.setServiceEntity(serviceEntity);
         serviceRepository.save(serviceEntity);
@@ -121,7 +136,7 @@ public class ServiceManager {
     /**
      * Get the resource location URL
      * @param uuid The UUID of the service that we need to fetch from
-     * @return
+     * @return the resource location URL
      */
     public String getLocationUrl(UUID uuid) {
         return "/services/" + uuid.toString();

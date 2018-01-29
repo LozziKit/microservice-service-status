@@ -11,6 +11,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 
 @Service
+/*
+ * Job listener implementing the desired behaviour once
+ * the job was executed.
+ */
 public class JobListener implements org.quartz.JobListener {
 
     public static final String DEFAULT_LISTENER = "DEFAULT_LISTENER";
@@ -32,6 +36,8 @@ public class JobListener implements org.quartz.JobListener {
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
 
+        //No better way found to do this
+        //Object is serialized between different classloaders
         byte[] statusEntitySerialized = (byte[]) context.getResult();
         StatusEntity statusEntity = null;
         try {

@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -45,9 +46,11 @@ public class ServiceStatusChecker  {
 
     }
 
+    //Quartz configuration file location
     @Value("${io.lozzikit.quartz.config}")
     private String quartzConfiguration;
 
+    //Time granularity string
     @Value("${ssc.time-granularity}")
     private String sGranularity;
 
@@ -69,6 +72,8 @@ public class ServiceStatusChecker  {
 
         scheduler.getListenerManager().addJobListener(listener);
         scheduler.start();
+
+        //Parsing string granularity into enumeration
         granularity = TIME_GRANULARITY.valueOf(sGranularity);
     }
 
@@ -157,6 +162,15 @@ public class ServiceStatusChecker  {
      */
     public void removeScheduledTask(ServiceEntity s) throws SchedulerException {
         scheduler.deleteJob(JobKey.jobKey("service-"+s.getId()));
+    }
+
+    /**
+     * Unschedules a service given by its id
+     * @param uuid The UUID of the service to remove
+     * @throws SchedulerException if no associated service was found or if the unscheduling failed
+     */
+    public void removeScheduledTask(UUID uuid) throws SchedulerException {
+        scheduler.deleteJob(JobKey.jobKey("service-"+uuid));
     }
 
     /**

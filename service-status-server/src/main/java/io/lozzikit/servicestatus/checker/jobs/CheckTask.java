@@ -20,6 +20,11 @@ import java.util.UUID;
 
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
+/*
+  Task in charge of checking the status of a service.
+  Core business logic here that will eventually be executer
+  on a regular basis.
+ */
 public class CheckTask implements Job {
 
     public static final String UUID = "UUID";
@@ -38,7 +43,6 @@ public class CheckTask implements Job {
     @Override
     public void execute(JobExecutionContext context) {
 
-        UUID uuid = (UUID) context.getJobDetail().getJobDataMap().get(UUID);
         ServiceEntity service = (ServiceEntity)context.getJobDetail().getJobDataMap().get(SERVICE);
 
         String url = service.getUrl();
@@ -79,6 +83,5 @@ public class CheckTask implements Job {
 
         context.setResult(byteArrayOutputStream.toByteArray());
 
-        System.out.println("Pinged at interval "+service.getInterval());
     }
 }
