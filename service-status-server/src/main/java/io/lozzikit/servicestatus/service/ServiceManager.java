@@ -99,9 +99,7 @@ public class ServiceManager {
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setUrl(service.getUrl());
         serviceEntity.setInterval(service.getInterval());
-
-        serviceRepository.save(serviceEntity);
-
+        
         //If the service interval is different, we notify the scheduler
         if (serviceEntity.getInterval() != service.getInterval() ) {
             try {
@@ -111,11 +109,6 @@ public class ServiceManager {
                 return;
             }
         }
-
-        serviceEntity.setName(service.getName());
-        serviceEntity.setDescription(service.getDescription());
-        serviceEntity.setUrl(service.getUrl());
-        serviceEntity.setInterval(service.getInterval());
 
         serviceRepository.save(serviceEntity);
     }
